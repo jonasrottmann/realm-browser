@@ -26,13 +26,15 @@ public class MagicUtils {
         return methodName;
     }
 
+
+
     @NonNull
     public static String invokeMethod(Object realmObject, String methodName) {
         String result = "null";
         try {
             Method method = realmObject.getClass().getMethod(methodName);
             Object resultObj = method.invoke(realmObject);
-            if(resultObj != null) {
+            if (resultObj != null) {
                 result = resultObj.toString();
             }
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
@@ -42,22 +44,26 @@ public class MagicUtils {
 
     }
 
-    public static  boolean isParameterizedField(@NonNull Field field) {
+
+
+    public static boolean isParameterizedField(@NonNull Field field) {
         return field.getGenericType() instanceof ParameterizedType;
     }
 
+
+
     @Nullable
-    public static  String createParameterizedName(@NonNull Field field) {
+    public static String createParameterizedName(@NonNull Field field) {
         ParameterizedType pType = (ParameterizedType) field.getGenericType();
         String rawType = pType.getRawType().toString();
         int rawTypeIndex = rawType.lastIndexOf(".");
-        if(rawTypeIndex > 0) {
+        if (rawTypeIndex > 0) {
             rawType = rawType.substring(rawTypeIndex + 1);
         }
 
         String argument = pType.getActualTypeArguments()[0].toString();
         int argumentIndex = argument.lastIndexOf(".");
-        if(argumentIndex > 0) {
+        if (argumentIndex > 0) {
             argument = argument.substring(argumentIndex + 1);
         }
 

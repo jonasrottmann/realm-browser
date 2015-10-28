@@ -7,11 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import io.realm.RealmObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import io.realm.RealmObject;
 
 public final class RealmBrowser {
 
@@ -20,34 +21,37 @@ public final class RealmBrowser {
     private static final RealmBrowser sInstance = new RealmBrowser();
     private List<Class<? extends RealmObject>> mRealmModelList;
 
+
+
     private RealmBrowser() {
         mRealmModelList = new ArrayList<>();
     }
 
-    public List<Class<? extends RealmObject>> getRealmModelList() {
-        return mRealmModelList;
-    }
 
-    @SafeVarargs
-    public final void addRealmModel(Class<? extends RealmObject>... arr) {
-        mRealmModelList.addAll(Arrays.asList(arr));
-    }
 
     public static RealmBrowser getInstance() {
         return sInstance;
     }
 
+
+
     public static void startRealmFilesActivity(@NonNull Activity activity) {
         RealmFilesActivity.start(activity);
     }
+
+
 
     public static void startRealmModelsActivity(@NonNull Activity activity, @NonNull String realmFileName) {
         RealmModelsActivity.start(activity, realmFileName);
     }
 
+
+
     public static void showRealmFilesNotification(@NonNull Activity activity) {
         showRealmNotification(activity, RealmFilesActivity.class);
     }
+
+
 
     private static void showRealmNotification(@NonNull Activity activity, @NonNull Class activityClass) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(activity)
@@ -64,5 +68,18 @@ public final class RealmBrowser {
         NotificationManager mNotificationManager =
                 (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+
+
+    public List<Class<? extends RealmObject>> getRealmModelList() {
+        return mRealmModelList;
+    }
+
+
+
+    @SafeVarargs
+    public final void addRealmModel(Class<? extends RealmObject>... arr) {
+        mRealmModelList.addAll(Arrays.asList(arr));
     }
 }

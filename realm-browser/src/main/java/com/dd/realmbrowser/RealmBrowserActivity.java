@@ -15,12 +15,9 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.dd.realmbrowser.utils.L;
 import com.dd.realmbrowser.utils.MagicUtils;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmList;
-import io.realm.RealmObject;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -30,6 +27,11 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
 public class RealmBrowserActivity extends AppCompatActivity implements RealmAdapter.Listener {
 
@@ -47,6 +49,8 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     private List<Field> mSelectedFieldList;
     private List<Field> mFieldsList;
 
+
+
     public static void start(Activity activity, int realmModelIndex, String realmFileName) {
         Intent intent = new Intent(activity, RealmBrowserActivity.class);
         intent.putExtra(EXTRAS_REALM_MODEL_INDEX, realmModelIndex);
@@ -54,11 +58,33 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         activity.startActivity(intent);
     }
 
+
+
     public static void start(Activity activity, String realmFileName) {
         Intent intent = new Intent(activity, RealmBrowserActivity.class);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         activity.startActivity(intent);
     }
+
+
+
+    @Nullable
+    public static RealmList<? extends RealmObject> invokeMethod(Object realmObject, String methodName) {
+        RealmList<? extends RealmObject> result = null;
+        try {
+            Method method = realmObject.getClass().getMethod(methodName);
+            result = (RealmList<? extends RealmObject>) method.invoke(realmObject);
+        } catch (NoSuchMethodException e) {
+            L.e(e.toString());
+        } catch (InvocationTargetException e) {
+            L.e(e.toString());
+        } catch (IllegalAccessException e) {
+            L.e(e.toString());
+        }
+        return result;
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +100,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
         AbstractList<? extends RealmObject> realmObjects;
 
-        if(getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
+        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
             int index = getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0);
             mRealmObjectClass = RealmBrowser.getInstance().getRealmModelList().get(index);
             realmObjects = mRealm.allObjects(mRealmObjectClass);
@@ -83,7 +109,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
             Field field = RealmHolder.getInstance().getField();
             String methodName = MagicUtils.createMethodName(field);
             realmObjects = invokeMethod(object, methodName);
-            if(MagicUtils.isParameterizedField(field)) {
+            if (MagicUtils.isParameterizedField(field)) {
                 ParameterizedType pType = (ParameterizedType) field.getGenericType();
                 Class<?> pTypeClass = (Class<?>) pType.getActualTypeArguments()[0];
                 mRealmObjectClass = (Class<? extends RealmObject>) pTypeClass;
@@ -111,11 +137,15 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         updateColumnTitle(mSelectedFieldList);
     }
 
+
+
     @Override
     protected void onResume() {
         mAdapter.notifyDataSetChanged();
         super.onResume();
     }
+
+
 
     @Override
     protected void onDestroy() {
@@ -125,23 +155,30 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         super.onDestroy();
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_columns) {
             showColumnsDialog();
-        } if (id == R.id.action_settings) {
+        }
+        if (id == R.id.action_settings) {
             SettingsActivity.start(this);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.browser_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+
 
     @Override
     public void onRowItemClicked(@NonNull RealmObject realmObject, @NonNull Field field) {
@@ -151,18 +188,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         RealmBrowserActivity.start(this, realmFileName);
     }
 
-    @Nullable
-    public static RealmList<? extends RealmObject> invokeMethod(Object realmObject, String methodName) {
-        RealmList<? extends RealmObject> result = null;
-        try {
-            Method method = realmObject.getClass().getMethod(methodName);
-            result = (RealmList<? extends RealmObject>) method.invoke(realmObject);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            L.e(e.toString());
-        }
-        return result;
 
-    }
 
     private void selectDefaultFields() {
         mSelectedFieldList.clear();
@@ -172,6 +198,8 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
             }
         }
     }
+
+
 
     private void updateColumnTitle(List<Field> columnsList) {
         mTxtIndex.setText("#");
@@ -201,9 +229,13 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         mTxtColumn3.setLayoutParams(layoutParams3);
     }
 
+
+
     private LinearLayout.LayoutParams createLayoutParams() {
         return new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
+
+
 
     private void showColumnsDialog() {
         final String[] items = new String[mFieldsList.size()];

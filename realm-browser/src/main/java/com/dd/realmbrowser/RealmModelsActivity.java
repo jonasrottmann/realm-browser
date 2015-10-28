@@ -9,20 +9,25 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import io.realm.RealmObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmObject;
+
 public class RealmModelsActivity extends AppCompatActivity {
 
     private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
+
+
 
     public static void start(@NonNull Activity activity, @NonNull String realmFileName) {
         Intent intent = new Intent(activity, RealmModelsActivity.class);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         activity.startActivity(intent);
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,8 @@ public class RealmModelsActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void onItemClicked(int position) {
         String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);

@@ -10,23 +10,28 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.exceptions.RealmMigrationNeededException;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.exceptions.RealmMigrationNeededException;
 
 public class RealmFilesActivity extends AppCompatActivity {
 
     private List<String> mIgnoreExtensionList;
     private ArrayAdapter<String> mAdapter;
 
+
+
     public static void start(@NonNull Activity activity) {
         Intent intent = new Intent(activity, RealmFilesActivity.class);
         activity.startActivity(intent);
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +63,8 @@ public class RealmFilesActivity extends AppCompatActivity {
         });
     }
 
+
+
     private boolean isValid(String fileName) {
         boolean isValid = true;
         int index = fileName.lastIndexOf(".");
@@ -67,6 +74,8 @@ public class RealmFilesActivity extends AppCompatActivity {
         }
         return isValid;
     }
+
+
 
     private void onItemClicked(int position) {
         try {

@@ -7,16 +7,21 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+
 import com.dd.realmbrowser.model.RealmPreferences;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private RealmPreferences mRealmPreferences;
 
+
+
     public static void start(@NonNull Activity activity) {
         Intent intent = new Intent(activity, SettingsActivity.class);
         activity.startActivity(intent);
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +32,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         initView();
     }
+
+
 
     private void initView() {
         CheckBox cbWrapText = (CheckBox) findViewById(R.id.cbWrapText);

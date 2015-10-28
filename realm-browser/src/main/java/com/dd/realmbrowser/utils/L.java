@@ -1,11 +1,14 @@
 package com.dd.realmbrowser.utils;
 
 import android.util.Log;
+
 import com.dd.realmbrowser.BuildConfig;
 
 public final class L {
 
     public static String LOG_TAG = "RealmBrowser";
+
+
 
     /**
      * <p><b>ERROR:</b> This level of logging should be used when something fatal has happened, i.e. something that
@@ -21,6 +24,8 @@ public final class L {
         }
     }
 
+
+
     /**
      * @see #e(String, Throwable)
      */
@@ -33,6 +38,8 @@ public final class L {
             Log.e(LOG_TAG, "[" + callerClassName + "] " + msg);
         }
     }
+
+
 
     /**
      * <p><b>WARNING:</b> This level of logging should used when something serious and unexpected happened, i.e.
@@ -49,6 +56,8 @@ public final class L {
         }
     }
 
+
+
     /**
      * @see #w(String, Throwable)
      */
@@ -61,6 +70,8 @@ public final class L {
             Log.w(LOG_TAG, "[" + callerClassName + "] " + msg);
         }
     }
+
+
 
     /**
      * <p><b>INFORMATIVE:</b> This level of logging should used be to note that something interesting to most
@@ -76,18 +87,22 @@ public final class L {
         }
     }
 
+
+
     /**
      * @see #i(String, Throwable)
      */
     public static void i(String msg) {
 //        if (BuildConfig.DEBUG) {
-            Throwable t = new Throwable();
-            StackTraceElement[] elements = t.getStackTrace();
+        Throwable t = new Throwable();
+        StackTraceElement[] elements = t.getStackTrace();
 
-            String callerClassName = elements[1].getFileName();
-            Log.i(LOG_TAG, "[" + callerClassName + "] " + msg);
+        String callerClassName = elements[1].getFileName();
+        Log.i(LOG_TAG, "[" + callerClassName + "] " + msg);
 //        }
     }
+
+
 
     /**
      * <p><b>DEBUG:</b> This level of logging should be used to further note what is happening on the device that
@@ -103,6 +118,8 @@ public final class L {
         }
     }
 
+
+
     /**
      * @see #d(String, Throwable)
      */
@@ -116,6 +133,8 @@ public final class L {
         }
     }
 
+
+
     /**
      * <p><b>VERBOSE:</b> This level of logging should be used for everything else.</p>
      * <p/>
@@ -126,6 +145,8 @@ public final class L {
             Log.v(LOG_TAG, msg, cause);
         }
     }
+
+
 
     /**
      * @see #v(String, Throwable)
