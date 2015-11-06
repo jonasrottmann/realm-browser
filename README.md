@@ -1,13 +1,4 @@
-:small_red_triangle: **Before using this library, read information below** :small_red_triangle:
-```
-This library is not more supported. 
-If you want to add new feature or fix a bug, grab source code and do it. If you think your
-fix or feature would be useful to other developers, I can add link of your repository to
-this README file. Use following e-mail to contact me: dmytrodanylyk@gmail.com
-Thank you for using my libraries.
-```
-
-### Description ![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.dmytrodanylyk.realm-browser/library/badge.png?style=flat)
+### Description
 
 Android [Realm](https://github.com/realm/realm-java) Browser
 
@@ -21,17 +12,11 @@ Android [Realm](https://github.com/realm/realm-java) Browser
 
 ### Integration
 
-The lib is available on Maven Central, you can find it with [Gradle, please]
-
 ```
 dependencies {
     compile 'com.github.dmytrodanylyk.realm-browser:library:0.0.3'
 }
 ```
-
-### Contributions
-
-If you want to contribute to this library make sure you send pull request to **dev** branch.
 
 ### License
 
@@ -62,6 +47,5 @@ SOFTWARE.
 [Home]:https://github.com/dmytrodanylyk/realm-browser/wiki
 [Limitations]:https://github.com/dmytrodanylyk/realm-browser/wiki/Limitations
 [User Guide]:https://github.com/dmytrodanylyk/realm-browser/wiki/User-Guide
-[Gradle, Please]:http://gradleplease.appspot.com/
 
 [![Analytics](https://ga-beacon.appspot.com/UA-44382495-7/realm-browser/readme)](https://github.com/igrigorik/ga-beacon)

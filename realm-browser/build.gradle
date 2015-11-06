@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+    }
+}
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.android.library'
 
 android {
@@ -18,6 +27,33 @@ android {
     }
 }
 
+// Open local.properties
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+
+    dryRun = true // Whether to run this as dry-run, without deploying
+    publish = false // If version should be auto published after an upload
+
+    // Package configuration. The plugin will use the repo and name properties to check if the package already exists.
+    // In that case, there's no need to configure the other package properties (like userOrg, desc, etc).
+    pkg {
+        repo = 'generic'
+        name = 'realm-browser'
+        desc = 'Android Realm Browser'
+        websiteUrl = 'https://github.com/jonasrottmann/realm-browser'
+        issueTrackerUrl = 'https://github.com/jonasrottmann/realm-browser/issues'
+        vcsUrl = 'https://github.com/jonasrottmann/realm-browser'
+        licenses = ['MIT']
+        publicDownloadNumbers = true
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.0'
@@ -25,6 +61,3 @@ dependencies {
     compile 'com.android.support:support-annotations:23.1.0'
     compile 'io.realm:realm-android:0.83.1'
 }
-
-// Used to push in maven
-//apply from: '../maven_push.gradle'
