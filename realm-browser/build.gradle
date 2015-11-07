@@ -33,8 +33,19 @@ android {
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:recyclerview-v7:23.1.0'
+    compile 'com.android.support:support-annotations:23.1.0'
+    compile 'io.realm:realm-android:0.84.1'
+}
+
+/*
+ * PUBLISHING
+ */
 def siteUrl = 'https://github.com/jonasrottmann/realm-browser'      // Homepage URL of the library
-def gitUrl = 'https://github.com/jonasrottmann/realm-browser.git'   // Git repository URL
+def gitUrl = siteUrl + ".git"   // Git repository URL
 group = "de.jonasrottmann"
 
 install {
@@ -100,8 +111,7 @@ bintray {
 
     configurations = ['archives']
 
-    dryRun = true // Whether to run this as dry-run, without deploying
-    publish = false // If version should be auto published after an upload
+    dryRun = false // Whether to run this as dry-run, without deploying
 
     // Package configuration. The plugin will use the repo and name properties to check if the package already exists.
     // In that case, there's no need to configure the other package properties (like userOrg, desc, etc).
@@ -109,18 +119,10 @@ bintray {
         repo = 'maven'
         name = 'realm-browser'
         desc = 'Android Realm Browser'
-        websiteUrl = 'https://github.com/jonasrottmann/realm-browser'
-        issueTrackerUrl = 'https://github.com/jonasrottmann/realm-browser/issues'
-        vcsUrl = 'https://github.com/jonasrottmann/realm-browser'
+        websiteUrl = siteUrl
+        issueTrackerUrl = siteUrl + "/issues"
+        vcsUrl = siteUrl
         licenses = ['MIT']
         publicDownloadNumbers = true
     }
-}
-
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.android.support:recyclerview-v7:23.1.0'
-    compile 'com.android.support:support-annotations:23.1.0'
-    compile 'io.realm:realm-android:0.84.1'
 }

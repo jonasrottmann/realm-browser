@@ -2,17 +2,47 @@
 
 Android [Realm](https://github.com/realm/realm-java) Browser
 
+This is a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk/realm-browser) which was originally created by Danylyk Dmytro.
+
 ![](screenshots/intro.png)
 
-### Integration
+### Integration [![Download](https://api.bintray.com/packages/jonasrottmann/maven/realm-browser/images/download.svg) ](https://bintray.com/jonasrottmann/maven/realm-browser/_latestVersion)
 
-[![Download](https://api.bintray.com/packages/jonasrottmann/maven/realm-browser/images/download.svg) ](https://bintray.com/jonasrottmann/maven/realm-browser/_latestVersion)
+The project is available on JCenter.
 
 ```
 dependencies {
-    compile 'de.jonasrottmann:realm-browser:0.0.3'
+    compile 'de.jonasrottmann:realm-browser:0.0.4'
 }
 ```
+
+### Usage
+
+To initialize the Realm Browser add all classes which you want to see using the method below. Those classes must extend `RealmObject`.
+
+```
+RealmBrowser.getInstance().addRealmModel(Example.class, ...);
+```
+
+If you want to see all your databases launch `RealmFilesActivity`.
+
+```
+RealmFilesActivity.start(activity);
+```
+
+If you want to see all your table list launch `RealmModelsActivity`.
+
+```
+RealmModelsActivity.start(activity, "<name of the database file>");
+```
+
+To display a notification from which the Realm Browser can be started.
+
+```
+RealmBrowser.showRealmFilesNotification(activity);
+```
+
+For a full working example check out the [sample app](https://github.com/jonasrottmann/realm-browser/blob/release/app/src/main/java/de/jonasrottmann/realmsample/MainActivity.java).
 
 ### License
 
