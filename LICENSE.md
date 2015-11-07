@@ -1,6 +1,7 @@
 The MIT License (MIT)
 
 Original Work: Copyright (c) 2015 Danylyk Dmytro
+
 Modified Work: Copyright (c) 2015 Rottmann, Jonas
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
