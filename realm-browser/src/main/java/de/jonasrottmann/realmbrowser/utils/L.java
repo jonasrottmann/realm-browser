@@ -1,8 +1,8 @@
-package com.dd.realmbrowser.utils;
+package de.jonasrottmann.realmbrowser.utils;
 
 import android.util.Log;
 
-import com.dd.realmbrowser.BuildConfig;
+import de.jonasrottmann.realmbrowser.BuildConfig;
 
 public final class L {
 

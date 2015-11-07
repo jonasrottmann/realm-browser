@@ -1,4 +1,4 @@
-package com.dd.realmbrowser;
+package de.jonasrottmann.realmbrowser;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmObject;
+
+import static de.jonasrottmann.realmbrowser.RealmBrowser.*;
 
 public class RealmModelsActivity extends AppCompatActivity {
 
@@ -35,7 +37,7 @@ public class RealmModelsActivity extends AppCompatActivity {
         setContentView(R.layout.ac_realm_list_view);
 
         List<String> modelList = new ArrayList<>();
-        for (Class<? extends RealmObject> file : RealmBrowser.getInstance().getRealmModelList()) {
+        for (Class<? extends RealmObject> file : getInstance().getRealmModelList()) {
             modelList.add(file.getSimpleName());
         }
 

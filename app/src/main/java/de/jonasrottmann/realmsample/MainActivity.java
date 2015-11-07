@@ -1,14 +1,14 @@
-package com.dd.realmsample;
+package de.jonasrottmann.realmsample;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import com.dd.realmbrowser.RealmBrowser;
-import com.dd.realmsample.data.Address;
-import com.dd.realmsample.data.Contact;
-import com.dd.realmsample.data.RealmString;
-import com.dd.realmsample.data.User;
+import de.jonasrottmann.realmbrowser.RealmBrowser;
+import de.jonasrottmann.realmsample.data.Address;
+import de.jonasrottmann.realmsample.data.Contact;
+import de.jonasrottmann.realmsample.data.RealmString;
+import de.jonasrottmann.realmsample.data.User;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;

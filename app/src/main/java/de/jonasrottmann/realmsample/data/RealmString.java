@@ -1,4 +1,4 @@
-package com.dd.realmsample.data;
+package de.jonasrottmann.realmsample.data;
 
 import io.realm.RealmObject;
 

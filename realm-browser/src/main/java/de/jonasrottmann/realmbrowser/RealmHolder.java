@@ -1,4 +1,4 @@
-package com.dd.realmbrowser;
+package de.jonasrottmann.realmbrowser;
 
 import java.lang.reflect.Field;
 

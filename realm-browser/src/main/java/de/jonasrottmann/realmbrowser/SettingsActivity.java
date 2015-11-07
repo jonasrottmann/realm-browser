@@ -1,4 +1,4 @@
-package com.dd.realmbrowser;
+package de.jonasrottmann.realmbrowser;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.dd.realmbrowser.model.RealmPreferences;
+import de.jonasrottmann.realmbrowser.model.RealmPreferences;
 
 public class SettingsActivity extends AppCompatActivity {
 

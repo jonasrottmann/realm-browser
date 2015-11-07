@@ -1,4 +1,4 @@
-package com.dd.realmbrowser;
+package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.dd.realmbrowser.model.RealmPreferences;
-import com.dd.realmbrowser.utils.MagicUtils;
+import de.jonasrottmann.realmbrowser.model.RealmPreferences;
+import de.jonasrottmann.realmbrowser.utils.MagicUtils;
 
 import java.lang.reflect.Field;
 import java.util.AbstractList;

@@ -6,12 +6,14 @@ buildscript {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
     }
 }
+
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         minSdkVersion 14
@@ -31,6 +33,66 @@ android {
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
+def siteUrl = 'https://github.com/jonasrottmann/realm-browser'      // Homepage URL of the library
+def gitUrl = 'https://github.com/jonasrottmann/realm-browser.git'   // Git repository URL
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+
+                // Add your description here
+                name 'realm-browser'
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name 'The MIT License (MIT)'
+                        url 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'jonasrottmann'
+                        name 'Jonas Rottmann'
+                        email 'jonasrottmann@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+task androidJavadocs(type: Javadoc) {
+    source = 'src/main/java'
+}
+
+task androidJavadocsJar(type: Jar) {
+    classifier = 'javadoc'
+    //basename = artifact_id
+    from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    //basename = artifact_id
+    from 'src/main/java'
+}
+
+artifacts {
+    //archives packageReleaseJar
+    archives androidSourcesJar
+    archives androidJavadocsJar
+}
+
 bintray {
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
@@ -43,7 +105,7 @@ bintray {
     // Package configuration. The plugin will use the repo and name properties to check if the package already exists.
     // In that case, there's no need to configure the other package properties (like userOrg, desc, etc).
     pkg {
-        repo = 'generic'
+        repo = 'maven'
         name = 'realm-browser'
         desc = 'Android Realm Browser'
         websiteUrl = 'https://github.com/jonasrottmann/realm-browser'
@@ -59,5 +121,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:recyclerview-v7:23.1.0'
     compile 'com.android.support:support-annotations:23.1.0'
-    compile 'io.realm:realm-android:0.83.1'
+    compile 'io.realm:realm-android:0.84.1'
 }

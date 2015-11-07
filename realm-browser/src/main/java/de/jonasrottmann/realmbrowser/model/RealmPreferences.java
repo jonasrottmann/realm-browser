@@ -1,4 +1,4 @@
-package com.dd.realmbrowser.model;
+package de.jonasrottmann.realmbrowser.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;

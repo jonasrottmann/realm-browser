@@ -1,4 +1,4 @@
-package com.dd.realmbrowser;
+package de.jonasrottmann.realmbrowser;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -16,8 +16,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.dd.realmbrowser.utils.L;
-import com.dd.realmbrowser.utils.MagicUtils;
+import de.jonasrottmann.realmbrowser.utils.L;
+import de.jonasrottmann.realmbrowser.utils.MagicUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

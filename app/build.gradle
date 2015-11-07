@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.dd.realmsample"
+        applicationId "de.jonasrottmann.realmsample"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1

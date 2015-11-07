@@ -1,4 +1,4 @@
-package com.dd.realmbrowser.utils;
+package de.jonasrottmann.realmbrowser.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,7 +37,11 @@ public class MagicUtils {
             if (resultObj != null) {
                 result = resultObj.toString();
             }
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (NoSuchMethodException e) {
+            L.e(e.toString());
+        } catch (InvocationTargetException e) {
+            L.e(e.toString());
+        } catch (IllegalAccessException e) {
             L.e(e.toString());
         }
         return result;
