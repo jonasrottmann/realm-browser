@@ -6,7 +6,7 @@ import de.jonasrottmann.realmbrowser.BuildConfig;
 
 public final class L {
 
-    public static String LOG_TAG = "RealmBrowser";
+    public static final String LOG_TAG = "RealmBrowser";
 
 
 

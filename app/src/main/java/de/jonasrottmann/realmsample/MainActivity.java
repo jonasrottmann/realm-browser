@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import de.jonasrottmann.realmsample.data.Address;
 import de.jonasrottmann.realmsample.data.Contact;
@@ -13,13 +17,12 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends Activity implements View.OnClickListener {
 
     public static final String REALM_FILE_NAME = "db10";
     private TextView mTxtTitle;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         RealmBrowser.showRealmFilesNotification(this);
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -60,6 +65,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
+
+
     private void updateTitle() {
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .name(REALM_FILE_NAME)
@@ -69,6 +76,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mTxtTitle.setText(String.format("Items in database: %d", size));
         realm.close();
     }
+
+
 
     private void removeAllUsers() {
         RealmConfiguration config = new RealmConfiguration.Builder(this)
@@ -85,6 +94,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         realm.close();
     }
+
+
 
     private void insertUsers(int count) {
         RealmConfiguration config = new RealmConfiguration.Builder(this)
@@ -132,9 +143,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         realm.close();
     }
 
+
+
     private void startRealmFilesActivity() {
         RealmBrowser.startRealmFilesActivity(this);
     }
+
+
 
     private void startRealmModelsActivity() {
         RealmBrowser.startRealmModelsActivity(this, REALM_FILE_NAME);

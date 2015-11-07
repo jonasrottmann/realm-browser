@@ -2,6 +2,7 @@ package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,28 +10,27 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import de.jonasrottmann.realmbrowser.model.RealmPreferences;
-import de.jonasrottmann.realmbrowser.utils.MagicUtils;
-
 import java.lang.reflect.Field;
 import java.util.AbstractList;
 import java.util.List;
 
+import de.jonasrottmann.realmbrowser.model.RealmPreferences;
+import de.jonasrottmann.realmbrowser.utils.MagicUtils;
 import io.realm.RealmObject;
 
 class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
-    private AbstractList<? extends RealmObject> mRealmObjects;
-    private Context mContext;
-    private List<Field> mFieldList;
-    private Listener mListener;
-    private RealmPreferences mRealmPreferences;
-    private View.OnClickListener mEmptyClickListener = new View.OnClickListener() {
+    private final AbstractList<? extends RealmObject> mRealmObjects;
+    private final Context mContext;
+    private final Listener mListener;
+    private final RealmPreferences mRealmPreferences;
+    private final View.OnClickListener mEmptyClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
         }
     };
+    private List<Field> mFieldList;
 
 
 
@@ -69,9 +69,9 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (position % 2 == 0) {
-            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.rb_grey));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.rb_grey));
         } else {
-            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.rb_white));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.rb_white));
         }
 
         if (mFieldList.isEmpty()) {
@@ -170,11 +170,11 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
 
 
-    class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtIndex;
-        public TextView txtColumn1;
-        public TextView txtColumn2;
-        public TextView txtColumn3;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        public final TextView txtIndex;
+        public final TextView txtColumn1;
+        public final TextView txtColumn2;
+        public final TextView txtColumn3;
 
 
 

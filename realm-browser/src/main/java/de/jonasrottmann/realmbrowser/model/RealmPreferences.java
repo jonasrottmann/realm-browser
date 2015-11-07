@@ -7,7 +7,7 @@ public class RealmPreferences {
 
     private static final String PREF_NAME = "pref.realm";
     private static final String WRAP_TEXT = "WRAP_TEXT";
-    private Context mContext;
+    private final Context mContext;
 
 
 

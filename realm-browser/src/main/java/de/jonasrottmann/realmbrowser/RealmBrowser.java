@@ -19,7 +19,7 @@ public final class RealmBrowser {
     public static final int NOTIFICATION_ID = 1000;
 
     private static final RealmBrowser sInstance = new RealmBrowser();
-    private List<Class<? extends RealmObject>> mRealmModelList;
+    private final List<Class<? extends RealmObject>> mRealmModelList;
 
 
 
