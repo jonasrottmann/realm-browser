@@ -35,6 +35,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 
 def siteUrl = 'https://github.com/jonasrottmann/realm-browser'      // Homepage URL of the library
 def gitUrl = 'https://github.com/jonasrottmann/realm-browser.git'   // Git repository URL
+group = "de.jonasrottmann"
 
 install {
     repositories.mavenInstaller {
