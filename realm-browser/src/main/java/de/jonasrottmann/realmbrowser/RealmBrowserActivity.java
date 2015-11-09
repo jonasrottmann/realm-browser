@@ -16,18 +16,18 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import de.jonasrottmann.realmbrowser.utils.L;
-import de.jonasrottmann.realmbrowser.utils.MagicUtils;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.jonasrottmann.realmbrowser.utils.L;
+import de.jonasrottmann.realmbrowser.utils.MagicUtils;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
@@ -119,7 +119,13 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         mSelectedFieldList = new ArrayList<>();
         mTmpSelectedFieldList = new ArrayList<>();
         mFieldsList = new ArrayList<>();
-        mFieldsList.addAll(Arrays.asList(mRealmObjectClass.getDeclaredFields()));
+
+        // Populate fields list
+        for (int i = 0; i < mRealmObjectClass.getDeclaredFields().length; i++) {
+            Field f = mRealmObjectClass.getDeclaredFields()[i];
+            if (!(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()))) // Ignore constant static fields
+                mFieldsList.add(f);
+        }
 
         mAdapter = new RealmAdapter(this, realmObjects, mSelectedFieldList, this);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
