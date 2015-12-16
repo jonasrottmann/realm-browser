@@ -16,7 +16,7 @@ import java.util.List;
 
 import io.realm.RealmObject;
 
-import static de.jonasrottmann.realmbrowser.RealmBrowser.*;
+import static de.jonasrottmann.realmbrowser.RealmBrowser.getInstance;
 
 public class RealmModelsActivity extends AppCompatActivity {
 
@@ -30,9 +30,12 @@ public class RealmModelsActivity extends AppCompatActivity {
         activity.startActivity(intent);
     }
 
+
+
     public static void start(@NonNull Context context, @NonNull String realmFileName) {
         Intent intent = new Intent(context, RealmModelsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         context.startActivity(intent);
     }
