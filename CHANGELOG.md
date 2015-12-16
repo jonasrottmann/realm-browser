@@ -2,6 +2,7 @@
 
 Fixed issues
 * static constant fields in realm models are no longer added as columns
+* Allow Browser Activities to be started from any Context (thank you @degill)
 
 
 
