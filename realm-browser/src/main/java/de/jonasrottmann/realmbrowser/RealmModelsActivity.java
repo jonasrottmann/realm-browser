@@ -29,6 +29,13 @@ public class RealmModelsActivity extends AppCompatActivity {
         activity.startActivity(intent);
     }
 
+    public static void start(@NonNull Context context, @NonNull String realmFileName) {
+        Intent intent = new Intent(context, RealmModelsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
+        context.startActivity(intent);
+    }
+
 
 
     @Override

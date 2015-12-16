@@ -31,6 +31,11 @@ public class RealmFilesActivity extends AppCompatActivity {
         activity.startActivity(intent);
     }
 
+    public static void start(@NonNull Context context) {
+        Intent intent = new Intent(context, RealmFilesActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
 
 
     @Override

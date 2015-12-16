@@ -67,6 +67,24 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
+    public static void start(Context context, int realmModelIndex, String realmFileName) {
+        Intent intent = new Intent(context, RealmBrowserActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EXTRAS_REALM_MODEL_INDEX, realmModelIndex);
+        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
+        context.startActivity(intent);
+    }
+
+
+
+    public static void start(Context context, String realmFileName) {
+        Intent intent = new Intent(activity, RealmBrowserActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
+        context.startActivity(intent);
+    }
+
+
 
     @Nullable
     public static RealmList<? extends RealmObject> invokeMethod(Object realmObject, String methodName) {
