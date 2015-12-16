@@ -1,6 +1,7 @@
 package de.jonasrottmann.realmbrowser;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,6 +28,13 @@ public class RealmModelsActivity extends AppCompatActivity {
         Intent intent = new Intent(activity, RealmModelsActivity.class);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         activity.startActivity(intent);
+    }
+
+    public static void start(@NonNull Context context, @NonNull String realmFileName) {
+        Intent intent = new Intent(context, RealmModelsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
+        context.startActivity(intent);
     }
 
 
