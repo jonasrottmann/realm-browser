@@ -1,6 +1,5 @@
 package de.jonasrottmann.realmbrowser;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -35,38 +34,38 @@ public final class RealmBrowser {
 
 
 
-    public static void startRealmFilesActivity(@NonNull Activity activity) {
-        RealmFilesActivity.start(activity);
+    public static void startRealmFilesActivity(@NonNull Context context) {
+        RealmFilesActivity.start(context);
     }
 
 
 
-    public static void startRealmModelsActivity(@NonNull Activity activity, @NonNull String realmFileName) {
-        RealmModelsActivity.start(activity, realmFileName);
+    public static void startRealmModelsActivity(@NonNull Context context, @NonNull String realmFileName) {
+        RealmModelsActivity.start(context, realmFileName);
     }
 
 
 
-    public static void showRealmFilesNotification(@NonNull Activity activity) {
-        showRealmNotification(activity, RealmFilesActivity.class);
+    public static void showRealmFilesNotification(@NonNull Context context) {
+        showRealmNotification(context, RealmFilesActivity.class);
     }
 
 
 
-    private static void showRealmNotification(@NonNull Activity activity, @NonNull Class activityClass) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(activity)
+    private static void showRealmNotification(@NonNull Context context, @NonNull Class activityClass) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_rb)
-                .setContentTitle(activity.getString(R.string.rb_title))
-                .setContentText(activity.getString(R.string.rb_click_to_launch))
+                .setContentTitle(context.getString(R.string.rb_title))
+                .setContentText(context.getString(R.string.rb_click_to_launch))
                 .setAutoCancel(false);
-        Intent notifyIntent = new Intent(activity, activityClass);
+        Intent notifyIntent = new Intent(context, activityClass);
         notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent notifyPendingIntent =
-                PendingIntent.getActivity(activity, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getActivity(context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(notifyPendingIntent);
         NotificationManager mNotificationManager =
-                (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 
