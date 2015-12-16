@@ -12,7 +12,7 @@ The project is available on JCenter.
 
 ```
 dependencies {
-    compile 'de.jonasrottmann:realm-browser:0.0.4@aar'
+    compile 'de.jonasrottmann:realm-browser:0.0.5@aar'
 }
 ```
 
