@@ -1,3 +1,10 @@
+## 0.0.6
+
+New
+* Display amount of objects for each model in the RealmModelsActivity (thank you @degill)
+
+
+
 ## 0.0.5
 
 Fixed issues
