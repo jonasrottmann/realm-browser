@@ -24,22 +24,22 @@ To initialize the Realm Browser add all classes which you want to see using the 
 RealmBrowser.getInstance().addRealmModel(Example.class, ...);
 ```
 
-If you want to see all your databases launch `RealmFilesActivity`.
+If you want to see all your databases call:
 
 ```
-RealmFilesActivity.start(activity);
+RealmBrowser.startRealmFilesActivity(context);
 ```
 
-If you want to see all your table list launch `RealmModelsActivity`.
+If you want to see all your table list call:
 
 ```
-RealmModelsActivity.start(activity, "<name of the database file>");
+RealmBrowser.startRealmModelsActivity(context, "<name of the database file>")
 ```
 
 To display a notification from which the Realm Browser can be started.
 
 ```
-RealmBrowser.showRealmFilesNotification(activity);
+RealmBrowser.showRealmFilesNotification(context);
 ```
 
 For a full working example check out the [sample app](https://github.com/jonasrottmann/realm-browser/blob/release/app/src/main/java/de/jonasrottmann/realmsample/MainActivity.java).
