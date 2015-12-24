@@ -20,7 +20,6 @@ import io.realm.RealmObject;
 
 class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
-    private final AbstractList<? extends RealmObject> mRealmObjects;
     private final Context mContext;
     private final Listener mListener;
     private final RealmPreferences mRealmPreferences;
@@ -30,6 +29,7 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
         }
     };
+    private AbstractList<? extends RealmObject> mRealmObjects;
     private List<Field> mFieldList;
 
 
@@ -47,6 +47,12 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
     public void setFieldList(List<Field> fieldList) {
         mFieldList = fieldList;
+    }
+
+
+
+    public void setRealmList(AbstractList<? extends RealmObject> realmObjects) {
+        mRealmObjects = realmObjects;
     }
 
 
@@ -136,11 +142,13 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
     private void initRowText(TextView txtColumn, RealmObject realmObject, Field field) {
         if (MagicUtils.isParameterizedField(field)) {
+            //  RealmList<? extends RealmObject>
             txtColumn.setText(MagicUtils.createParameterizedName(field));
             txtColumn.setOnClickListener(createClickListener(realmObject, field));
         } else {
-            String methodName = MagicUtils.createMethodName(field);
-            txtColumn.setText(MagicUtils.invokeMethod(realmObject, methodName));
+            // RealmObject or Value
+            String methodName = MagicUtils.createRealmGetterMethodName(field);
+            txtColumn.setText(MagicUtils.invokeMethodForString(realmObject, methodName));
             txtColumn.setOnClickListener(mEmptyClickListener);
         }
     }

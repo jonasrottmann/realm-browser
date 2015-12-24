@@ -8,10 +8,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
 public class MagicUtils {
 
     @Nullable
-    public static String createMethodName(@NonNull Field field) {
+    public static String createRealmGetterMethodName(@NonNull Field field) {
         String methodName;
         if (field.getType().equals(boolean.class)) {
             if (field.getName().contains("is")) {
@@ -29,7 +32,7 @@ public class MagicUtils {
 
 
     @NonNull
-    public static String invokeMethod(Object realmObject, String methodName) {
+    public static String invokeMethodForString(Object realmObject, String methodName) {
         String result = "null";
         try {
             Method method = realmObject.getClass().getMethod(methodName);
@@ -45,7 +48,24 @@ public class MagicUtils {
             L.e(e.toString());
         }
         return result;
+    }
 
+
+
+    @Nullable
+    public static RealmList<? extends RealmObject> invokeMethodForRealmResult(Object realmObject, String methodName) {
+        RealmList<? extends RealmObject> result = null;
+        try {
+            Method method = realmObject.getClass().getMethod(methodName);
+            result = (RealmList<? extends RealmObject>) method.invoke(realmObject);
+        } catch (NoSuchMethodException e) {
+            L.e(e.toString());
+        } catch (InvocationTargetException e) {
+            L.e(e.toString());
+        } catch (IllegalAccessException e) {
+            L.e(e.toString());
+        }
+        return result;
     }
 
 

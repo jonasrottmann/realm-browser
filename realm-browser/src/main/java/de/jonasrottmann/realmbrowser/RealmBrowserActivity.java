@@ -6,11 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -18,23 +18,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import de.jonasrottmann.realmbrowser.utils.L;
 import de.jonasrottmann.realmbrowser.utils.MagicUtils;
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.RealmQuery;
 
-public class RealmBrowserActivity extends AppCompatActivity implements RealmAdapter.Listener {
+public class RealmBrowserActivity extends AppCompatActivity implements RealmAdapter.Listener, SearchView.OnQueryTextListener {
 
     private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
     private static final String EXTRAS_REALM_MODEL_INDEX = "REALM_MODEL_INDEX";
@@ -68,6 +65,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
+
     public static void start(Context context, int realmModelIndex, String realmFileName) {
         Intent intent = new Intent(context, RealmBrowserActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -83,24 +81,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         context.startActivity(intent);
-    }
-
-
-
-    @Nullable
-    public static RealmList<? extends RealmObject> invokeMethod(Object realmObject, String methodName) {
-        RealmList<? extends RealmObject> result = null;
-        try {
-            Method method = realmObject.getClass().getMethod(methodName);
-            result = (RealmList<? extends RealmObject>) method.invoke(realmObject);
-        } catch (NoSuchMethodException e) {
-            L.e(e.toString());
-        } catch (InvocationTargetException e) {
-            L.e(e.toString());
-        } catch (IllegalAccessException e) {
-            L.e(e.toString());
-        }
-        return result;
     }
 
 
@@ -126,8 +106,8 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         } else {
             RealmObject object = RealmHolder.getInstance().getObject();
             Field field = RealmHolder.getInstance().getField();
-            String methodName = MagicUtils.createMethodName(field);
-            realmObjects = invokeMethod(object, methodName);
+            String methodName = MagicUtils.createRealmGetterMethodName(field);
+            realmObjects = MagicUtils.invokeMethodForRealmResult(object, methodName);
             if (MagicUtils.isParameterizedField(field)) {
                 ParameterizedType pType = (ParameterizedType) field.getGenericType();
                 Class<?> pTypeClass = (Class<?>) pType.getActualTypeArguments()[0];
@@ -160,6 +140,42 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
         selectDefaultFields();
         updateColumnTitle(mSelectedFieldList);
+    }
+
+
+    @NonNull
+    private AbstractList<? extends RealmObject> filterRealmResults(@NonNull String filter) {
+        if (filter.isEmpty())
+            return mRealm.allObjects(mRealmObjectClass);
+
+        boolean openedGroup = false;
+        RealmQuery<? extends RealmObject> query = mRealm.where(mRealmObjectClass);
+        for (int i = 0; i < mFieldsList.size(); i++) {
+            if (mFieldsList.get(i).getType().equals(String.class)) {
+                // STRING
+                if (!openedGroup) {
+                    openedGroup = true;
+                    query.beginGroup();
+                } else
+                    query.or();
+                query.contains(mFieldsList.get(i).getName(), filter, Case.INSENSITIVE);
+            } else if (mFieldsList.get(i).getType().equals(Integer.class) || mFieldsList.get(i).getType().getName().equals("int")) {
+                // INTEGER
+                try {
+                    int value = Integer.parseInt(filter.trim());
+                    if (!openedGroup) {
+                        openedGroup = true;
+                        query.beginGroup();
+                    } else
+                        query.or();
+                    query.equalTo(mFieldsList.get(i).getName(), value);
+                } catch (NumberFormatException e) {}
+            }
+            // TODO Long, Short, Byte, Double, Float, Date
+            if (openedGroup && i == mFieldsList.size() - 1)
+                query.endGroup();
+        }
+        return query.findAll();
     }
 
 
@@ -200,6 +216,16 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.browser_menu, menu);
+
+        MenuItem searchMenuItem = menu.findItem(R.id.menu_filter);
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
+
+        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
+            searchView.setOnQueryTextListener(this);
+        } else {
+            searchMenuItem.setEnabled(false);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -313,5 +339,21 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mAdapter.setRealmList(filterRealmResults(newText));
+        mAdapter.notifyDataSetChanged();
+        return true;
     }
 }

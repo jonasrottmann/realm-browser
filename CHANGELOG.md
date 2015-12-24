@@ -2,6 +2,7 @@
 
 New
 * Display amount of objects for each model in the RealmModelsActivity (thank you @degill)
+* Filter String and Integer fields :mag_right: (WIP)
 
 
 
