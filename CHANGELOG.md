@@ -1,11 +1,13 @@
 ## 0.0.6
 
 New
+* Settings and filed selection are now accessed via a Navigation Drawer
 * Display amount of objects for each model in the RealmModelsActivity (thank you @degill)
 * Filter String and Integer fields :mag_right: (WIP)
 
 Fixed issues
 * Using resource prefixing (realm_browser_)
+* `.log_a` and `.log_b` files not longer shown
 
 
 
