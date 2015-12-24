@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,6 +33,8 @@ public class RealmFilesActivity extends AppCompatActivity {
         activity.startActivity(intent);
     }
 
+
+
     public static void start(@NonNull Context context) {
         Intent intent = new Intent(context, RealmFilesActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -40,10 +43,12 @@ public class RealmFilesActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.realm_browser_ac_realm_list_view);
+        setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
 
         mIgnoreExtensionList = new ArrayList<>();
         mIgnoreExtensionList.add(".log");

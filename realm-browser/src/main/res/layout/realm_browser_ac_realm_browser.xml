@@ -1,59 +1,79 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/realm_browser_drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/realm_browser_txtIndex"
-            style="@style/realm_browser_ColumnText.Bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minEms="3"
-            tools:text="#"/>
+        <include layout="@layout/realm_browser_toolbar"/>
 
-        <TextView
-            android:id="@+id/realm_browser_txtColumn1"
-            style="@style/realm_browser_ColumnText.Bold"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            tools:text="@string/realm_browser_test_text_small"/>
+            android:orientation="horizontal"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp">
 
-        <TextView
-            android:id="@+id/realm_browser_txtColumn2"
-            style="@style/realm_browser_ColumnText.Bold"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            tools:text="@string/realm_browser_test_text_small"/>
+            <TextView
+                android:id="@+id/realm_browser_txtIndex"
+                style="@style/realm_browser_ColumnText.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minEms="3"
+                tools:text="#"/>
 
-        <TextView
-            android:id="@+id/realm_browser_txtColumn3"
-            style="@style/realm_browser_ColumnText.Bold"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/realm_browser_txtColumn1"
+                style="@style/realm_browser_ColumnText.Bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                tools:text="@string/realm_browser_test_text_small"/>
+
+            <TextView
+                android:id="@+id/realm_browser_txtColumn2"
+                style="@style/realm_browser_ColumnText.Bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                tools:text="@string/realm_browser_test_text_small"/>
+
+            <TextView
+                android:id="@+id/realm_browser_txtColumn3"
+                style="@style/realm_browser_ColumnText.Bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                tools:text="@string/realm_browser_test_text_small"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#ffcdcdcd"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/realm_browser_recyclerView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            tools:text="@string/realm_browser_test_text_small"/>
+            android:scrollbars="vertical"/>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#ffcdcdcd"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/realm_browser_recyclerView"
-        android:layout_width="match_parent"
+    <android.support.design.widget.NavigationView
+        android:id="@+id/realm_browser_navigationView"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"/>
+        android:layout_gravity="start"
+        app:menu="@menu/realm_browser_menu_navigation_view"/>
 
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>
+

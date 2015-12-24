@@ -2,18 +2,27 @@ package de.jonasrottmann.realmbrowser;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,6 +33,7 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jonasrottmann.realmbrowser.model.RealmPreferences;
 import de.jonasrottmann.realmbrowser.utils.MagicUtils;
 import io.realm.Case;
 import io.realm.Realm;
@@ -31,11 +41,10 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 
-public class RealmBrowserActivity extends AppCompatActivity implements RealmAdapter.Listener, SearchView.OnQueryTextListener {
+public class RealmBrowserActivity extends AppCompatActivity implements RealmAdapter.Listener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
     private static final String EXTRAS_REALM_MODEL_INDEX = "REALM_MODEL_INDEX";
-
     private Realm mRealm;
     private Class<? extends RealmObject> mRealmObjectClass;
     private RealmAdapter mAdapter;
@@ -46,6 +55,10 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     private List<Field> mTmpSelectedFieldList;
     private List<Field> mSelectedFieldList;
     private List<Field> mFieldsList;
+    private AppCompatCheckBox[] mCheckBoxes;
+    private RealmPreferences mRealmPreferences;
+    private DrawerLayout mDrawerLayout;
+    private Snackbar mSnackbar;
 
 
 
@@ -90,15 +103,13 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.realm_browser_ac_realm_browser);
 
+        // Realm Browser
         String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
-
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .name(realmFileName)
                 .build();
         mRealm = Realm.getInstance(config);
-
         AbstractList<? extends RealmObject> realmObjects;
-
         if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
             int index = getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0);
             mRealmObjectClass = RealmBrowser.getInstance().getRealmModelList().get(index);
@@ -114,33 +125,71 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
                 mRealmObjectClass = (Class<? extends RealmObject>) pTypeClass;
             }
         }
-
         mSelectedFieldList = new ArrayList<>();
         mTmpSelectedFieldList = new ArrayList<>();
         mFieldsList = new ArrayList<>();
-
-        // Populate fields list
         for (int i = 0; i < mRealmObjectClass.getDeclaredFields().length; i++) {
             Field f = mRealmObjectClass.getDeclaredFields()[i];
             if (!(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()))) // Ignore constant static fields
                 mFieldsList.add(f);
         }
-
         mAdapter = new RealmAdapter(this, realmObjects, mSelectedFieldList, this);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.realm_browser_recyclerView);
 
+
+        // Init Views
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.realm_browser_recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
-
         mTxtIndex = (TextView) findViewById(R.id.realm_browser_txtIndex);
         mTxtColumn1 = (TextView) findViewById(R.id.realm_browser_txtColumn1);
         mTxtColumn2 = (TextView) findViewById(R.id.realm_browser_txtColumn2);
         mTxtColumn3 = (TextView) findViewById(R.id.realm_browser_txtColumn3);
 
+
+        // Init Toolbar
+        setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.realm_browser_ic_menu);
+            actionBar.setTitle(String.format("%s", mRealmObjectClass.getSimpleName()));
+        }
+
+
+        // Init Navigation View
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.realm_browser_drawer_layout);
+        NavigationView mNavigationView = (NavigationView) findViewById(R.id.realm_browser_navigationView);
+        Menu menu = mNavigationView.getMenu();
+
+        // Init Field Checkboxes
+        mCheckBoxes = new AppCompatCheckBox[mFieldsList.size()];
+        SubMenu subMenu = menu.addSubMenu("Fields");
+        for (int i = 0; i < mFieldsList.size(); i++) {
+            MenuItem m = subMenu.add(mFieldsList.get(i).getName());
+            AppCompatCheckBox cb = new AppCompatCheckBox(this);
+            cb.setOnCheckedChangeListener(this);
+            cb.setTag(i);
+            mCheckBoxes[i] = cb;
+            m.setActionView(cb);
+        }
         selectDefaultFields();
         updateColumnTitle(mSelectedFieldList);
+
+        // Init Text Wrapping Switch
+        mRealmPreferences = new RealmPreferences(getApplicationContext());
+        MenuItem menuItem = menu.findItem(R.id.realm_browser_action_wrapping);
+        SwitchCompat switchCompat = (SwitchCompat) MenuItemCompat.getActionView(menuItem);
+        switchCompat.setChecked(mRealmPreferences.shouldWrapText());
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mRealmPreferences.setShouldWrapText(isChecked);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
+
 
 
     @NonNull
@@ -169,7 +218,8 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
                     } else
                         query.or();
                     query.equalTo(mFieldsList.get(i).getName(), value);
-                } catch (NumberFormatException e) {}
+                } catch (NumberFormatException e) {
+                }
             }
             // TODO Long, Short, Byte, Double, Float, Date
             if (openedGroup && i == mFieldsList.size() - 1)
@@ -199,21 +249,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.realm_browser_action_columns) {
-            showColumnsDialog();
-        }
-        if (id == R.id.realm_browser_action_settings) {
-            SettingsActivity.start(this);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.realm_browser_menu, menu);
 
@@ -232,6 +267,18 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
     public void onRowItemClicked(@NonNull RealmObject realmObject, @NonNull Field field) {
         RealmHolder.getInstance().setObject(realmObject);
         RealmHolder.getInstance().setField(field);
@@ -243,16 +290,34 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
     private void selectDefaultFields() {
         mSelectedFieldList.clear();
-        for (Field field : mFieldsList) {
-            if (mSelectedFieldList.size() < 3) {
-                mSelectedFieldList.add(field);
+        for (int i = 0; i < mFieldsList.size(); i++) {
+            if (i < 3) {
+                mSelectedFieldList.add(mFieldsList.get(i));
+                mCheckBoxes[i].setChecked(true);
             }
         }
     }
 
 
 
-    private void updateColumnTitle(List<Field> columnsList) {
+    private void disableCheckBoxes() {
+        for (AppCompatCheckBox cb : mCheckBoxes) {
+            if (!cb.isChecked())
+                cb.setEnabled(false);
+        }
+    }
+
+
+
+    private void enableCheckboxes() {
+        for (AppCompatCheckBox cb : mCheckBoxes) {
+            cb.setEnabled(true);
+        }
+    }
+
+
+
+    private void updateColumnTitle(final List<Field> columnsList) {
         mTxtIndex.setText("#");
 
         LinearLayout.LayoutParams layoutParams2 = createLayoutParams();
@@ -274,6 +339,8 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
             } else {
                 layoutParams2.weight = 0;
             }
+        } else {
+            mTxtColumn1.setText(null);
         }
 
         mTxtColumn2.setLayoutParams(layoutParams2);
@@ -288,61 +355,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
 
 
-    private void showColumnsDialog() {
-        final String[] items = new String[mFieldsList.size()];
-        for (int i = 0; i < items.length; i++) {
-            Field field = mFieldsList.get(i);
-            items[i] = field.getName();
-        }
-
-        boolean[] checkedItems = new boolean[mFieldsList.size()];
-        for (int i = 0; i < checkedItems.length; i++) {
-            checkedItems[i] = mSelectedFieldList.contains(mFieldsList.get(i));
-        }
-
-        mTmpSelectedFieldList.clear();
-        mTmpSelectedFieldList.addAll(mSelectedFieldList);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Columns to display");
-        builder.setMultiChoiceItems(items, checkedItems,
-                new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
-                        Field field = mFieldsList.get(indexSelected);
-                        if (isChecked) {
-                            mTmpSelectedFieldList.add(field);
-                        } else if (mTmpSelectedFieldList.contains(field)) {
-                            mTmpSelectedFieldList.remove(field);
-                        }
-                    }
-                })
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (mTmpSelectedFieldList.isEmpty()) {
-                            selectDefaultFields();
-                        } else {
-                            mSelectedFieldList.clear();
-                            mSelectedFieldList.addAll(mTmpSelectedFieldList);
-                        }
-                        updateColumnTitle(mSelectedFieldList);
-                        mAdapter.setFieldList(mSelectedFieldList);
-                        mAdapter.notifyDataSetChanged();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-
-
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
@@ -351,9 +363,39 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        mAdapter.setRealmList(filterRealmResults(newText));
+    public boolean onQueryTextChange(final String newText) {
+        AbstractList<? extends RealmObject> results = filterRealmResults(newText);
+        mAdapter.setRealmList(results);
         mAdapter.notifyDataSetChanged();
+        if (newText.isEmpty() && mSnackbar != null) {
+            mSnackbar.dismiss();
+        } else {
+            mSnackbar = Snackbar.make(mDrawerLayout, String.format("%d entries found.", results.size()), Snackbar.LENGTH_INDEFINITE);
+            mSnackbar.show();
+        }
         return true;
+    }
+
+
+
+    @Override
+    public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+        int fieldIndex = (int) buttonView.getTag();
+        Field field = mFieldsList.get(fieldIndex);
+        if (isChecked && !mTmpSelectedFieldList.contains(field)) {
+            mTmpSelectedFieldList.add(field);
+        } else if (mTmpSelectedFieldList.contains(field)) {
+            mTmpSelectedFieldList.remove(field);
+        }
+        if (mTmpSelectedFieldList.size() > 2) {
+            disableCheckBoxes();
+        } else {
+            enableCheckboxes();
+        }
+        mSelectedFieldList.clear();
+        mSelectedFieldList.addAll(mTmpSelectedFieldList);
+        updateColumnTitle(mSelectedFieldList);
+        mAdapter.setFieldList(mSelectedFieldList);
+        mAdapter.notifyDataSetChanged();
     }
 }
