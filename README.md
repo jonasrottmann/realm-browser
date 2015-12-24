@@ -4,6 +4,10 @@ Android [Realm](https://github.com/realm/realm-java) Browser
 
 This is a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk/realm-browser) which was originally created by Danylyk Dmytro.
 
+<img src="screenshots/sc_1.png" width="256"> | <img src="screenshots/sc_2.png" width="256"> | <img src="screenshots/sc_3.png" width="256">
+--- | --- | ---
+
+
 ### Integration [![Download](https://api.bintray.com/packages/jonasrottmann/maven/realm-browser/images/download.svg) ](https://bintray.com/jonasrottmann/maven/realm-browser/_latestVersion)
 
 The project is available on JCenter.
