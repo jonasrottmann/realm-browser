@@ -49,7 +49,7 @@ public class RealmModelsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ac_realm_list_view);
+        setContentView(R.layout.realm_browser_ac_realm_list_view);
 
         String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
 
@@ -63,8 +63,8 @@ public class RealmModelsActivity extends AppCompatActivity {
         }
 
 
-        ModuleWithCountAdapter adapter = new ModuleWithCountAdapter(this, R.layout.item_realm_module, list);
-        ListView listView = (ListView) findViewById(R.id.listView);
+        ModuleWithCountAdapter adapter = new ModuleWithCountAdapter(this, R.layout.realm_browser_item_realm_module, list);
+        ListView listView = (ListView) findViewById(R.id.realm_browser_listView);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
@@ -107,8 +107,8 @@ public class RealmModelsActivity extends AppCompatActivity {
             if (convertView == null)
                 convertView = LayoutInflater.from(getContext()).inflate(mResource, parent, false);
 
-            TextView title = (TextView) convertView.findViewById(R.id.title);
-            TextView count = (TextView) convertView.findViewById(R.id.count);
+            TextView title = (TextView) convertView.findViewById(R.id.realm_browser_title);
+            TextView count = (TextView) convertView.findViewById(R.id.realm_browser_count);
 
             title.setText(moduleWithCount.name);
             count.setText(String.valueOf(moduleWithCount.count));

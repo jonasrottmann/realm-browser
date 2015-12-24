@@ -88,7 +88,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ac_realm_browser);
+        setContentView(R.layout.realm_browser_ac_realm_browser);
 
         String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
 
@@ -127,16 +127,16 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         }
 
         mAdapter = new RealmAdapter(this, realmObjects, mSelectedFieldList, this);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.realm_browser_recyclerView);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
 
-        mTxtIndex = (TextView) findViewById(R.id.txtIndex);
-        mTxtColumn1 = (TextView) findViewById(R.id.txtColumn1);
-        mTxtColumn2 = (TextView) findViewById(R.id.txtColumn2);
-        mTxtColumn3 = (TextView) findViewById(R.id.txtColumn3);
+        mTxtIndex = (TextView) findViewById(R.id.realm_browser_txtIndex);
+        mTxtColumn1 = (TextView) findViewById(R.id.realm_browser_txtColumn1);
+        mTxtColumn2 = (TextView) findViewById(R.id.realm_browser_txtColumn2);
+        mTxtColumn3 = (TextView) findViewById(R.id.realm_browser_txtColumn3);
 
         selectDefaultFields();
         updateColumnTitle(mSelectedFieldList);
@@ -201,10 +201,10 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_columns) {
+        if (id == R.id.realm_browser_action_columns) {
             showColumnsDialog();
         }
-        if (id == R.id.action_settings) {
+        if (id == R.id.realm_browser_action_settings) {
             SettingsActivity.start(this);
         }
 
@@ -215,9 +215,9 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.browser_menu, menu);
+        getMenuInflater().inflate(R.menu.realm_browser_menu, menu);
 
-        MenuItem searchMenuItem = menu.findItem(R.id.menu_filter);
+        MenuItem searchMenuItem = menu.findItem(R.id.realm_browser_action_filter);
         SearchView searchView = (SearchView) searchMenuItem.getActionView();
 
         if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {

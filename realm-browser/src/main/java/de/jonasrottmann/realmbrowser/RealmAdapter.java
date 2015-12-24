@@ -59,7 +59,7 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
     @Override
     public RealmAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_realm_browser, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.realm_browser_item_realm_browser, parent, false);
         return new ViewHolder(v);
     }
 
@@ -75,9 +75,9 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (position % 2 == 0) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.rb_grey));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.realm_browser_grey));
         } else {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.rb_white));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.realm_browser_white));
         }
 
         if (mFieldList.isEmpty()) {
@@ -188,10 +188,10 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
         public ViewHolder(View v) {
             super(v);
-            txtIndex = (TextView) v.findViewById(R.id.txtIndex);
-            txtColumn1 = (TextView) v.findViewById(R.id.txtColumn1);
-            txtColumn2 = (TextView) v.findViewById(R.id.txtColumn2);
-            txtColumn3 = (TextView) v.findViewById(R.id.txtColumn3);
+            txtIndex = (TextView) v.findViewById(R.id.realm_browser_txtIndex);
+            txtColumn1 = (TextView) v.findViewById(R.id.realm_browser_txtColumn1);
+            txtColumn2 = (TextView) v.findViewById(R.id.realm_browser_txtColumn2);
+            txtColumn3 = (TextView) v.findViewById(R.id.realm_browser_txtColumn3);
         }
     }
 }

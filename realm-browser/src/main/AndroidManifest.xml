@@ -7,19 +7,19 @@
         android:allowBackup="true">
         <activity
             android:name=".RealmFilesActivity"
-            android:label="@string/rb_title"
+            android:label="@string/realm_browser_title"
             android:theme="@style/Theme.AppCompat.Light"/>
         <activity
             android:name=".RealmModelsActivity"
-            android:label="@string/rb_title"
+            android:label="@string/realm_browser_title"
             android:theme="@style/Theme.AppCompat.Light"/>
         <activity
             android:name=".RealmBrowserActivity"
-            android:label="@string/rb_title"
+            android:label="@string/realm_browser_title"
             android:theme="@style/Theme.AppCompat.Light"/>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/rb_title"
+            android:label="@string/realm_browser_title"
             android:theme="@style/Theme.AppCompat.Light"/>
 
     </application>

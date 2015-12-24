@@ -12,36 +12,36 @@
         android:paddingTop="4dp">
 
         <TextView
-            android:id="@+id/txtIndex"
-            style="@style/ColumnText.Bold"
+            android:id="@+id/realm_browser_txtIndex"
+            style="@style/realm_browser_ColumnText.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minEms="3"
             tools:text="#"/>
 
         <TextView
-            android:id="@+id/txtColumn1"
-            style="@style/ColumnText.Bold"
+            android:id="@+id/realm_browser_txtColumn1"
+            style="@style/realm_browser_ColumnText.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            tools:text="@string/rb_test_text_small"/>
+            tools:text="@string/realm_browser_test_text_small"/>
 
         <TextView
-            android:id="@+id/txtColumn2"
-            style="@style/ColumnText.Bold"
+            android:id="@+id/realm_browser_txtColumn2"
+            style="@style/realm_browser_ColumnText.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            tools:text="@string/rb_test_text_small"/>
+            tools:text="@string/realm_browser_test_text_small"/>
 
         <TextView
-            android:id="@+id/txtColumn3"
-            style="@style/ColumnText.Bold"
+            android:id="@+id/realm_browser_txtColumn3"
+            style="@style/realm_browser_ColumnText.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            tools:text="@string/rb_test_text_small"/>
+            tools:text="@string/realm_browser_test_text_small"/>
 
     </LinearLayout>
 
@@ -51,7 +51,7 @@
         android:background="#ffcdcdcd"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/realm_browser_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"/>

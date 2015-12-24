@@ -26,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ac_realm_settings);
+        setContentView(R.layout.realm_browser_ac_realm_settings);
 
         mRealmPreferences = new RealmPreferences(getApplicationContext());
 
@@ -36,7 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     private void initView() {
-        CheckBox cbWrapText = (CheckBox) findViewById(R.id.cbWrapText);
+        CheckBox cbWrapText = (CheckBox) findViewById(R.id.realm_browser_cbWrapText);
         cbWrapText.setChecked(mRealmPreferences.shouldWrapText());
         cbWrapText.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

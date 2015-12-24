@@ -43,7 +43,7 @@ public class RealmFilesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ac_realm_list_view);
+        setContentView(R.layout.realm_browser_ac_realm_list_view);
 
         mIgnoreExtensionList = new ArrayList<>();
         mIgnoreExtensionList.add(".log");
@@ -60,7 +60,7 @@ public class RealmFilesActivity extends AppCompatActivity {
         }
 
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileList);
-        ListView listView = (ListView) findViewById(R.id.listView);
+        ListView listView = (ListView) findViewById(R.id.realm_browser_listView);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

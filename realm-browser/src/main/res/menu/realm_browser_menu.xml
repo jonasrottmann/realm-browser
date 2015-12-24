@@ -3,15 +3,15 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_filter"
+        android:id="@+id/realm_browser_action_filter"
         android:title="Filter"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="collapseActionView|ifRoom"/>
 
     <item
-        android:id="@+id/action_columns"
+        android:id="@+id/realm_browser_action_columns"
         android:title="Select Column"/>
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/realm_browser_action_settings"
         android:title="Settings"/>
 </menu>

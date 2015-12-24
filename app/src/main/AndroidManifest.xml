@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/rb_title" >
+            android:label="@string/realm_browser_title" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

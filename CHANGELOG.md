@@ -4,6 +4,9 @@ New
 * Display amount of objects for each model in the RealmModelsActivity (thank you @degill)
 * Filter String and Integer fields :mag_right: (WIP)
 
+Fixed issues
+* Using resource prefixing (realm_browser_)
+
 
 
 ## 0.0.5

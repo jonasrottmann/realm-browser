@@ -54,9 +54,9 @@ public final class RealmBrowser {
 
     private static void showRealmNotification(@NonNull Context context, @NonNull Class activityClass) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_rb)
-                .setContentTitle(context.getString(R.string.rb_title))
-                .setContentText(context.getString(R.string.rb_click_to_launch))
+                .setSmallIcon(R.drawable.realm_browser_ic_rb)
+                .setContentTitle(context.getString(R.string.realm_browser_title))
+                .setContentText(context.getString(R.string.realm_browser_click_to_launch))
                 .setAutoCancel(false);
         Intent notifyIntent = new Intent(context, activityClass);
         notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
