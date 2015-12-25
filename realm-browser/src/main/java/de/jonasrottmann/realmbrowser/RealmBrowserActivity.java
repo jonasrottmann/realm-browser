@@ -38,8 +38,10 @@ import de.jonasrottmann.realmbrowser.utils.MagicUtils;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 public class RealmBrowserActivity extends AppCompatActivity implements RealmAdapter.Listener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener {
 
@@ -59,6 +61,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     private RealmPreferences mRealmPreferences;
     private DrawerLayout mDrawerLayout;
     private Snackbar mSnackbar;
+    private AbstractList<? extends RealmObject> mRealmObjects;
 
 
 
@@ -109,16 +112,15 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
                 .name(realmFileName)
                 .build();
         mRealm = Realm.getInstance(config);
-        AbstractList<? extends RealmObject> realmObjects;
         if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
             int index = getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0);
             mRealmObjectClass = RealmBrowser.getInstance().getRealmModelList().get(index);
-            realmObjects = mRealm.allObjects(mRealmObjectClass);
+            mRealmObjects = mRealm.allObjects(mRealmObjectClass);
         } else {
             RealmObject object = RealmHolder.getInstance().getObject();
             Field field = RealmHolder.getInstance().getField();
             String methodName = MagicUtils.createRealmGetterMethodName(field);
-            realmObjects = MagicUtils.invokeMethodForRealmResult(object, methodName);
+            mRealmObjects = MagicUtils.invokeMethodForRealmResult(object, methodName);
             if (MagicUtils.isParameterizedField(field)) {
                 ParameterizedType pType = (ParameterizedType) field.getGenericType();
                 Class<?> pTypeClass = (Class<?>) pType.getActualTypeArguments()[0];
@@ -133,7 +135,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
             if (!(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()))) // Ignore constant static fields
                 mFieldsList.add(f);
         }
-        mAdapter = new RealmAdapter(this, realmObjects, mSelectedFieldList, this);
+        mAdapter = new RealmAdapter(this, mRealmObjects, mSelectedFieldList, this);
 
 
         // Init Views
@@ -195,10 +197,18 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     @NonNull
     private AbstractList<? extends RealmObject> filterRealmResults(@NonNull String filter) {
         if (filter.isEmpty())
-            return mRealm.allObjects(mRealmObjectClass);
+            return mRealmObjects;
+
+        RealmQuery<? extends RealmObject> query;
+        if (mRealmObjects instanceof RealmList) {
+            query = ((RealmList<? extends RealmObject>) mRealmObjects).where();
+        } else if (mRealmObjects instanceof RealmResults) {
+            query = mRealm.where(mRealmObjectClass);
+        } else {
+            throw new IllegalArgumentException();
+        }
 
         boolean openedGroup = false;
-        RealmQuery<? extends RealmObject> query = mRealm.where(mRealmObjectClass);
         for (int i = 0; i < mFieldsList.size(); i++) {
             if (mFieldsList.get(i).getType().equals(String.class)) {
                 // STRING
@@ -254,12 +264,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
         MenuItem searchMenuItem = menu.findItem(R.id.realm_browser_action_filter);
         SearchView searchView = (SearchView) searchMenuItem.getActionView();
-
-        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
-            searchView.setOnQueryTextListener(this);
-        } else {
-            searchMenuItem.setEnabled(false);
-        }
+        searchView.setOnQueryTextListener(this);
 
         return super.onCreateOptionsMenu(menu);
     }
