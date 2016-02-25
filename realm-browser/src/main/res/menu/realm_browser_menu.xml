@@ -6,5 +6,5 @@
         android:icon="@drawable/realm_browser_ic_filter"
         android:title="Filter"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="collapseActionView|ifRoom"/>
+        app:showAsAction="ifRoom"/>
 </menu>

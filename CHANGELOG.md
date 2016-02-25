@@ -1,3 +1,8 @@
+## 0.0.7
+
+* Updated support libraries to 23.2.0
+* Updated Realm version to 87.5
+
 ## 0.0.6
 
 New
