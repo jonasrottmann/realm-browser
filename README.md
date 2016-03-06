@@ -8,7 +8,7 @@ This is a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk
 --- | --- | ---
 
 
-### Integration [![Download](https://api.bintray.com/packages/jonasrottmann/maven/realm-browser/images/download.svg) ](https://bintray.com/jonasrottmann/maven/realm-browser/_latestVersion)
+### Integration [![Download](https://api.bintray.com/packages/jonasrottmann/maven/realm-browser/images/download.svg) ](https://bintray.com/jonasrottmann/maven/realm-browser/_latestVersion) [![Build Status](https://travis-ci.org/jonasrottmann/realm-browser.svg?branch=development)](https://travis-ci.org/jonasrottmann/realm-browser)
 
 The project is available on JCenter.
 
