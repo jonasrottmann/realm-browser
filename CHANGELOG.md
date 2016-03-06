@@ -1,7 +1,20 @@
+## 0.0.8
+
+New
+* Added no-op module which can be used in release builds
+* ActionBar now hides on scroll
+
+Fixed issues
+* Closing the Realm instance of RealmModelsActivity in onDestroy()
+
+
+
 ## 0.0.7
 
 * Updated support libraries to 23.2.0
 * Updated Realm version to 87.5
+
+
 
 ## 0.0.6
 
