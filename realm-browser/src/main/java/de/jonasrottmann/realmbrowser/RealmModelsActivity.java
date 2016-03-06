@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +32,11 @@ public class RealmModelsActivity extends AppCompatActivity {
     private Realm mRealm;
 
 
-
     public static void start(@NonNull Activity activity, @NonNull String realmFileName) {
         Intent intent = new Intent(activity, RealmModelsActivity.class);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         activity.startActivity(intent);
     }
-
 
 
     public static void start(@NonNull Context context, @NonNull String realmFileName) {
@@ -49,10 +48,10 @@ public class RealmModelsActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.realm_browser_ac_realm_list_view);
         setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
 
@@ -61,14 +60,13 @@ public class RealmModelsActivity extends AppCompatActivity {
         RealmConfiguration config = new RealmConfiguration.Builder(this).name(realmFileName).build();
         mRealm = Realm.getInstance(config);
 
-        List<ModuleWithCount> list = new ArrayList<>();
+        List<Pair<String, Long>> list = new ArrayList<>();
         for (Class<? extends RealmObject> file : getInstance().getRealmModelList()) {
-            ModuleWithCount moduleWithCount = new ModuleWithCount(file.getSimpleName(), mRealm.where(file).count());
-            list.add(moduleWithCount);
+            Pair<String, Long> pair = Pair.create(file.getSimpleName(), mRealm.where(file).count());
+            list.add(pair);
         }
 
-
-        ModuleWithCountAdapter adapter = new ModuleWithCountAdapter(this, R.layout.realm_browser_item_realm_module, list);
+        Adapter adapter = new Adapter(this, R.layout.realm_browser_item_realm_module, list);
         ListView listView = (ListView) findViewById(R.id.realm_browser_listView);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(
@@ -81,6 +79,14 @@ public class RealmModelsActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        if (mRealm != null) {
+            mRealm.close();
+        }
+        super.onDestroy();
+    }
+
 
     private void onItemClicked(int position) {
         String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
@@ -88,37 +94,20 @@ public class RealmModelsActivity extends AppCompatActivity {
     }
 
 
-
-    private static class ModuleWithCount {
-        public final String name;
-        public final long count;
-
-
-
-        public ModuleWithCount(String name, long count) {
-            this.name = name;
-            this.count = count;
-        }
-    }
-
-
-
-    private static class ModuleWithCountAdapter extends ArrayAdapter<ModuleWithCount> {
+    private static class Adapter extends ArrayAdapter<Pair<String, Long>> {
 
         private int mResource;
 
 
-
-        public ModuleWithCountAdapter(Context context, int res, List<ModuleWithCount> modulesWithCount) {
+        public Adapter(Context context, int res, List<Pair<String, Long>> modulesWithCount) {
             super(context, res, modulesWithCount);
             mResource = res;
         }
 
 
-
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ModuleWithCount moduleWithCount = getItem(position);
+            Pair<String, Long> moduleWithCount = getItem(position);
 
             if (convertView == null)
                 convertView = LayoutInflater.from(getContext()).inflate(mResource, parent, false);
@@ -126,8 +115,8 @@ public class RealmModelsActivity extends AppCompatActivity {
             TextView title = (TextView) convertView.findViewById(R.id.realm_browser_title);
             TextView count = (TextView) convertView.findViewById(R.id.realm_browser_count);
 
-            title.setText(moduleWithCount.name);
-            count.setText(String.valueOf(moduleWithCount.count));
+            title.setText(moduleWithCount.first);
+            count.setText(String.valueOf(moduleWithCount.second));
 
             return convertView;
         }
