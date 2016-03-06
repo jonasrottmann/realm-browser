@@ -14,7 +14,9 @@ The project is available on JCenter.
 
 ```
 dependencies {
-    compile 'de.jonasrottmann:realm-browser:0.0.7@aar'
+    debugCompile 'de.jonasrottmann:realm-browser:0.0.7@aar'
+    testCompile 'de.jonasrottmann:realm-browser-no-op:0.0.7@aar'
+    releaseCompile 'de.jonasrottmann:realm-browser-no-op:0.0.7@aar'
 }
 ```
 
