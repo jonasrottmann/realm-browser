@@ -36,7 +36,8 @@ import java.util.List;
 import de.jonasrottmann.realmbrowser.model.RealmPreferences;
 import de.jonasrottmann.realmbrowser.utils.MagicUtils;
 import io.realm.Case;
-import io.realm.Realm;
+import io.realm.DynamicRealm;
+import io.realm.DynamicRealmObject;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -47,7 +48,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
     private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
     private static final String EXTRAS_REALM_MODEL_INDEX = "REALM_MODEL_INDEX";
-    private Realm mRealm;
+    private DynamicRealm mDynamicRealm;
     private Class<? extends RealmObject> mRealmObjectClass;
     private RealmAdapter mAdapter;
     private TextView mTxtIndex;
@@ -61,8 +62,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     private RealmPreferences mRealmPreferences;
     private DrawerLayout mDrawerLayout;
     private Snackbar mSnackbar;
-    private AbstractList<? extends RealmObject> mRealmObjects;
-
+    private AbstractList<? extends DynamicRealmObject> mRealmObjects;
 
 
     public static void start(Activity activity, int realmModelIndex, String realmFileName) {
@@ -73,13 +73,11 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     public static void start(Activity activity, String realmFileName) {
         Intent intent = new Intent(activity, RealmBrowserActivity.class);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         activity.startActivity(intent);
     }
-
 
 
     public static void start(Context context, int realmModelIndex, String realmFileName) {
@@ -91,7 +89,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     public static void start(Context context, String realmFileName) {
         Intent intent = new Intent(context, RealmBrowserActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -100,27 +97,25 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.realm_browser_ac_realm_browser);
 
-        // Realm Browser
         String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .name(realmFileName)
                 .build();
-        mRealm = Realm.getInstance(config);
+
+        mDynamicRealm = DynamicRealm.getInstance(config);
         if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
             int index = getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0);
             mRealmObjectClass = RealmBrowser.getInstance().getRealmModelList().get(index);
-            mRealmObjects = mRealm.allObjects(mRealmObjectClass);
+            mRealmObjects = mDynamicRealm.allObjects(mRealmObjectClass.getSimpleName());
         } else {
-            RealmObject object = RealmHolder.getInstance().getObject();
+            DynamicRealmObject object = RealmHolder.getInstance().getObject();
             Field field = RealmHolder.getInstance().getField();
-            String methodName = MagicUtils.createRealmGetterMethodName(field);
-            mRealmObjects = MagicUtils.invokeMethodForRealmResult(object, methodName);
+            mRealmObjects = object.getList(field.getName());
             if (MagicUtils.isParameterizedField(field)) {
                 ParameterizedType pType = (ParameterizedType) field.getGenericType();
                 Class<?> pTypeClass = (Class<?>) pType.getActualTypeArguments()[0];
@@ -193,17 +188,16 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     @NonNull
-    private AbstractList<? extends RealmObject> filterRealmResults(@NonNull String filter) {
+    private AbstractList<? extends DynamicRealmObject> filterRealmResults(@NonNull String filter) {
         if (filter.isEmpty())
             return mRealmObjects;
 
-        RealmQuery<? extends RealmObject> query;
+        RealmQuery<? extends DynamicRealmObject> query;
         if (mRealmObjects instanceof RealmList) {
-            query = ((RealmList<? extends RealmObject>) mRealmObjects).where();
+            query = ((RealmList<? extends DynamicRealmObject>) mRealmObjects).where();
         } else if (mRealmObjects instanceof RealmResults) {
-            query = mRealm.where(mRealmObjectClass);
+            query = mDynamicRealm.where(mRealmObjectClass.getSimpleName());
         } else {
             throw new IllegalArgumentException();
         }
@@ -239,7 +233,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     @Override
     protected void onResume() {
         mAdapter.notifyDataSetChanged();
@@ -247,15 +240,13 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     @Override
     protected void onDestroy() {
-        if (mRealm != null) {
-            mRealm.close();
+        if (mDynamicRealm != null) {
+            mDynamicRealm.close();
         }
         super.onDestroy();
     }
-
 
 
     @Override
@@ -270,7 +261,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -282,15 +272,13 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     @Override
-    public void onRowItemClicked(@NonNull RealmObject realmObject, @NonNull Field field) {
+    public void onRowItemClicked(@NonNull DynamicRealmObject realmObject, @NonNull Field field) {
         RealmHolder.getInstance().setObject(realmObject);
         RealmHolder.getInstance().setField(field);
         String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
         RealmBrowserActivity.start(this, realmFileName);
     }
-
 
 
     private void selectDefaultFields() {
@@ -304,7 +292,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     private void disableCheckBoxes() {
         for (AppCompatCheckBox cb : mCheckBoxes) {
             if (!cb.isChecked())
@@ -313,13 +300,11 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     private void enableCheckboxes() {
         for (AppCompatCheckBox cb : mCheckBoxes) {
             cb.setEnabled(true);
         }
     }
-
 
 
     private void updateColumnTitle(final List<Field> columnsList) {
@@ -353,11 +338,9 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     private LinearLayout.LayoutParams createLayoutParams() {
         return new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
-
 
 
     @Override
@@ -366,10 +349,9 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
     @Override
     public boolean onQueryTextChange(final String newText) {
-        AbstractList<? extends RealmObject> results = filterRealmResults(newText);
+        AbstractList<? extends DynamicRealmObject> results = (AbstractList<? extends DynamicRealmObject>) filterRealmResults(newText);
         mAdapter.setRealmList(results);
         mAdapter.notifyDataSetChanged();
         if (newText.isEmpty() && mSnackbar != null) {
@@ -380,7 +362,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         }
         return true;
     }
-
 
 
     @Override

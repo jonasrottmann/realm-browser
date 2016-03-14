@@ -2,14 +2,13 @@ package de.jonasrottmann.realmbrowser;
 
 import java.lang.reflect.Field;
 
-import io.realm.RealmObject;
+import io.realm.DynamicRealmObject;
 
 class RealmHolder {
 
     private static final RealmHolder sInstance = new RealmHolder();
-    private RealmObject mObject;
+    private DynamicRealmObject mObject;
     private Field mField;
-
 
 
     public static RealmHolder getInstance() {
@@ -17,23 +16,19 @@ class RealmHolder {
     }
 
 
-
-    public RealmObject getObject() {
+    public DynamicRealmObject getObject() {
         return mObject;
     }
 
 
-
-    public void setObject(RealmObject object) {
+    public void setObject(DynamicRealmObject object) {
         mObject = object;
     }
-
 
 
     public Field getField() {
         return mField;
     }
-
 
 
     public void setField(Field field) {

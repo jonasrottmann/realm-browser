@@ -4,76 +4,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-
 public class MagicUtils {
-
-    @Nullable
-    public static String createRealmGetterMethodName(@NonNull Field field) {
-        String methodName;
-        if (field.getType().equals(boolean.class)) {
-            if (field.getName().contains("is")) {
-                methodName = field.getName();
-            } else {
-                methodName = "is" + Character.toUpperCase(field.getName().charAt(0)) + field.getName().substring(1);
-            }
-        } else {
-            methodName = "get" + Character.toUpperCase(field.getName().charAt(0)) + field.getName().substring(1);
-        }
-
-        return methodName;
-    }
-
-
-
-    @NonNull
-    public static String invokeMethodForString(Object realmObject, String methodName) {
-        String result = "null";
-        try {
-            Method method = realmObject.getClass().getMethod(methodName);
-            Object resultObj = method.invoke(realmObject);
-            if (resultObj != null) {
-                result = resultObj.toString();
-            }
-        } catch (NoSuchMethodException e) {
-            L.e(e.toString());
-        } catch (InvocationTargetException e) {
-            L.e(e.toString());
-        } catch (IllegalAccessException e) {
-            L.e(e.toString());
-        }
-        return result;
-    }
-
-
-
-    @Nullable
-    public static RealmList<? extends RealmObject> invokeMethodForRealmResult(Object realmObject, String methodName) {
-        RealmList<? extends RealmObject> result = null;
-        try {
-            Method method = realmObject.getClass().getMethod(methodName);
-            result = (RealmList<? extends RealmObject>) method.invoke(realmObject);
-        } catch (NoSuchMethodException e) {
-            L.e(e.toString());
-        } catch (InvocationTargetException e) {
-            L.e(e.toString());
-        } catch (IllegalAccessException e) {
-            L.e(e.toString());
-        }
-        return result;
-    }
-
-
-
     public static boolean isParameterizedField(@NonNull Field field) {
         return field.getGenericType() instanceof ParameterizedType;
     }
-
 
 
     @Nullable

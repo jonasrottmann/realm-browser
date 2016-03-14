@@ -19,7 +19,7 @@ import io.realm.RealmList;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    public static final String REALM_FILE_NAME = "db10";
+    public static final String REALM_FILE_NAME = "db10.realm";
     private TextView mTxtTitle;
 
 

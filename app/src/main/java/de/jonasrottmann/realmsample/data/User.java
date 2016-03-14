@@ -13,23 +13,9 @@ public class User extends RealmObject {
     private RealmList<Contact> contactList;
 
 
-
-    public RealmList<RealmString> getEmailList() {
-        return emailList;
-    }
-
-
-
     public void setEmailList(RealmList<RealmString> emailList) {
         this.emailList = emailList;
     }
-
-
-
-    public Address getAddress() {
-        return address;
-    }
-
 
 
     public void setAddress(Address address) {
@@ -37,23 +23,9 @@ public class User extends RealmObject {
     }
 
 
-
-    public String getName() {
-        return name;
-    }
-
-
-
     public void setName(String name) {
         this.name = name;
     }
-
-
-
-    public int getAge() {
-        return age;
-    }
-
 
 
     public void setAge(int age) {
@@ -61,23 +33,9 @@ public class User extends RealmObject {
     }
 
 
-
-    public boolean isBlocked() {
-        return isBlocked;
-    }
-
-
-
     public void setIsBlocked(boolean isBlocked) {
         this.isBlocked = isBlocked;
     }
-
-
-
-    public RealmList<Contact> getContactList() {
-        return contactList;
-    }
-
 
 
     public void setContactList(RealmList<Contact> contactList) {

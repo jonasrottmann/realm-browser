@@ -12,29 +12,24 @@ import android.widget.TextView;
 
 import java.lang.reflect.Field;
 import java.util.AbstractList;
+import java.util.Date;
 import java.util.List;
 
 import de.jonasrottmann.realmbrowser.model.RealmPreferences;
 import de.jonasrottmann.realmbrowser.utils.MagicUtils;
-import io.realm.RealmObject;
+import io.realm.DynamicRealmObject;
+import io.realm.RealmList;
 
 class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
     private final Context mContext;
     private final Listener mListener;
     private final RealmPreferences mRealmPreferences;
-    private final View.OnClickListener mEmptyClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-        }
-    };
-    private AbstractList<? extends RealmObject> mRealmObjects;
+    private AbstractList<? extends DynamicRealmObject> mRealmObjects;
     private List<Field> mFieldList;
 
 
-
-    public RealmAdapter(@NonNull Context context, @NonNull AbstractList<? extends RealmObject> realmObjects,
+    public RealmAdapter(@NonNull Context context, @NonNull AbstractList<? extends DynamicRealmObject> realmObjects,
                         @NonNull List<Field> fieldList, @NonNull Listener listener) {
         mRealmPreferences = new RealmPreferences(context);
         mContext = context;
@@ -44,17 +39,14 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
     }
 
 
-
     public void setFieldList(List<Field> fieldList) {
         mFieldList = fieldList;
     }
 
 
-
-    public void setRealmList(AbstractList<? extends RealmObject> realmObjects) {
+    public void setRealmList(AbstractList<? extends DynamicRealmObject> realmObjects) {
         mRealmObjects = realmObjects;
     }
-
 
 
     @Override
@@ -64,12 +56,10 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
     }
 
 
-
     @Override
     public int getItemCount() {
-        return mRealmObjects.size();
+        return mRealmObjects == null ? 0 : mRealmObjects.size();
     }
-
 
 
     @Override
@@ -88,7 +78,7 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
         } else {
             holder.txtIndex.setText(String.valueOf(position));
 
-            RealmObject realmObject = mRealmObjects.get(position);
+            DynamicRealmObject realmObject = mRealmObjects.get(position);
             initRowWeight(holder);
             initRowTextWrapping(holder);
 
@@ -105,10 +95,8 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
                 initRowText(holder.txtColumn2, realmObject, mFieldList.get(1));
                 initRowText(holder.txtColumn3, realmObject, mFieldList.get(2));
             }
-
         }
     }
-
 
 
     private void initRowTextWrapping(ViewHolder holder) {
@@ -117,7 +105,6 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
         holder.txtColumn2.setSingleLine(!shouldWrapText);
         holder.txtColumn3.setSingleLine(!shouldWrapText);
     }
-
 
 
     private void initRowWeight(ViewHolder holder) {
@@ -139,23 +126,48 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
     }
 
 
-
-    private void initRowText(TextView txtColumn, RealmObject realmObject, Field field) {
-        if (MagicUtils.isParameterizedField(field)) {
-            //  RealmList<? extends RealmObject>
-            txtColumn.setText(MagicUtils.createParameterizedName(field));
-            txtColumn.setOnClickListener(createClickListener(realmObject, field));
+    private void initRowText(TextView txtColumn, DynamicRealmObject realmObject, Field field) {
+        if (field.getType().getName().equals(Byte.class.getName()) || field.getType().getName().equals("byte")) {
+            // Byte
+            txtColumn.setText(String.valueOf(realmObject.getByte(field.getName())));
+        } else if (field.getType().getName().equals(Boolean.class.getName()) || field.getType().getName().equals("boolean")) {
+            // Boolean
+            txtColumn.setText(String.valueOf(realmObject.getBoolean(field.getName())));
+        } else if (field.getType().getName().equals(Short.class.getName()) || field.getType().getName().equals("short")) {
+            // Short
+            txtColumn.setText(String.valueOf(realmObject.getShort(field.getName())));
+        } else if (field.getType().getName().equals(Integer.class.getName()) || field.getType().getName().equals("int")) {
+            // Integer
+            txtColumn.setText(String.valueOf(realmObject.getInt(field.getName())));
+        } else if (field.getType().getName().equals(Long.class.getName()) || field.getType().getName().equals("long")) {
+            // Long
+            txtColumn.setText(String.valueOf(realmObject.getLong(field.getName())));
+        } else if (field.getType().getName().equals(Float.class.getName()) || field.getType().getName().equals("float")) {
+            // Float
+            txtColumn.setText(String.valueOf(realmObject.getFloat(field.getName())));
+        } else if (field.getType().getName().equals(Double.class.getName()) || field.getType().getName().equals("double")) {
+            // Double
+            txtColumn.setText(String.valueOf(realmObject.getDouble(field.getName())));
+        } else if (field.getType().getName().equals(String.class.getName())) {
+            // String
+            txtColumn.setText(realmObject.getString(field.getName()));
+        } else if (field.getType().getName().equals(Date.class.getName())) {
+            // Date
+            txtColumn.setText(realmObject.getDate(field.getName()).toString());
         } else {
-            // RealmObject or Value
-            String methodName = MagicUtils.createRealmGetterMethodName(field);
-            txtColumn.setText(MagicUtils.invokeMethodForString(realmObject, methodName));
-            txtColumn.setOnClickListener(mEmptyClickListener);
+            if (field.getType().getName().equals(RealmList.class.getName())) {
+                // RealmList
+                txtColumn.setText(MagicUtils.createParameterizedName(field));
+                txtColumn.setOnClickListener(createClickListener(realmObject, field));
+            } else {
+                // ? extends RealmObject
+                txtColumn.setText(realmObject.getObject(field.getName()).toString());
+            }
         }
     }
 
 
-
-    private View.OnClickListener createClickListener(@NonNull final RealmObject realmObject, @NonNull final Field field) {
+    private View.OnClickListener createClickListener(@NonNull final DynamicRealmObject realmObject, @NonNull final Field field) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,17 +177,14 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
     }
 
 
-
     private LinearLayout.LayoutParams createLayoutParams() {
         return new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
 
-
     public interface Listener {
-        void onRowItemClicked(@NonNull RealmObject realmObject, @NonNull Field field);
+        void onRowItemClicked(@NonNull DynamicRealmObject realmObject, @NonNull Field field);
     }
-
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -183,7 +192,6 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
         public final TextView txtColumn1;
         public final TextView txtColumn2;
         public final TextView txtColumn3;
-
 
 
         public ViewHolder(View v) {
