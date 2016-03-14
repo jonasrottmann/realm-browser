@@ -7,6 +7,9 @@ buildscript {
     }
 }
 
+def gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
+def gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
+
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
@@ -20,8 +23,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode Integer.parseInt(project.VERSION_CODE)
-        versionName project.VERSION_NAME
+        versionCode gitCommitCount
+        versionName gitTag
     }
     buildTypes {
         release {
