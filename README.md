@@ -8,15 +8,29 @@ This is a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk
 --- | --- | ---
 
 
-### Integration [![Download](https://api.bintray.com/packages/jonasrottmann/maven/realm-browser/images/download.svg) ](https://bintray.com/jonasrottmann/maven/realm-browser/_latestVersion) [![Build Status](https://travis-ci.org/jonasrottmann/realm-browser.svg?branch=development)](https://travis-ci.org/jonasrottmann/realm-browser)
+### Integration [![](https://jitpack.io/v/jonasrottmann/realm-browser.svg)](https://jitpack.io/#jonasrottmann/realm-browser) [![Build Status](https://travis-ci.org/jonasrottmann/realm-browser.svg?branch=development)](https://travis-ci.org/jonasrottmann/realm-browser)
 
-The project is available on JCenter.
+The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/realm-browser/).
+
+Step 1. Add the JitPack repository to your build file
+
+```
+allprojects {
+        repositories {
+        ...
+        maven { url "https://jitpack.io" }
+        }
+    }
+}
+```
+
+Step 2. Add the dependency
 
 ```
 dependencies {
-    debugCompile 'de.jonasrottmann:realm-browser:0.0.7@aar'
-    testCompile 'de.jonasrottmann:realm-browser-no-op:0.0.7@aar'
-    releaseCompile 'de.jonasrottmann:realm-browser-no-op:0.0.7@aar'
+    debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:v0.0.8'
+    testCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.8'
+    releaseCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.8'
 }
 ```
 
