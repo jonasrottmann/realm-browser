@@ -21,11 +21,9 @@ public final class RealmBrowser {
     private final List<Class<? extends RealmObject>> mRealmModelList;
 
 
-
     private RealmBrowser() {
         mRealmModelList = new ArrayList<>();
     }
-
 
 
     public static RealmBrowser getInstance() {
@@ -33,11 +31,9 @@ public final class RealmBrowser {
     }
 
 
-
     public static void startRealmFilesActivity(@NonNull Context context) {
         RealmFilesActivity.start(context);
     }
-
 
 
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull String realmFileName) {
@@ -45,11 +41,9 @@ public final class RealmBrowser {
     }
 
 
-
     public static void showRealmFilesNotification(@NonNull Context context) {
         showRealmNotification(context, RealmFilesActivity.class);
     }
-
 
 
     private static void showRealmNotification(@NonNull Context context, @NonNull Class activityClass) {
@@ -70,11 +64,9 @@ public final class RealmBrowser {
     }
 
 
-
     public List<Class<? extends RealmObject>> getRealmModelList() {
         return mRealmModelList;
     }
-
 
 
     @SafeVarargs

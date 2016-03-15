@@ -116,7 +116,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
             DynamicRealmObject object = RealmHolder.getInstance().getObject();
             Field field = RealmHolder.getInstance().getField();
             mRealmObjects = object.getList(field.getName());
-            if (MagicUtils.isParameterizedField(field)) {
+            if (MagicUtils.isParametrizedField(field)) {
                 ParameterizedType pType = (ParameterizedType) field.getGenericType();
                 Class<?> pTypeClass = (Class<?>) pType.getActualTypeArguments()[0];
                 mRealmObjectClass = (Class<? extends RealmObject>) pTypeClass;

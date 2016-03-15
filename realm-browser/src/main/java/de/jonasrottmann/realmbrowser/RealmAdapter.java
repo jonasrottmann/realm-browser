@@ -12,13 +12,11 @@ import android.widget.TextView;
 
 import java.lang.reflect.Field;
 import java.util.AbstractList;
-import java.util.Date;
 import java.util.List;
 
 import de.jonasrottmann.realmbrowser.model.RealmPreferences;
 import de.jonasrottmann.realmbrowser.utils.MagicUtils;
 import io.realm.DynamicRealmObject;
-import io.realm.RealmList;
 
 class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
@@ -127,42 +125,9 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
 
     private void initRowText(TextView txtColumn, DynamicRealmObject realmObject, Field field) {
-        if (field.getType().getName().equals(Byte.class.getName()) || field.getType().getName().equals("byte")) {
-            // Byte
-            txtColumn.setText(String.valueOf(realmObject.getByte(field.getName())));
-        } else if (field.getType().getName().equals(Boolean.class.getName()) || field.getType().getName().equals("boolean")) {
-            // Boolean
-            txtColumn.setText(String.valueOf(realmObject.getBoolean(field.getName())));
-        } else if (field.getType().getName().equals(Short.class.getName()) || field.getType().getName().equals("short")) {
-            // Short
-            txtColumn.setText(String.valueOf(realmObject.getShort(field.getName())));
-        } else if (field.getType().getName().equals(Integer.class.getName()) || field.getType().getName().equals("int")) {
-            // Integer
-            txtColumn.setText(String.valueOf(realmObject.getInt(field.getName())));
-        } else if (field.getType().getName().equals(Long.class.getName()) || field.getType().getName().equals("long")) {
-            // Long
-            txtColumn.setText(String.valueOf(realmObject.getLong(field.getName())));
-        } else if (field.getType().getName().equals(Float.class.getName()) || field.getType().getName().equals("float")) {
-            // Float
-            txtColumn.setText(String.valueOf(realmObject.getFloat(field.getName())));
-        } else if (field.getType().getName().equals(Double.class.getName()) || field.getType().getName().equals("double")) {
-            // Double
-            txtColumn.setText(String.valueOf(realmObject.getDouble(field.getName())));
-        } else if (field.getType().getName().equals(String.class.getName())) {
-            // String
-            txtColumn.setText(realmObject.getString(field.getName()));
-        } else if (field.getType().getName().equals(Date.class.getName())) {
-            // Date
-            txtColumn.setText(realmObject.getDate(field.getName()).toString());
-        } else {
-            if (field.getType().getName().equals(RealmList.class.getName())) {
-                // RealmList
-                txtColumn.setText(MagicUtils.createParameterizedName(field));
-                txtColumn.setOnClickListener(createClickListener(realmObject, field));
-            } else {
-                // ? extends RealmObject
-                txtColumn.setText(realmObject.getObject(field.getName()).toString());
-            }
+        txtColumn.setText(MagicUtils.getFieldValueString(realmObject, field));
+        if (MagicUtils.isParametrizedField(field)) {
+            txtColumn.setOnClickListener(createClickListener(realmObject, field));
         }
     }
 
