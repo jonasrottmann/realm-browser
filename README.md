@@ -8,7 +8,7 @@ This is a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk
 --- | --- | ---
 
 
-### Integration [![](https://jitpack.io/v/jonasrottmann/realm-browser.svg)](https://jitpack.io/#jonasrottmann/realm-browser) [![Build Status](https://travis-ci.org/jonasrottmann/realm-browser.svg?branch=development)](https://travis-ci.org/jonasrottmann/realm-browser)
+### Integration [![](https://jitpack.io/v/jonasrottmann/realm-browser.svg)](https://jitpack.io/#jonasrottmann/realm-browser) [![Build Status](https://travis-ci.org/jonasrottmann/realm-browser.svg?branch=release)](https://travis-ci.org/jonasrottmann/realm-browser)
 
 The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/realm-browser/).
 
