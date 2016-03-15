@@ -1,6 +1,9 @@
 package de.jonasrottmann.realmbrowser.utils;
 
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -33,42 +36,53 @@ public class MagicUtils {
     }
 
     @NonNull
-    public static String getFieldValueString(DynamicRealmObject realmObject, Field field) {
+    public static CharSequence getFieldValueString(DynamicRealmObject realmObject, Field field) {
+        String value;
         if (field.getType().getName().equals(Byte.class.getName()) || field.getType().getName().equals("byte")) {
             // Byte
-            return (String.valueOf(realmObject.getByte(field.getName())));
+            value = String.valueOf(realmObject.getByte(field.getName()));
         } else if (field.getType().getName().equals(Boolean.class.getName()) || field.getType().getName().equals("boolean")) {
             // Boolean
-            return (String.valueOf(realmObject.getBoolean(field.getName())));
+            value = String.valueOf(realmObject.getBoolean(field.getName()));
         } else if (field.getType().getName().equals(Short.class.getName()) || field.getType().getName().equals("short")) {
             // Short
-            return (String.valueOf(realmObject.getShort(field.getName())));
+            value = String.valueOf(realmObject.getShort(field.getName()));
         } else if (field.getType().getName().equals(Integer.class.getName()) || field.getType().getName().equals("int")) {
             // Integer
-            return (String.valueOf(realmObject.getInt(field.getName())));
+            value = String.valueOf(realmObject.getInt(field.getName()));
         } else if (field.getType().getName().equals(Long.class.getName()) || field.getType().getName().equals("long")) {
             // Long
-            return (String.valueOf(realmObject.getLong(field.getName())));
+            value = String.valueOf(realmObject.getLong(field.getName()));
         } else if (field.getType().getName().equals(Float.class.getName()) || field.getType().getName().equals("float")) {
             // Float
-            return (String.valueOf(realmObject.getFloat(field.getName())));
+            value = String.valueOf(realmObject.getFloat(field.getName()));
         } else if (field.getType().getName().equals(Double.class.getName()) || field.getType().getName().equals("double")) {
             // Double
-            return (String.valueOf(realmObject.getDouble(field.getName())));
+            value = String.valueOf(realmObject.getDouble(field.getName()));
         } else if (field.getType().getName().equals(String.class.getName())) {
             // String
-            return (realmObject.getString(field.getName()));
+            value = realmObject.getString(field.getName());
         } else if (field.getType().getName().equals(Date.class.getName())) {
             // Date
-            return (realmObject.getDate(field.getName()).toString());
+            value = (realmObject.getDate(field.getName()).toString());
         } else {
             if (field.getType().getName().equals(RealmList.class.getName())) {
                 // RealmList
-                return (MagicUtils.createParametrizedName(field));
+                value = (MagicUtils.createParametrizedName(field));
             } else {
                 // ? extends RealmObject
-                return (realmObject.getObject(field.getName()).toString());
+                value = (realmObject.getObject(field.getName()).toString());
             }
+        }
+
+        if (value == null) {
+            // Display null in italics to be able to distinguish between null and a string that actually says "null"
+            value = "null";
+            SpannableString nullString = new SpannableString(value);
+            nullString.setSpan(new StyleSpan(Typeface.ITALIC), 0, value.length(), 0);
+            return nullString;
+        } else {
+            return value;
         }
     }
 }
