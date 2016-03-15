@@ -1,4 +1,7 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+group = 'de.jonasrottmann.realm-browser'
+
+project.ext.gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
+project.ext.gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
 buildscript {
     repositories {

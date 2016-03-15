@@ -1,6 +1,3 @@
-def gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
-def gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
-
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'realm-android'
@@ -13,8 +10,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode gitCommitCount
-        versionName gitTag
+        versionCode project.gitCommitCount
+        versionName project.gitTag
     }
     buildTypes {
         release {
@@ -24,14 +21,34 @@ android {
     }
 }
 
-// Open local.properties
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.android.support:recyclerview-v7:23.2.0'
     compile 'com.android.support:design:23.2.0'
     compile 'com.android.support:support-annotations:23.2.0'
+}
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    failOnError  false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.compile
+}
+
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
