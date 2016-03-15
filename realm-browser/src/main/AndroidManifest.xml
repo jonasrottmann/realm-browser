@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="de.jonasrottmann.realmbrowser"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.jonasrottmann.realmbrowser">
 
-    <application
-        android:allowBackup="true">
+    <application>
         <activity
             android:name=".RealmFilesActivity"
             android:label="@string/realm_browser_title"
-            android:theme="@style/realm_browser_BaseTheme.Theme"/>
+            android:theme="@style/realm_browser_BaseTheme.Theme" />
         <activity
             android:name=".RealmModelsActivity"
             android:label="@string/realm_browser_title"
-            android:theme="@style/realm_browser_BaseTheme.Theme"/>
+            android:theme="@style/realm_browser_BaseTheme.Theme" />
         <activity
             android:name=".RealmBrowserActivity"
             android:label="@string/realm_browser_title"
-            android:theme="@style/realm_browser_BaseTheme.DrawerTheme"/>
+            android:theme="@style/realm_browser_BaseTheme.DrawerTheme" />
     </application>
 
 </manifest>
