@@ -34,6 +34,8 @@ dependencies {
 }
 ```
 
+> ‼️ Make sure to use any version of this realm-browser from v0.0.8 and up only with a realm version in your project from 0.88.0 and up.
+
 ### Usage
 
 To initialize the Realm Browser add all classes which you want to see using the method below. Those classes must extend `RealmObject`.
