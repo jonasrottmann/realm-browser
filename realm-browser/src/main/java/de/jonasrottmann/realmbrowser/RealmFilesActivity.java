@@ -1,6 +1,5 @@
 package de.jonasrottmann.realmbrowser;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,21 +26,12 @@ public class RealmFilesActivity extends AppCompatActivity {
     private ArrayAdapter<String> mAdapter;
 
 
-
-    public static void start(@NonNull Activity activity) {
-        Intent intent = new Intent(activity, RealmFilesActivity.class);
-        activity.startActivity(intent);
-    }
-
-
-
     public static void start(@NonNull Context context) {
         Intent intent = new Intent(context, RealmFilesActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
-
 
 
     @Override
@@ -78,7 +68,6 @@ public class RealmFilesActivity extends AppCompatActivity {
     }
 
 
-
     private boolean isValid(String fileName) {
         boolean isValid = true;
         int index = fileName.lastIndexOf(".");
@@ -88,7 +77,6 @@ public class RealmFilesActivity extends AppCompatActivity {
         }
         return isValid;
     }
-
 
 
     private void onItemClicked(int position) {

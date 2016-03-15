@@ -1,6 +1,5 @@
 package de.jonasrottmann.realmbrowser;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -64,22 +63,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     private Snackbar mSnackbar;
     private AbstractList<? extends DynamicRealmObject> mRealmObjects;
 
-
-    public static void start(Activity activity, int realmModelIndex, String realmFileName) {
-        Intent intent = new Intent(activity, RealmBrowserActivity.class);
-        intent.putExtra(EXTRAS_REALM_MODEL_INDEX, realmModelIndex);
-        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
-        activity.startActivity(intent);
-    }
-
-
-    public static void start(Activity activity, String realmFileName) {
-        Intent intent = new Intent(activity, RealmBrowserActivity.class);
-        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
-        activity.startActivity(intent);
-    }
-
-
     public static void start(Context context, int realmModelIndex, String realmFileName) {
         Intent intent = new Intent(context, RealmBrowserActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -95,7 +78,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         context.startActivity(intent);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,11 +255,16 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
 
     @Override
-    public void onRowItemClicked(@NonNull DynamicRealmObject realmObject, @NonNull Field field) {
+    public void onParametrizedFieldClicked(@NonNull DynamicRealmObject realmObject, @NonNull Field field) {
         RealmHolder.getInstance().setObject(realmObject);
         RealmHolder.getInstance().setField(field);
         String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
         RealmBrowserActivity.start(this, realmFileName);
+    }
+
+    @Override
+    public void onRowClicked(@NonNull DynamicRealmObject realmObject) {
+        // TODO future use?
     }
 
 
