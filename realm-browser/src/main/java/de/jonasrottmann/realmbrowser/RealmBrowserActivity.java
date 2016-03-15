@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -62,6 +64,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     private DrawerLayout mDrawerLayout;
     private Snackbar mSnackbar;
     private AbstractList<? extends DynamicRealmObject> mRealmObjects;
+    private FloatingActionButton mFab;
 
     public static void start(Context context, int realmModelIndex, String realmFileName) {
         Intent intent = new Intent(context, RealmBrowserActivity.class);
@@ -124,6 +127,13 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         mTxtColumn1 = (TextView) findViewById(R.id.realm_browser_txtColumn1);
         mTxtColumn2 = (TextView) findViewById(R.id.realm_browser_txtColumn2);
         mTxtColumn3 = (TextView) findViewById(R.id.realm_browser_txtColumn3);
+        mFab = (FloatingActionButton) findViewById(R.id.realm_browser_fab);
+        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
+            mFab.setOnClickListener(createFABClickListener(getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0), realmFileName));
+        } else {
+            // Currently displaying RealmList of parametrized field => don't give option to add new object
+            mFab.setVisibility(View.GONE);
+        }
 
 
         // Init Toolbar
@@ -167,6 +177,15 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
                 mAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private View.OnClickListener createFABClickListener(final int modelIndex, final String realmFileName) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RealmObjectAddEditActivity.start(RealmBrowserActivity.this, modelIndex, realmFileName);
+            }
+        };
     }
 
 

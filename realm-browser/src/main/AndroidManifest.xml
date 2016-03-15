@@ -12,6 +12,10 @@
             android:label="@string/realm_browser_title"
             android:theme="@style/realm_browser_BaseTheme.Theme" />
         <activity
+            android:name=".RealmObjectAddEditActivity"
+            android:label="@string/realm_browser_title"
+            android:theme="@style/realm_browser_BaseTheme.Theme" />
+        <activity
             android:name=".RealmBrowserActivity"
             android:label="@string/realm_browser_title"
             android:theme="@style/realm_browser_BaseTheme.DrawerTheme" />
