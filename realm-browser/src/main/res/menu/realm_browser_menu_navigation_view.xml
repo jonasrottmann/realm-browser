@@ -6,7 +6,7 @@
         <menu>
             <item
                 android:id="@+id/realm_browser_action_wrapping"
-                android:icon="@drawable/realm_browser_ic_wrap"
+                android:icon="@drawable/realm_browser_ic_wrap_text_dark_24dp"
                 android:title="Enable Text Wrapping"
                 app:actionLayout="@layout/realm_browser_action_view_switch"/>
         </menu>

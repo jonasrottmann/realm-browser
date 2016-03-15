@@ -149,7 +149,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.realm_browser_ic_menu);
+            actionBar.setHomeAsUpIndicator(R.drawable.realm_browser_ic_menu_white_24dp);
             actionBar.setTitle(String.format("%s", mRealmObjectClass.getSimpleName()));
         }
 
