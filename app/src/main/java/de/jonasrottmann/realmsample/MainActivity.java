@@ -23,7 +23,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView mTxtTitle;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +41,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         RealmBrowser.showRealmFilesNotification(this);
     }
-
 
 
     @Override
@@ -66,7 +64,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
-
     private void updateTitle() {
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .name(REALM_FILE_NAME)
@@ -76,7 +73,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mTxtTitle.setText(String.format("Items in database: %d", size));
         realm.close();
     }
-
 
 
     private void removeAllUsers() {
@@ -94,7 +90,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         realm.close();
     }
-
 
 
     private void insertUsers(int count) {
@@ -144,11 +139,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
-
     private void startRealmFilesActivity() {
         RealmBrowser.startRealmFilesActivity(this);
     }
-
 
 
     private void startRealmModelsActivity() {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/realm_browser_action_save"
+        android:icon="@drawable/realm_browser_ic_save_white_24dp"
+        android:title="@string/realm_browser_action_filter"
+        app:showAsAction="ifRoom" />
+</menu>

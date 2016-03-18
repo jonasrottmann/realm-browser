@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -22,7 +24,7 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
     private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
     private static final String EXTRAS_REALM_MODEL_INDEX = "REALM_MODEL_INDEX";
     private Class<? extends RealmObject> mRealmObjectClass;
-    private ArrayList<Object> mFieldsList;
+    private ArrayList<Field> mFieldsList;
 
     public static void start(Context context, int realmModelIndex, String realmFileName) {
         Intent intent = new Intent(context, RealmObjectAddEditActivity.class);
@@ -48,7 +50,13 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
         }
 
         // Init Views
-        // TODO
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.realm_browser_addedit_linearLayout);
+        for (Field field : mFieldsList) {
+            // TODO inflate layout
+            RealmAddEditFieldView addEditFieldView = new RealmAddEditFieldView(this);
+            addEditFieldView.setField(field);
+            linearLayout.addView(addEditFieldView);
+        }
 
         // Init Toolbar
         setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
@@ -60,12 +68,21 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.realm_browser_menu_addedit, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.realm_browser_action_save) {
+            // TODO
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 }

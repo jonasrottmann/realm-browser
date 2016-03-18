@@ -2,6 +2,7 @@ package de.jonasrottmann.realmbrowser.utils;
 
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 
@@ -84,5 +85,24 @@ public class MagicUtils {
         } else {
             return value;
         }
+    }
+
+
+    public static boolean isFieldNullable(final Field field) {
+        String fieldTypeName = field.getType().getName();
+        return fieldTypeName.equals(Byte.class.getName()) ||
+                fieldTypeName.equals(Boolean.class.getName()) ||
+                fieldTypeName.equals(Short.class.getName()) ||
+                fieldTypeName.equals(Integer.class.getName()) ||
+                fieldTypeName.equals(Long.class.getName()) ||
+                fieldTypeName.equals(Float.class.getName()) ||
+                fieldTypeName.equals(Double.class.getName()) ||
+                fieldTypeName.equals(String.class.getName()) ||
+                fieldTypeName.equals(Date.class.getName());
+    }
+
+    public static void setValue(@NonNull final DynamicRealmObject realmObject, @NonNull final Field field, final @Nullable Object value) throws IllegalArgumentException {
+        // TODO is this thowing when value is too large for e.g. short?
+        realmObject.set(field.getName(), value);
     }
 }
