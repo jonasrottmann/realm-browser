@@ -6,7 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,7 @@ class RealmAddEditFieldView extends LinearLayout {
     private CheckBox fieldIsNull;
     private Spinner fieldBoolSpinner;
     private EditText fieldEditText;
+    private RealmObjectSchema mRealmObjectSchema;
 
     private Field mField;
 
@@ -70,10 +73,12 @@ class RealmAddEditFieldView extends LinearLayout {
 
     public void setField(@NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         mField = field;
+        mRealmObjectSchema = realmObjectSchema;
+
         fieldName.setText(field.getName());
         fieldType.setText(field.getType().getName());
 
-        if (realmObjectSchema.isNullable(field.getName()) && realmObjectSchema.getFieldType(field.getName()) != RealmFieldType.LIST) {
+        if (mRealmObjectSchema.isNullable(field.getName()) && mRealmObjectSchema.getFieldType(field.getName()) != RealmFieldType.LIST) {
             fieldIsNull.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -85,10 +90,10 @@ class RealmAddEditFieldView extends LinearLayout {
             fieldIsNull.setVisibility(GONE);
         }
 
-        if (realmObjectSchema.isPrimaryKey(field.getName())) {
+        if (mRealmObjectSchema.isPrimaryKey(field.getName())) {
             fieldInfoView.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.realm_browser_ic_vpn_key_black_24px));
             fieldInfoView.setVisibility(VISIBLE);
-        } else if (realmObjectSchema.isRequired(field.getName())) {
+        } else if (mRealmObjectSchema.isRequired(field.getName())) {
             // TODO
         } else {
             fieldInfoView.setVisibility(GONE);
@@ -105,6 +110,27 @@ class RealmAddEditFieldView extends LinearLayout {
             fieldEditText.setVisibility(VISIBLE);
             fieldEditText.setMaxLines(1);
             fieldEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            fieldEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    try {
+                        if (!s.toString().isEmpty())
+                            Integer.parseInt(s.toString());
+                    } catch (NumberFormatException e) {
+                        Snackbar.make(RealmAddEditFieldView.this, "Too big for int", Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 
@@ -114,20 +140,31 @@ class RealmAddEditFieldView extends LinearLayout {
 
     @Nullable
     public Object getValue() {
+        if (getIsNull())
+            return null;
+
         if (mField.getType().getName().equals(String.class.getName())) {
             return fieldEditText.getText().toString();
         } else if (mField.getType().getName().equals(Boolean.class.getName()) || mField.getType().getName().equals("boolean")) {
             return Boolean.parseBoolean(fieldBoolSpinner.getSelectedItem().toString());
-        } else if (mField.getType().getName().equals(Integer.class.getName()) || mField.getType().getName().equals("int")) {
-            return fieldEditText.getText().toString();
-        } else if (mField.getType().getName().equals(Long.class.getName()) || mField.getType().getName().equals("long")) {
-            return Long.parseLong(fieldEditText.getText().toString());
+        } else {
+            String value = fieldEditText.getText().toString();
+            if (value.isEmpty()) {
+                value = "0";
+            }
+
+            if (mField.getType().getName().equals(Long.class.getName()) || mField.getType().getName().equals("long")) {
+                return Long.parseLong(value);
+            } else if (mField.getType().getName().equals(Integer.class.getName()) || mField.getType().getName().equals("int")) {
+                return Integer.parseInt(value);
+            } else {
+                return null;
+            }
         }
-        return null;
     }
 
-    public boolean getIsNull() {
-        return fieldIsNull.isChecked();
+    private boolean getIsNull() {
+        return mRealmObjectSchema.isNullable(mField.getName()) && fieldIsNull.isChecked();
     }
 
     public void togglePrimaryKeyError(boolean show) {

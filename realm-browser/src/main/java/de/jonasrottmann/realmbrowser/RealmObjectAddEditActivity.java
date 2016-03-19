@@ -118,16 +118,19 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
     private void createObject() {
         mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(false);
 
-        DynamicRealmObject realmObject = null;
+        DynamicRealmObject realmObject;
 
         mDynamicRealm.beginTransaction();
 
         // Create object
         if (mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).hasPrimaryKey()) {
             try {
-                realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName(), mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).getValue());
+                String primaryKeyFieldName = Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()));
+                realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName(), mFieldViewsList.get(primaryKeyFieldName).getValue());
             } catch (IllegalArgumentException e) {
+                // TODO
                 mDynamicRealm.cancelTransaction();
+                return;
             } catch (RealmPrimaryKeyConstraintException e) {
                 mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(true);
                 mDynamicRealm.cancelTransaction();
@@ -137,12 +140,10 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
             realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName());
         }
         // Set values
-        if (realmObject != null) {
-            for (String fieldName : mFieldViewsList.keySet()) {
-                if (mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isNullable(mFieldViewsList.get(fieldName).getField().getName()) || mFieldViewsList.get(fieldName).getValue() != null) {
-                    realmObject.set(mFieldViewsList.get(fieldName).getField().getName(), mFieldViewsList.get(fieldName).getValue());
-                }
-            }
+        for (String fieldName : mFieldViewsList.keySet()) {
+            if (mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isNullable(fieldName))
+                // prevent setting null to list fields
+                realmObject.set(mFieldViewsList.get(fieldName).getField().getName(), mFieldViewsList.get(fieldName).getValue());
         }
 
         mDynamicRealm.commitTransaction();
