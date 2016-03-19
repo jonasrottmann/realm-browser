@@ -28,8 +28,7 @@ public class RealmFilesActivity extends AppCompatActivity {
 
     public static void start(@NonNull Context context) {
         Intent intent = new Intent(context, RealmFilesActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

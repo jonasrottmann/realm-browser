@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import de.jonasrottmann.realmsample.data.Address;
@@ -109,6 +110,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             user.setIsBlocked(Math.random() > 0.5);
             user.setAge(i);
             user.setAddress(address);
+            user.setUuid(UUID.randomUUID().toString());
 
             RealmList<RealmString> emailList = new RealmList<>();
             for (int k = 0; k < 5; k++) {

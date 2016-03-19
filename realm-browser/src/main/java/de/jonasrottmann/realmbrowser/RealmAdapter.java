@@ -16,7 +16,8 @@ import java.util.AbstractList;
 import java.util.List;
 
 import de.jonasrottmann.realmbrowser.model.RealmPreferences;
-import de.jonasrottmann.realmbrowser.utils.MagicUtils;
+import de.jonasrottmann.realmbrowser.utils.Utils;
+import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 
 class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
@@ -24,16 +25,18 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
     private final Context mContext;
     private final Listener mListener;
     private final RealmPreferences mRealmPreferences;
+    private final DynamicRealm mRealm;
     private AbstractList<? extends DynamicRealmObject> mRealmObjects;
     private List<Field> mFieldList;
 
     public RealmAdapter(@NonNull Context context, @NonNull AbstractList<? extends DynamicRealmObject> realmObjects,
-                        @NonNull List<Field> fieldList, @NonNull Listener listener) {
+                        @NonNull List<Field> fieldList, @NonNull Listener listener, @NonNull DynamicRealm realm) {
         mRealmPreferences = new RealmPreferences(context);
         mContext = context;
         mRealmObjects = realmObjects;
         mFieldList = fieldList;
         mListener = listener;
+        mRealm = realm;
     }
 
     public void setFieldList(List<Field> fieldList) {
@@ -120,8 +123,9 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
     }
 
     private void initFieldText(TextView txtColumn, DynamicRealmObject realmObject, Field field) {
-        txtColumn.setText(MagicUtils.getFieldValueString(realmObject, field));
-        if (MagicUtils.isParametrizedField(field)) {
+        txtColumn.setText(Utils.getFieldValueString(realmObject, field));
+
+        if (Utils.isParametrizedField(field)) {
             txtColumn.setOnClickListener(createClickListener(realmObject, field));
         } else {
             txtColumn.setOnClickListener(createClickListener(realmObject, null));

@@ -28,20 +28,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.jonasrottmann.realmbrowser.model.RealmPreferences;
-import de.jonasrottmann.realmbrowser.utils.MagicUtils;
+import de.jonasrottmann.realmbrowser.utils.L;
+import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.Case;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.RealmObjectSchema;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
@@ -101,21 +102,26 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
             DynamicRealmObject object = RealmHolder.getInstance().getObject();
             Field field = RealmHolder.getInstance().getField();
             mRealmObjects = object.getList(field.getName());
-            if (MagicUtils.isParametrizedField(field)) {
+            if (Utils.isParametrizedField(field)) {
                 ParameterizedType pType = (ParameterizedType) field.getGenericType();
                 Class<?> pTypeClass = (Class<?>) pType.getActualTypeArguments()[0];
                 mRealmObjectClass = (Class<? extends RealmObject>) pTypeClass;
             }
         }
+
+        RealmObjectSchema schema = mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName());
+
         mSelectedFieldList = new ArrayList<>();
         mTmpSelectedFieldList = new ArrayList<>();
         mFieldsList = new ArrayList<>();
-        for (int i = 0; i < mRealmObjectClass.getDeclaredFields().length; i++) {
-            Field f = mRealmObjectClass.getDeclaredFields()[i];
-            if (!(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()))) // Ignore constant static fields
-                mFieldsList.add(f);
+        for (String s : schema.getFieldNames()) {
+            try {
+                mFieldsList.add(mRealmObjectClass.getDeclaredField(s));
+            } catch (NoSuchFieldException e) {
+                L.d("Initializing field map.", e);
+            }
         }
-        mAdapter = new RealmAdapter(this, mRealmObjects, mSelectedFieldList, this);
+        mAdapter = new RealmAdapter(this, mRealmObjects, mSelectedFieldList, this, mDynamicRealm);
 
 
         // Init Views

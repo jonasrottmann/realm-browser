@@ -11,10 +11,18 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import de.jonasrottmann.realmbrowser.utils.L;
+import de.jonasrottmann.realmbrowser.utils.Utils;
+import io.realm.DynamicRealm;
+import io.realm.DynamicRealmObject;
+import io.realm.RealmConfiguration;
 import io.realm.RealmObject;
+import io.realm.RealmObjectSchema;
+import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 
 /**
  * Created by Jonas Rottmann on 15/03/16.
@@ -24,7 +32,9 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
     private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
     private static final String EXTRAS_REALM_MODEL_INDEX = "REALM_MODEL_INDEX";
     private Class<? extends RealmObject> mRealmObjectClass;
-    private ArrayList<Field> mFieldsList;
+    private List<Field> mFieldsList;
+    private HashMap<String, RealmAddEditFieldView> mFieldViewsList;
+    private DynamicRealm mDynamicRealm;
 
     public static void start(Context context, int realmModelIndex, String realmFileName) {
         Intent intent = new Intent(context, RealmObjectAddEditActivity.class);
@@ -42,20 +52,32 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
         int index = getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0);
         mRealmObjectClass = RealmBrowser.getInstance().getRealmModelList().get(index);
 
+        String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
+        RealmConfiguration config = new RealmConfiguration.Builder(this)
+                .name(realmFileName)
+                .build();
+        mDynamicRealm = DynamicRealm.getInstance(config);
+        RealmObjectSchema schema = mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName());
+
         mFieldsList = new ArrayList<>();
-        for (int i = 0; i < mRealmObjectClass.getDeclaredFields().length; i++) {
-            Field f = mRealmObjectClass.getDeclaredFields()[i];
-            if (!(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()))) // Ignore constant static fields
-                mFieldsList.add(f);
+        for (String s : schema.getFieldNames()) {
+            try {
+                mFieldsList.add(mRealmObjectClass.getDeclaredField(s));
+            } catch (NoSuchFieldException e) {
+                L.d("Initializing field map.", e);
+            }
         }
+
 
         // Init Views
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.realm_browser_addedit_linearLayout);
+        mFieldViewsList = new HashMap<>();
         for (Field field : mFieldsList) {
             // TODO inflate layout
             RealmAddEditFieldView addEditFieldView = new RealmAddEditFieldView(this);
-            addEditFieldView.setField(field);
+            addEditFieldView.setField(schema, field);
             linearLayout.addView(addEditFieldView);
+            mFieldViewsList.put(field.getName(), addEditFieldView);
         }
 
         // Init Toolbar
@@ -79,10 +101,52 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_save) {
-            // TODO
+            createObject();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDynamicRealm.close();
+    }
+
+
+    private void createObject() {
+        mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(false);
+
+        DynamicRealmObject realmObject = null;
+
+        mDynamicRealm.beginTransaction();
+
+        // Create object
+        if (mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).hasPrimaryKey()) {
+            try {
+                realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName(), mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).getValue());
+            } catch (IllegalArgumentException e) {
+                mDynamicRealm.cancelTransaction();
+            } catch (RealmPrimaryKeyConstraintException e) {
+                mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(true);
+                mDynamicRealm.cancelTransaction();
+                return;
+            }
+        } else {
+            realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName());
+        }
+        // Set values
+        if (realmObject != null) {
+            for (String fieldName : mFieldViewsList.keySet()) {
+                if (mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isNullable(mFieldViewsList.get(fieldName).getField().getName()) || mFieldViewsList.get(fieldName).getValue() != null) {
+                    realmObject.set(mFieldViewsList.get(fieldName).getField().getName(), mFieldViewsList.get(fieldName).getValue());
+                }
+            }
+        }
+
+        mDynamicRealm.commitTransaction();
+
+        finish();
     }
 }

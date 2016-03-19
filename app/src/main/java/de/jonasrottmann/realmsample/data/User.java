@@ -2,9 +2,12 @@ package de.jonasrottmann.realmsample.data;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class User extends RealmObject {
 
+    @PrimaryKey
+    private String uuid;
     private int age;
     private boolean isBlocked;
     private String name;
@@ -40,5 +43,9 @@ public class User extends RealmObject {
 
     public void setContactList(RealmList<Contact> contactList) {
         this.contactList = contactList;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

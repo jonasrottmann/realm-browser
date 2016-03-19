@@ -34,6 +34,7 @@ public class RealmModelsActivity extends AppCompatActivity {
 
     public static void start(@NonNull Activity activity, @NonNull String realmFileName) {
         Intent intent = new Intent(activity, RealmModelsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         activity.startActivity(intent);
     }
@@ -41,8 +42,7 @@ public class RealmModelsActivity extends AppCompatActivity {
 
     public static void start(@NonNull Context context, @NonNull String realmFileName) {
         Intent intent = new Intent(context, RealmModelsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         context.startActivity(intent);
     }
