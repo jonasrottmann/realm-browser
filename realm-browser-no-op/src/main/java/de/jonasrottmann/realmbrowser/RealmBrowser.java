@@ -1,7 +1,6 @@
 package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,22 +21,22 @@ public final class RealmBrowser {
     }
 
 
-    public static void startRealmFilesActivity(@NonNull Context context) {
+    public static void startRealmFilesActivity(Context context) {
 
     }
 
 
-    public static void startRealmModelsActivity(@NonNull Context context, @NonNull String realmFileName) {
+    public static void startRealmModelsActivity(Context context, String realmFileName) {
 
     }
 
 
-    public static void showRealmFilesNotification(@NonNull Context context) {
+    public static void showRealmFilesNotification(Context context) {
 
     }
 
 
-    private static void showRealmNotification(@NonNull Context context, @NonNull Class activityClass) {
+    private static void showRealmNotification(Context context, Class activityClass) {
 
     }
 

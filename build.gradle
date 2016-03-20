@@ -4,8 +4,6 @@ project.ext.gitTag = 'git describe --tags'.execute([], project.rootDir).text.tri
 project.ext.gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
 allprojects {
-
-
     buildscript {
         repositories {
             jcenter()
