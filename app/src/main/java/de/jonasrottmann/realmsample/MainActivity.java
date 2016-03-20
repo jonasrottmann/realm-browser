@@ -111,6 +111,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             user.setAge(i);
             user.setAddress(address);
             user.setUuid(UUID.randomUUID().toString());
+            user.setByteArray(new byte[]{1, 2, 3});
 
             RealmList<RealmString> emailList = new RealmList<>();
             for (int k = 0; k < 5; k++) {

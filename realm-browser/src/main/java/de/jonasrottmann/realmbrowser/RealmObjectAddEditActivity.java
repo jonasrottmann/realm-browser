@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -68,14 +69,14 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
             }
         }
 
-
         // Init Views
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.realm_browser_addedit_linearLayout);
         mFieldViewsList = new HashMap<>();
+        int margin16 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, this.getResources().getDisplayMetrics());
         for (Field field : mFieldsList) {
-            // TODO inflate layout
             RealmAddEditFieldView addEditFieldView = new RealmAddEditFieldView(this);
             addEditFieldView.setField(schema, field);
+            addEditFieldView.setPadding(margin16, margin16 / 2, margin16, margin16 / 2);
             linearLayout.addView(addEditFieldView);
             mFieldViewsList.put(field.getName(), addEditFieldView);
         }
@@ -116,11 +117,15 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
 
 
     private void createObject() {
-        mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(false);
+        // Return if any field holds a invalid value
+        for (String fieldName : mFieldViewsList.keySet()) {
+            if (!mFieldViewsList.get(fieldName).isValid()) return;
+        }
 
-        DynamicRealmObject realmObject;
 
+        // Start Realm Transaction
         mDynamicRealm.beginTransaction();
+        DynamicRealmObject realmObject;
 
         // Create object
         if (mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).hasPrimaryKey()) {
@@ -139,15 +144,20 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
         } else {
             realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName());
         }
+
         // Set values
         for (String fieldName : mFieldViewsList.keySet()) {
-            if (mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isNullable(fieldName))
+            if (!mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isNullable(fieldName) && mFieldViewsList.get(fieldName).getValue() == null) {
                 // prevent setting null to list fields
-                realmObject.set(mFieldViewsList.get(fieldName).getField().getName(), mFieldViewsList.get(fieldName).getValue());
+                continue;
+            }
+            realmObject.set(mFieldViewsList.get(fieldName).getField().getName(), mFieldViewsList.get(fieldName).getValue());
         }
 
+        // Commit Realm Transaction
         mDynamicRealm.commitTransaction();
 
+        // Finish Activity
         finish();
     }
 }

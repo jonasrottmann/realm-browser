@@ -42,19 +42,30 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/realm_browser_field_info"
+            android:id="@+id/realm_browser_field_primarykey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="8dp"
             tools:src="@drawable/realm_browser_ic_vpn_key_black_24px"/>
 
+        <ImageView
+            android:id="@+id/realm_browser_field_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="8dp"
+            android:visibility="gone"
+            tools:src="@drawable/realm_browser_ic_warning_black_24dp"
+            tools:visibility="visible"/>
+
         <CheckBox
             android:id="@+id/realm_browser_field_setnull"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Null"/>
+            android:text="null"
+            android:textStyle="italic"/>
 
     </LinearLayout>
 

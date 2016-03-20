@@ -10,14 +10,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 
 import io.realm.DynamicRealmObject;
-import io.realm.RealmList;
 import io.realm.RealmObjectSchema;
 
 public class Utils {
-    public static boolean isParametrizedField(@NonNull Field field) {
-        return field.getGenericType() instanceof ParameterizedType;
-    }
-
     @NonNull
     public static String createParametrizedName(@NonNull Field field) {
         ParameterizedType pType = (ParameterizedType) field.getGenericType();
@@ -36,15 +31,35 @@ public class Utils {
         return rawType + "<" + argument + ">";
     }
 
+    @Nullable
+    public static String createBlobValueString(@NonNull DynamicRealmObject realmObject, @NonNull Field field) {
+        if (realmObject.getBlob(field.getName()) == null)
+            return null;
+
+        StringBuilder builder = new StringBuilder("byte[] = ");
+        builder.append("{");
+        for (int i = 0; i < realmObject.getBlob(field.getName()).length; i++) {
+            builder.append(String.valueOf(realmObject.getBlob(field.getName())[i]));
+            if (i < realmObject.getBlob(field.getName()).length - 1)
+                builder.append(", ");
+        }
+        builder.append("}");
+        return builder.toString();
+    }
+
     @NonNull
     public static CharSequence getFieldValueString(@NonNull DynamicRealmObject realmObject, Field field) {
-        String value;
-        if (field.getType().getName().equals(RealmList.class.getName())) {
+        String value = null;
+        if (isParametrizedField(field)) {
             // RealmList
-            value = (Utils.createParametrizedName(field));
+            value = createParametrizedName(field);
+        } else if (isBlob(field)) {
+            // byte[]
+            value = createBlobValueString(realmObject, field);
         } else {
-            // ? extends RealmObject
-            value = String.valueOf(realmObject.get(field.getName()));
+            // Strings, Numbers, Objects
+            if (realmObject.get(field.getName()) != null)
+                value = String.valueOf(realmObject.get(field.getName()));
         }
 
         if (value == null) {
@@ -65,5 +80,55 @@ public class Utils {
                 return s;
         }
         return null;
+    }
+
+
+    public static boolean isNumberField(@NonNull Field field) {
+        return isLong(field)
+                || isInteger(field)
+                || isShort(field)
+                || isByte(field)
+                || isDouble(field)
+                || isFloat(field);
+    }
+
+    public static boolean isLong(@NonNull Field field) {
+        return field.getType().getName().equals(Long.class.getName()) || field.getType().getName().equals("long");
+    }
+
+    public static boolean isInteger(@NonNull Field field) {
+        return field.getType().getName().equals(Integer.class.getName()) || field.getType().getName().equals("int");
+    }
+
+    public static boolean isShort(@NonNull Field field) {
+        return field.getType().getName().equals(Short.class.getName()) || field.getType().getName().equals("short");
+    }
+
+    public static boolean isByte(@NonNull Field field) {
+        return field.getType().getName().equals(Byte.class.getName()) || field.getType().getName().equals("byte");
+    }
+
+    public static boolean isDouble(@NonNull Field field) {
+        return field.getType().getName().equals(Double.class.getName()) || field.getType().getName().equals("double");
+    }
+
+    public static boolean isFloat(@NonNull Field field) {
+        return field.getType().getName().equals(Float.class.getName()) || field.getType().getName().equals("float");
+    }
+
+    public static boolean isBoolean(@NonNull Field field) {
+        return field.getType().getName().equals(Boolean.class.getName()) || field.getType().getName().equals("boolean");
+    }
+
+    public static boolean isString(@NonNull Field field) {
+        return field.getType().getName().equals(String.class.getName());
+    }
+
+    public static boolean isParametrizedField(@NonNull Field field) {
+        return field.getGenericType() instanceof ParameterizedType;
+    }
+
+    public static boolean isBlob(@NonNull Field field) {
+        return field.getType().equals(byte[].class);
     }
 }

@@ -14,6 +14,7 @@ public class User extends RealmObject {
     private Address address;
     private RealmList<RealmString> emailList;
     private RealmList<Contact> contactList;
+    private byte[] byteArray;
 
 
     public void setEmailList(RealmList<RealmString> emailList) {
@@ -45,7 +46,13 @@ public class User extends RealmObject {
         this.contactList = contactList;
     }
 
+
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+
+    public void setByteArray(byte[] byteArray) {
+        this.byteArray = byteArray;
     }
 }
