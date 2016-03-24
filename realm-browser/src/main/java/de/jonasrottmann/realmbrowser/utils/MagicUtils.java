@@ -64,7 +64,9 @@ public class MagicUtils {
             value = realmObject.getString(field.getName());
         } else if (field.getType().getName().equals(Date.class.getName())) {
             // Date
-            value = (realmObject.getDate(field.getName()).toString());
+            Date date = realmObject.getDate(field.getName());
+            if (date != null) value = date.toString();
+            else value = null;
         } else {
             if (field.getType().getName().equals(RealmList.class.getName())) {
                 // RealmList
