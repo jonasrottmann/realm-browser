@@ -73,7 +73,7 @@ public class MagicUtils {
                 value = (MagicUtils.createParametrizedName(field));
             } else {
                 // ? extends RealmObject
-                value = (realmObject.getObject(field.getName()).toString());
+                value = realmObject.getObject(field.getName()) != null ? realmObject.getObject(field.getName()).toString() : null;
             }
         }
 
