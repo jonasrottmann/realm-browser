@@ -12,6 +12,7 @@ android {
         targetSdkVersion 23
         versionCode project.gitCommitCount
         versionName project.gitTag
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -23,10 +24,17 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:recyclerview-v7:23.2.1'
-    compile 'com.android.support:design:23.2.1'
-    compile 'com.android.support:support-annotations:23.2.1'
+    compile "com.android.support:appcompat-v7:$project.supportLibVersion"
+    compile "com.android.support:recyclerview-v7:$project.supportLibVersion"
+    compile "com.android.support:design:$project.supportLibVersion"
+    compile "com.android.support:support-annotations:$project.supportLibVersion"
+    testCompile "junit:junit:4.12"
+    androidTestCompile "junit:junit:4.12"
+    androidTestCompile "com.android.support:support-annotations:$project.supportLibVersion"
+    androidTestCompile "com.android.support.test:runner:0.4.1"
+    androidTestCompile "com.android.support.test:rules:0.4.1"
+    androidTestApt "io.realm:realm-annotations:$project.realmVersion"
+    androidTestApt "io.realm:realm-annotations-processor:$project.realmVersion"
 }
 
 // build a jar with source files
