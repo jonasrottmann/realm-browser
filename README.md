@@ -36,6 +36,8 @@ dependencies {
 
 > ‼️ Make sure to use any version of this realm-browser from v0.0.8 and up only with a realm version in your project from 0.88.0 and up.
 
+> ‼️ This library is not yet compatible with the newly (in Realm 0.89.0) introduced interface [`RealmModel`](https://realm.io/docs/java/latest/#realmmodel-interface). You have to stick with extending `RealmObject` for now.
+
 ### Usage
 
 To initialize the Realm Browser add all classes which you want to see using the method below. Those classes must extend `RealmObject`.
