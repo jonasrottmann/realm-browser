@@ -11,14 +11,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import io.realm.RealmObject;
+import io.realm.RealmModel;
 
 public final class RealmBrowser {
 
     public static final int NOTIFICATION_ID = 1000;
 
     private static final RealmBrowser sInstance = new RealmBrowser();
-    private final List<Class<? extends RealmObject>> mRealmModelList;
+    private final List<Class<? extends RealmModel>> mRealmModelList;
+
 
 
     private RealmBrowser() {
@@ -26,9 +27,11 @@ public final class RealmBrowser {
     }
 
 
+
     public static RealmBrowser getInstance() {
         return sInstance;
     }
+
 
 
     public static void startRealmFilesActivity(@NonNull Context context) {
@@ -36,14 +39,17 @@ public final class RealmBrowser {
     }
 
 
+
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull String realmFileName) {
         RealmModelsActivity.start(context, realmFileName);
     }
 
 
+
     public static void showRealmFilesNotification(@NonNull Context context) {
         showRealmNotification(context, RealmFilesActivity.class);
     }
+
 
 
     private static void showRealmNotification(@NonNull Context context, @NonNull Class activityClass) {
@@ -64,13 +70,15 @@ public final class RealmBrowser {
     }
 
 
-    public List<Class<? extends RealmObject>> getRealmModelList() {
+
+    public List<Class<? extends RealmModel>> getRealmModelList() {
         return mRealmModelList;
     }
 
 
+
     @SafeVarargs
-    public final void addRealmModel(Class<? extends RealmObject>... arr) {
+    public final void addRealmModel(Class<? extends RealmModel>... arr) {
         mRealmModelList.addAll(Arrays.asList(arr));
     }
 }

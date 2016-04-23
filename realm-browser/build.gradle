@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'realm-android'
 
+group = 'de.jonasrottmann.realm-browser'
+
 android {
     compileSdkVersion 23
     buildToolsVersion project.buildToolsVersion
@@ -13,12 +15,6 @@ android {
         versionCode project.gitCommitCount
         versionName project.gitTag
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
     }
 }
 

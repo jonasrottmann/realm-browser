@@ -1,5 +1,3 @@
-group = 'de.jonasrottmann.realm-browser'
-
 buildscript {
     ext {
         gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()

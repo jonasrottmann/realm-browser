@@ -21,6 +21,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmModel;
 import io.realm.RealmObject;
 
 import static de.jonasrottmann.realmbrowser.RealmBrowser.getInstance;
@@ -61,7 +62,7 @@ public class RealmModelsActivity extends AppCompatActivity {
         mRealm = Realm.getInstance(config);
 
         List<Pair<String, Long>> list = new ArrayList<>();
-        for (Class<? extends RealmObject> file : getInstance().getRealmModelList()) {
+        for (Class<? extends RealmModel> file : getInstance().getRealmModelList()) {
             Pair<String, Long> pair = Pair.create(file.getSimpleName(), mRealm.where(file).count());
             list.add(pair);
         }

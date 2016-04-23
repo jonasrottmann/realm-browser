@@ -1,9 +1,11 @@
 package de.jonasrottmann.realmsample.data;
 
 import io.realm.RealmList;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
-public class User extends RealmObject {
+@RealmClass
+public class User implements RealmModel {
 
     private int age;
     private boolean isBlocked;
@@ -13,9 +15,11 @@ public class User extends RealmObject {
     private RealmList<Contact> contactList;
 
 
+
     public void setEmailList(RealmList<RealmString> emailList) {
         this.emailList = emailList;
     }
+
 
 
     public void setAddress(Address address) {
@@ -23,9 +27,11 @@ public class User extends RealmObject {
     }
 
 
+
     public void setName(String name) {
         this.name = name;
     }
+
 
 
     public void setAge(int age) {
@@ -33,9 +39,11 @@ public class User extends RealmObject {
     }
 
 
+
     public void setIsBlocked(boolean isBlocked) {
         this.isBlocked = isBlocked;
     }
+
 
 
     public void setContactList(RealmList<Contact> contactList) {
