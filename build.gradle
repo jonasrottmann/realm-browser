@@ -3,7 +3,7 @@ buildscript {
         gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
         gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
         realmVersion = '0.91.0'
-        supportLibVersion = '23.3.0'
+        supportLibVersion = '23.4.0'
         buildToolsVersion = '23.0.3'
     }
     repositories {

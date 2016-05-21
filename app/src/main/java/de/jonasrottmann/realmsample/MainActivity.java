@@ -29,9 +29,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RealmBrowser.getInstance().addRealmModel(User.class, Address.class,
-                RealmString.class, Contact.class);
-
         mTxtTitle = (TextView) findViewById(R.id.txtTitle);
         findViewById(R.id.btnInsert).setOnClickListener(this);
         findViewById(R.id.btnRemove).setOnClickListener(this);
@@ -154,5 +151,4 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void startRealmModelsActivity() {
         RealmBrowser.startRealmModelsActivity(this, REALM_FILE_NAME);
     }
-
 }

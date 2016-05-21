@@ -47,7 +47,7 @@ import io.realm.RealmResults;
 public class RealmBrowserActivity extends AppCompatActivity implements RealmAdapter.Listener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
-    private static final String EXTRAS_REALM_MODEL_INDEX = "REALM_MODEL_INDEX";
+    private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
     private DynamicRealm mDynamicRealm;
     private Class<? extends RealmModel> mRealmObjectClass;
     private RealmAdapter mAdapter;
@@ -66,10 +66,10 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
 
 
-    public static void start(Context context, int realmModelIndex, String realmFileName) {
+    public static void start(Context context, Class<? extends RealmModel> realmModelClass, String realmFileName) {
         Intent intent = new Intent(context, RealmBrowserActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(EXTRAS_REALM_MODEL_INDEX, realmModelIndex);
+        intent.putExtra(EXTRAS_REALM_MODEL_CLASS, realmModelClass);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         context.startActivity(intent);
     }
@@ -96,9 +96,8 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
                 .build();
 
         mDynamicRealm = DynamicRealm.getInstance(config);
-        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
-            int index = getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0);
-            mRealmObjectClass = RealmBrowser.getInstance().getRealmModelList().get(index);
+        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
+            mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
             mRealmObjects = mDynamicRealm.where(mRealmObjectClass.getSimpleName()).findAll();
         } else {
             DynamicRealmObject object = RealmHolder.getInstance().getObject();

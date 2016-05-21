@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,20 +16,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
-import io.realm.RealmObject;
-
-import static de.jonasrottmann.realmbrowser.RealmBrowser.getInstance;
 
 public class RealmModelsActivity extends AppCompatActivity {
 
     private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
 
     private Realm mRealm;
+    private ArrayList<Class<? extends RealmModel>> mRealmModelClasses;
+
 
 
     public static void start(@NonNull Activity activity, @NonNull String realmFileName) {
@@ -40,6 +37,7 @@ public class RealmModelsActivity extends AppCompatActivity {
     }
 
 
+
     public static void start(@NonNull Context context, @NonNull String realmFileName) {
         Intent intent = new Intent(context, RealmModelsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -47,6 +45,7 @@ public class RealmModelsActivity extends AppCompatActivity {
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         context.startActivity(intent);
     }
+
 
 
     @Override
@@ -60,24 +59,24 @@ public class RealmModelsActivity extends AppCompatActivity {
 
         RealmConfiguration config = new RealmConfiguration.Builder(this).name(realmFileName).build();
         mRealm = Realm.getInstance(config);
+        mRealmModelClasses = new ArrayList<>(mRealm.getConfiguration().getRealmObjectClasses());
 
-        List<Pair<String, Long>> list = new ArrayList<>();
-        for (Class<? extends RealmModel> file : getInstance().getRealmModelList()) {
-            Pair<String, Long> pair = Pair.create(file.getSimpleName(), mRealm.where(file).count());
-            list.add(pair);
-        }
-
-        Adapter adapter = new Adapter(this, R.layout.realm_browser_item_realm_module, list);
+        Adapter adapter = new Adapter(this,
+                R.layout.realm_browser_item_realm_module,
+                mRealmModelClasses,
+                mRealm
+        );
         ListView listView = (ListView) findViewById(R.id.realm_browser_listView);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        onItemClicked(position);
+                        onItemClicked(mRealmModelClasses.get(position));
                     }
                 });
     }
+
 
 
     @Override
@@ -89,26 +88,32 @@ public class RealmModelsActivity extends AppCompatActivity {
     }
 
 
-    private void onItemClicked(int position) {
+
+    private void onItemClicked(Class<? extends RealmModel> realmModel) {
         String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
-        RealmBrowserActivity.start(this, position, realmFileName);
+        RealmBrowserActivity.start(this, realmModel, realmFileName);
     }
 
 
-    private static class Adapter extends ArrayAdapter<Pair<String, Long>> {
+
+    private static class Adapter extends ArrayAdapter<Class<? extends RealmModel>> {
 
         private int mResource;
+        private Realm mRealm;
 
 
-        public Adapter(Context context, int res, List<Pair<String, Long>> modulesWithCount) {
-            super(context, res, modulesWithCount);
+
+        public Adapter(Context context, int res, ArrayList<Class<? extends RealmModel>> classes, Realm realm) {
+            super(context, res, classes);
             mResource = res;
+            mRealm = realm;
         }
+
 
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Pair<String, Long> moduleWithCount = getItem(position);
+            Class realmModel = getItem(position);
 
             if (convertView == null)
                 convertView = LayoutInflater.from(getContext()).inflate(mResource, parent, false);
@@ -116,8 +121,8 @@ public class RealmModelsActivity extends AppCompatActivity {
             TextView title = (TextView) convertView.findViewById(R.id.realm_browser_title);
             TextView count = (TextView) convertView.findViewById(R.id.realm_browser_count);
 
-            title.setText(moduleWithCount.first);
-            count.setText(String.valueOf(moduleWithCount.second));
+            title.setText(realmModel.getSimpleName());
+            count.setText(String.valueOf(mRealm.where(realmModel).findAll().size()));
 
             return convertView;
         }

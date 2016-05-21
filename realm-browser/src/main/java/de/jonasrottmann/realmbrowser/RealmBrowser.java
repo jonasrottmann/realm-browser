@@ -7,24 +7,11 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import io.realm.RealmModel;
-
 public final class RealmBrowser {
 
     public static final int NOTIFICATION_ID = 1000;
 
     private static final RealmBrowser sInstance = new RealmBrowser();
-    private final List<Class<? extends RealmModel>> mRealmModelList;
-
-
-
-    private RealmBrowser() {
-        mRealmModelList = new ArrayList<>();
-    }
 
 
 
@@ -67,18 +54,5 @@ public final class RealmBrowser {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
-    }
-
-
-
-    public List<Class<? extends RealmModel>> getRealmModelList() {
-        return mRealmModelList;
-    }
-
-
-
-    @SafeVarargs
-    public final void addRealmModel(Class<? extends RealmModel>... arr) {
-        mRealmModelList.addAll(Arrays.asList(arr));
     }
 }
