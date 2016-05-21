@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import de.jonasrottmann.realmbrowser.utils.L;
 import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmConfiguration;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
 import io.realm.RealmObjectSchema;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
+import timber.log.Timber;
 
 /**
  * Created by Jonas Rottmann on 15/03/16.
@@ -31,27 +31,30 @@ import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 public class RealmObjectAddEditActivity extends AppCompatActivity {
 
     private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
-    private static final String EXTRAS_REALM_MODEL_INDEX = "REALM_MODEL_INDEX";
-    private Class<? extends RealmObject> mRealmObjectClass;
+    private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
+    private Class<? extends RealmModel> mRealmObjectClass;
     private List<Field> mFieldsList;
     private HashMap<String, RealmAddEditFieldView> mFieldViewsList;
     private DynamicRealm mDynamicRealm;
 
-    public static void start(Context context, int realmModelIndex, String realmFileName) {
+
+
+    public static Intent getIntent(Context context, Class<? extends RealmModel> realmModelClass, String realmFileName) {
         Intent intent = new Intent(context, RealmObjectAddEditActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(EXTRAS_REALM_MODEL_INDEX, realmModelIndex);
+        intent.putExtra(EXTRAS_REALM_MODEL_CLASS, realmModelClass);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
-        context.startActivity(intent);
+        return intent;
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.realm_browser_ac_realm_addedit);
 
-        int index = getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0);
-        mRealmObjectClass = RealmBrowser.getInstance().getRealmModelList().get(index);
+        mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
 
         String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
         RealmConfiguration config = new RealmConfiguration.Builder(this)
@@ -65,7 +68,7 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
             try {
                 mFieldsList.add(mRealmObjectClass.getDeclaredField(s));
             } catch (NoSuchFieldException e) {
-                L.d("Initializing field map.", e);
+                Timber.d("Initializing field map.", e);
             }
         }
 
@@ -90,11 +93,15 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.realm_browser_menu_addedit, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -109,11 +116,14 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mDynamicRealm.close();
     }
+
 
 
     private void createObject() {

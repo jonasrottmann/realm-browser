@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'realm-android'
+
+group = 'de.jonasrottmann.realm-browser'
 
 android {
     compileSdkVersion 23
@@ -7,16 +10,10 @@ android {
     resourcePrefix 'realm_browser_'
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode project.gitCommitCount
         versionName project.gitTag
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
     }
 }
 

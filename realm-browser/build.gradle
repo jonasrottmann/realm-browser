@@ -2,23 +2,19 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'realm-android'
 
+group = 'de.jonasrottmann.realm-browser'
+
 android {
     compileSdkVersion 23
     buildToolsVersion project.buildToolsVersion
     resourcePrefix 'realm_browser_'
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode project.gitCommitCount
         versionName project.gitTag
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
     }
 }
 
@@ -28,6 +24,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$project.supportLibVersion"
     compile "com.android.support:design:$project.supportLibVersion"
     compile "com.android.support:support-annotations:$project.supportLibVersion"
+    compile 'com.jakewharton.timber:timber:4.1.2'
     testCompile "junit:junit:4.12"
     androidTestCompile "junit:junit:4.12"
     androidTestCompile "com.android.support:support-annotations:$project.supportLibVersion"

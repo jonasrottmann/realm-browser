@@ -7,23 +7,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import io.realm.RealmObject;
-
 public final class RealmBrowser {
 
     public static final int NOTIFICATION_ID = 1000;
 
     private static final RealmBrowser sInstance = new RealmBrowser();
-    private final List<Class<? extends RealmObject>> mRealmModelList;
 
-
-    private RealmBrowser() {
-        mRealmModelList = new ArrayList<>();
-    }
 
 
     public static RealmBrowser getInstance() {
@@ -31,19 +20,23 @@ public final class RealmBrowser {
     }
 
 
+
     public static void startRealmFilesActivity(@NonNull Context context) {
-        RealmFilesActivity.start(context);
+        context.startActivity(RealmFilesActivity.getIntent(context));
     }
+
 
 
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull String realmFileName) {
-        RealmModelsActivity.start(context, realmFileName);
+        context.startActivity(RealmModelsActivity.getIntent(context, realmFileName));
     }
+
 
 
     public static void showRealmFilesNotification(@NonNull Context context) {
         showRealmNotification(context, RealmFilesActivity.class);
     }
+
 
 
     private static void showRealmNotification(@NonNull Context context, @NonNull Class activityClass) {
@@ -61,16 +54,5 @@ public final class RealmBrowser {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
-    }
-
-
-    public List<Class<? extends RealmObject>> getRealmModelList() {
-        return mRealmModelList;
-    }
-
-
-    @SafeVarargs
-    public final void addRealmModel(Class<? extends RealmObject>... arr) {
-        mRealmModelList.addAll(Arrays.asList(arr));
     }
 }

@@ -34,24 +34,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.jonasrottmann.realmbrowser.model.RealmPreferences;
-import de.jonasrottmann.realmbrowser.utils.L;
 import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.Case;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
+import io.realm.RealmModel;
 import io.realm.RealmObject;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import timber.log.Timber;
 
 public class RealmBrowserActivity extends AppCompatActivity implements RealmAdapter.Listener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
-    private static final String EXTRAS_REALM_MODEL_INDEX = "REALM_MODEL_INDEX";
+    private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
     private DynamicRealm mDynamicRealm;
-    private Class<? extends RealmObject> mRealmObjectClass;
+    private Class<? extends RealmModel> mRealmObjectClass;
     private RealmAdapter mAdapter;
     private TextView mTxtIndex;
     private TextView mTxtColumn1;
@@ -67,13 +68,16 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     private AbstractList<? extends DynamicRealmObject> mRealmObjects;
     private FloatingActionButton mFab;
 
-    public static void start(Context context, int realmModelIndex, String realmFileName) {
+
+
+    public static void start(Context context, Class<? extends RealmModel> realmModelClass, String realmFileName) {
         Intent intent = new Intent(context, RealmBrowserActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(EXTRAS_REALM_MODEL_INDEX, realmModelIndex);
+        intent.putExtra(EXTRAS_REALM_MODEL_CLASS, realmModelClass);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         context.startActivity(intent);
     }
+
 
 
     public static void start(Context context, String realmFileName) {
@@ -82,6 +86,8 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         context.startActivity(intent);
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,10 +100,9 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
                 .build();
 
         mDynamicRealm = DynamicRealm.getInstance(config);
-        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
-            int index = getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0);
-            mRealmObjectClass = RealmBrowser.getInstance().getRealmModelList().get(index);
-            mRealmObjects = mDynamicRealm.allObjects(mRealmObjectClass.getSimpleName());
+        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
+            mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
+            mRealmObjects = mDynamicRealm.where(mRealmObjectClass.getSimpleName()).findAll();
         } else {
             DynamicRealmObject object = RealmHolder.getInstance().getObject();
             Field field = RealmHolder.getInstance().getField();
@@ -118,7 +123,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
             try {
                 mFieldsList.add(mRealmObjectClass.getDeclaredField(s));
             } catch (NoSuchFieldException e) {
-                L.d("Initializing field map.", e);
+                Timber.d("Initializing field map.", e);
             }
         }
         mAdapter = new RealmAdapter(this, mRealmObjects, mSelectedFieldList, this, mDynamicRealm);
@@ -134,8 +139,8 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         mTxtColumn2 = (TextView) findViewById(R.id.realm_browser_txtColumn2);
         mTxtColumn3 = (TextView) findViewById(R.id.realm_browser_txtColumn3);
         mFab = (FloatingActionButton) findViewById(R.id.realm_browser_fab);
-        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
-            mFab.setOnClickListener(createFABClickListener(getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0), realmFileName));
+        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
+            mFab.setOnClickListener(createFABClickListener((Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS), realmFileName));
         } else {
             // Currently displaying RealmList of parametrized field => don't give option to add new object
             mFab.setVisibility(View.GONE);
@@ -185,14 +190,17 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         });
     }
 
-    private View.OnClickListener createFABClickListener(final int modelIndex, final String realmFileName) {
+
+
+    private View.OnClickListener createFABClickListener(final Class<? extends RealmModel> modelClass, final String realmFileName) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RealmObjectAddEditActivity.start(RealmBrowserActivity.this, modelIndex, realmFileName);
+                startActivity(RealmObjectAddEditActivity.getIntent(RealmBrowserActivity.this, modelClass, realmFileName));
             }
         };
     }
+
 
 
     @NonNull
@@ -240,11 +248,13 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
+
     @Override
     protected void onResume() {
         mAdapter.notifyDataSetChanged();
         super.onResume();
     }
+
 
 
     @Override
@@ -254,6 +264,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         }
         super.onDestroy();
     }
+
 
 
     @Override
@@ -268,6 +279,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -279,6 +291,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
+
     @Override
     public void onParametrizedFieldClicked(@NonNull DynamicRealmObject realmObject, @NonNull Field field) {
         RealmHolder.getInstance().setObject(realmObject);
@@ -287,10 +300,13 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         RealmBrowserActivity.start(this, realmFileName);
     }
 
+
+
     @Override
     public void onRowClicked(@NonNull DynamicRealmObject realmObject) {
         // TODO future use?
     }
+
 
 
     private void selectDefaultFields() {
@@ -304,6 +320,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
+
     private void disableCheckBoxes() {
         for (AppCompatCheckBox cb : mCheckBoxes) {
             if (!cb.isChecked())
@@ -312,11 +329,13 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
+
     private void enableCheckboxes() {
         for (AppCompatCheckBox cb : mCheckBoxes) {
             cb.setEnabled(true);
         }
     }
+
 
 
     private void updateColumnTitle(final List<Field> columnsList) {
@@ -350,15 +369,18 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
+
     private LinearLayout.LayoutParams createLayoutParams() {
         return new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
+
 
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
     }
+
 
 
     @Override
@@ -374,6 +396,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         }
         return true;
     }
+
 
 
     @Override
