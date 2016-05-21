@@ -22,13 +22,13 @@ public final class RealmBrowser {
 
 
     public static void startRealmFilesActivity(@NonNull Context context) {
-        RealmFilesActivity.start(context);
+        context.startActivity(RealmFilesActivity.getIntent(context));
     }
 
 
 
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull String realmFileName) {
-        RealmModelsActivity.start(context, realmFileName);
+        context.startActivity(RealmModelsActivity.getIntent(context, realmFileName));
     }
 
 

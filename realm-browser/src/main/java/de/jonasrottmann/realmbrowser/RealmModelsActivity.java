@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -30,20 +31,20 @@ public class RealmModelsActivity extends AppCompatActivity {
 
 
 
-    public static void start(@NonNull Activity activity, @NonNull String realmFileName) {
+    public static Intent getIntent(@NonNull Activity activity, @NonNull String realmFileName) {
         Intent intent = new Intent(activity, RealmModelsActivity.class);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
-        activity.startActivity(intent);
+        return intent;
     }
 
 
 
-    public static void start(@NonNull Context context, @NonNull String realmFileName) {
+    public static Intent getIntent(@NonNull Context context, @NonNull String realmFileName) {
         Intent intent = new Intent(context, RealmModelsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
-        context.startActivity(intent);
+        return intent;
     }
 
 
@@ -61,20 +62,15 @@ public class RealmModelsActivity extends AppCompatActivity {
         mRealm = Realm.getInstance(config);
         mRealmModelClasses = new ArrayList<>(mRealm.getConfiguration().getRealmObjectClasses());
 
-        Adapter adapter = new Adapter(this,
-                R.layout.realm_browser_item_realm_module,
-                mRealmModelClasses,
-                mRealm
-        );
+        final Adapter adapter = new Adapter(this, android.R.layout.simple_list_item_2, mRealmModelClasses, mRealm);
         ListView listView = (ListView) findViewById(R.id.realm_browser_listView);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        onItemClicked(mRealmModelClasses.get(position));
-                    }
-                });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onItemClicked(adapter.getItem(position));
+            }
+        });
     }
 
 
@@ -118,11 +114,11 @@ public class RealmModelsActivity extends AppCompatActivity {
             if (convertView == null)
                 convertView = LayoutInflater.from(getContext()).inflate(mResource, parent, false);
 
-            TextView title = (TextView) convertView.findViewById(R.id.realm_browser_title);
-            TextView count = (TextView) convertView.findViewById(R.id.realm_browser_count);
+            TextView title = (TextView) convertView.findViewById(android.R.id.text1);
+            TextView count = (TextView) convertView.findViewById(android.R.id.text2);
 
             title.setText(realmModel.getSimpleName());
-            count.setText(String.valueOf(mRealm.where(realmModel).findAll().size()));
+            count.setText(String.format(Locale.US, "%d %s", mRealm.where(realmModel).findAll().size(), "rows"));
 
             return convertView;
         }
