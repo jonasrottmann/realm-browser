@@ -19,7 +19,6 @@ import java.util.List;
 import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
-import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
 import io.realm.RealmObjectSchema;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
@@ -28,9 +27,8 @@ import timber.log.Timber;
 /**
  * Created by Jonas Rottmann on 15/03/16.
  */
-public class RealmObjectAddEditActivity extends AppCompatActivity {
+public class RealmObjectActivity extends AppCompatActivity {
 
-    private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
     private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
     private Class<? extends RealmModel> mRealmObjectClass;
     private List<Field> mFieldsList;
@@ -39,11 +37,10 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
 
 
 
-    public static Intent getIntent(Context context, Class<? extends RealmModel> realmModelClass, String realmFileName) {
-        Intent intent = new Intent(context, RealmObjectAddEditActivity.class);
+    public static Intent getIntent(Context context, Class<? extends RealmModel> realmModelClass) {
+        Intent intent = new Intent(context, RealmObjectActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRAS_REALM_MODEL_CLASS, realmModelClass);
-        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         return intent;
     }
 
@@ -55,12 +52,7 @@ public class RealmObjectAddEditActivity extends AppCompatActivity {
         setContentView(R.layout.realm_browser_ac_realm_addedit);
 
         mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
-
-        String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .name(realmFileName)
-                .build();
-        mDynamicRealm = DynamicRealm.getInstance(config);
+        mDynamicRealm = DynamicRealm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
         RealmObjectSchema schema = mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName());
 
         mFieldsList = new ArrayList<>();

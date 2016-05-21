@@ -24,6 +24,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView mTxtTitle;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +42,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -49,7 +51,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 updateTitle();
                 break;
             case R.id.btnRemove:
-                removeAllUsers();
+                clearRealm();
                 updateTitle();
                 break;
             case R.id.btnOpenFile:
@@ -60,6 +62,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
         }
     }
+
 
 
     private void updateTitle() {
@@ -73,21 +76,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
-    private void removeAllUsers() {
+
+    private void clearRealm() {
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .name(REALM_FILE_NAME)
                 .build();
         Realm realm = Realm.getInstance(config);
-
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.where(User.class).findAll();
+                realm.deleteAll();
             }
         });
-
         realm.close();
     }
+
 
 
     private void insertUsers(int count) {
@@ -139,9 +142,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
+
     private void startRealmFilesActivity() {
         RealmBrowser.startRealmFilesActivity(this);
     }
+
 
 
     private void startRealmModelsActivity() {

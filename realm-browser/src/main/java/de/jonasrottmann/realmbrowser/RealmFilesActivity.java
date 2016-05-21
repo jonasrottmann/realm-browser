@@ -92,9 +92,10 @@ public class RealmFilesActivity extends AppCompatActivity {
             RealmConfiguration config = new RealmConfiguration.Builder(this)
                     .name(realmFileName)
                     .build();
+            RealmHolder.getInstance().setRealmConfiguration(config);
             Realm realm = Realm.getInstance(config);
             realm.close();
-            startActivity(RealmModelsActivity.getIntent(this, realmFileName));
+            startActivity(RealmModelsActivity.getIntent(this));
         } catch (RealmMigrationNeededException e) {
             Toast.makeText(getApplicationContext(), "RealmMigrationNeededException", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {

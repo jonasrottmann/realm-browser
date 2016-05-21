@@ -38,7 +38,6 @@ import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.Case;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
-import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.RealmObject;
@@ -49,7 +48,6 @@ import timber.log.Timber;
 
 public class RealmBrowserActivity extends AppCompatActivity implements RealmAdapter.Listener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener {
 
-    private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
     private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
     private DynamicRealm mDynamicRealm;
     private Class<? extends RealmModel> mRealmObjectClass;
@@ -70,20 +68,18 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
 
 
-    public static void start(Context context, Class<? extends RealmModel> realmModelClass, String realmFileName) {
+    public static void start(Context context, Class<? extends RealmModel> realmModelClass) {
         Intent intent = new Intent(context, RealmBrowserActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRAS_REALM_MODEL_CLASS, realmModelClass);
-        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         context.startActivity(intent);
     }
 
 
 
-    public static void start(Context context, String realmFileName) {
+    public static void start(Context context) {
         Intent intent = new Intent(context, RealmBrowserActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         context.startActivity(intent);
     }
 
@@ -94,12 +90,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.realm_browser_ac_realm_browser);
 
-        String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .name(realmFileName)
-                .build();
-
-        mDynamicRealm = DynamicRealm.getInstance(config);
+        mDynamicRealm = DynamicRealm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
         if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
             mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
             mRealmObjects = mDynamicRealm.where(mRealmObjectClass.getSimpleName()).findAll();
@@ -140,7 +131,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         mTxtColumn3 = (TextView) findViewById(R.id.realm_browser_txtColumn3);
         mFab = (FloatingActionButton) findViewById(R.id.realm_browser_fab);
         if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
-            mFab.setOnClickListener(createFABClickListener((Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS), realmFileName));
+            mFab.setOnClickListener(createFABClickListener((Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS)));
         } else {
             // Currently displaying RealmList of parametrized field => don't give option to add new object
             mFab.setVisibility(View.GONE);
@@ -192,11 +183,11 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
 
 
 
-    private View.OnClickListener createFABClickListener(final Class<? extends RealmModel> modelClass, final String realmFileName) {
+    private View.OnClickListener createFABClickListener(final Class<? extends RealmModel> modelClass) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(RealmObjectAddEditActivity.getIntent(RealmBrowserActivity.this, modelClass, realmFileName));
+                startActivity(RealmObjectActivity.getIntent(RealmBrowserActivity.this, modelClass));
             }
         };
     }
@@ -291,20 +282,20 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
     }
 
 
-
-    @Override
-    public void onParametrizedFieldClicked(@NonNull DynamicRealmObject realmObject, @NonNull Field field) {
-        RealmHolder.getInstance().setObject(realmObject);
-        RealmHolder.getInstance().setField(field);
-        String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
-        RealmBrowserActivity.start(this, realmFileName);
-    }
+//    @Override
+//    public void onParametrizedFieldClicked(@NonNull DynamicRealmObject realmObject, @NonNull Field field) {
+//        RealmHolder.getInstance().setObject(realmObject);
+//        RealmHolder.getInstance().setField(field);
+//        String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
+//        RealmBrowserActivity.start(this, realmFileName);
+//    }
 
 
 
     @Override
     public void onRowClicked(@NonNull DynamicRealmObject realmObject) {
-        // TODO future use?
+        Intent intent = RealmObjectActivity.getIntent(this, mRealmObjectClass);
+        startActivity(intent);
     }
 
 

@@ -19,31 +19,26 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
 
 public class RealmModelsActivity extends AppCompatActivity {
-
-    private static final String EXTRAS_REALM_FILE_NAME = "EXTRAS_REALM_FILE_NAME";
 
     private Realm mRealm;
     private ArrayList<Class<? extends RealmModel>> mRealmModelClasses;
 
 
 
-    public static Intent getIntent(@NonNull Activity activity, @NonNull String realmFileName) {
+    public static Intent getIntent(@NonNull Activity activity) {
         Intent intent = new Intent(activity, RealmModelsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         return intent;
     }
 
 
 
-    public static Intent getIntent(@NonNull Context context, @NonNull String realmFileName) {
+    public static Intent getIntent(@NonNull Context context) {
         Intent intent = new Intent(context, RealmModelsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtra(EXTRAS_REALM_FILE_NAME, realmFileName);
         return intent;
     }
 
@@ -56,10 +51,7 @@ public class RealmModelsActivity extends AppCompatActivity {
         setContentView(R.layout.realm_browser_ac_realm_list_view);
         setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
 
-        String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
-
-        RealmConfiguration config = new RealmConfiguration.Builder(this).name(realmFileName).build();
-        mRealm = Realm.getInstance(config);
+        mRealm = Realm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
         mRealmModelClasses = new ArrayList<>(mRealm.getConfiguration().getRealmObjectClasses());
 
         final Adapter adapter = new Adapter(this, android.R.layout.simple_list_item_2, mRealmModelClasses, mRealm);
@@ -86,8 +78,7 @@ public class RealmModelsActivity extends AppCompatActivity {
 
 
     private void onItemClicked(Class<? extends RealmModel> realmModel) {
-        String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
-        RealmBrowserActivity.start(this, realmModel, realmFileName);
+        RealmBrowserActivity.start(this, realmModel);
     }
 
 
