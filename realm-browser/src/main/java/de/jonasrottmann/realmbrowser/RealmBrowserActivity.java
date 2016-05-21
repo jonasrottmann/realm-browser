@@ -99,7 +99,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_INDEX)) {
             int index = getIntent().getIntExtra(EXTRAS_REALM_MODEL_INDEX, 0);
             mRealmObjectClass = RealmBrowser.getInstance().getRealmModelList().get(index);
-            mRealmObjects = mDynamicRealm.allObjects(mRealmObjectClass.getSimpleName());
+            mRealmObjects = mDynamicRealm.where(mRealmObjectClass.getSimpleName()).findAll();
         } else {
             DynamicRealmObject object = RealmHolder.getInstance().getObject();
             Field field = RealmHolder.getInstance().getField();
