@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="8dp"
-        tools:src="@drawable/realm_browser_ic_vpn_key_black_24px" />
+        tools:src="@drawable/realm_browser_ic_vpn_key_black_24dp" />
 
     <ImageView
         android:id="@+id/realm_browser_field_info"

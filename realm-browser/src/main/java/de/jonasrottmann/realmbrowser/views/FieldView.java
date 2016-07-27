@@ -67,7 +67,7 @@ public abstract class FieldView extends LinearLayout {
 
     private void setupPrimaryKeyImageView(@NonNull Field field) {
         if (mRealmObjectSchema.isPrimaryKey(field.getName())) {
-            ivFieldPrimaryKey.setImageDrawable(getDrawable(getContext(), R.drawable.realm_browser_ic_vpn_key_black_24px));
+            ivFieldPrimaryKey.setImageDrawable(getDrawable(getContext(), R.drawable.realm_browser_ic_vpn_key_black_24dp));
             ivFieldPrimaryKey.setVisibility(VISIBLE);
         } else if (mRealmObjectSchema.isRequired(field.getName())) {
             // TODO set key drawable with star
@@ -90,7 +90,7 @@ public abstract class FieldView extends LinearLayout {
     }
 
     public void togglePrimaryKeyError(boolean show) {
-        ivFieldPrimaryKey.setImageDrawable(getDrawable(getContext(), R.drawable.realm_browser_ic_vpn_key_black_24px));
+        ivFieldPrimaryKey.setImageDrawable(getDrawable(getContext(), R.drawable.realm_browser_ic_vpn_key_black_24dp));
         if (show) {
             ivFieldPrimaryKey.setColorFilter(getColor(getContext(), R.color.realm_browser_error), SRC_ATOP);
             ivFieldPrimaryKey.setOnClickListener(new OnClickListener() {
