@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import java.lang.reflect.Field;
@@ -78,7 +79,7 @@ public class RealmObjectActivity extends AppCompatActivity {
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.realm_browser_linearLayout);
         mFieldViewsList = new HashMap<>();
         int dp16 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, this.getResources().getDisplayMetrics());
-        for (Field field : mFieldsList) {
+        for (final Field field : mFieldsList) {
             FieldView realmFieldView;
 
             if (Utils.isString(field)) {
@@ -93,6 +94,16 @@ public class RealmObjectActivity extends AppCompatActivity {
                 realmFieldView = new DateView(this, schema, field);
             } else if (Utils.isParametrizedField(field)) {
                 realmFieldView = new RealmListView(this, schema, field);
+                realmFieldView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mDynamicRealmObject != null) {
+                            RealmHolder.getInstance().setObject(mDynamicRealmObject);
+                            RealmHolder.getInstance().setField(field);
+                            RealmBrowserActivity.start(RealmObjectActivity.this);
+                        }
+                    }
+                });
             } else {
                 // Skip this field.
                 continue;

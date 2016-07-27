@@ -88,7 +88,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         setContentView(R.layout.realm_browser_ac_realm_browser);
 
         mDynamicRealm = DynamicRealm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
-        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
             mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
             mRealmObjects = mDynamicRealm.where(mRealmObjectClass.getSimpleName()).findAll();
         } else {
@@ -127,7 +127,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         mTxtColumn2 = (TextView) findViewById(R.id.realm_browser_txtColumn2);
         mTxtColumn3 = (TextView) findViewById(R.id.realm_browser_txtColumn3);
         mFab = (FloatingActionButton) findViewById(R.id.realm_browser_fab);
-        if (getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
             mFab.setOnClickListener(createFABClickListener((Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS)));
         } else {
             // Currently displaying RealmList of parametrized field => don't give option to add new object
