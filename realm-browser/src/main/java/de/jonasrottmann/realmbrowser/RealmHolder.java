@@ -10,8 +10,7 @@ class RealmHolder {
     private static final RealmHolder sInstance = new RealmHolder();
     private DynamicRealmObject mObject;
     private Field mField;
-    private RealmConfiguration mRealmConfiguration;
-
+    private RealmConfiguration mRealmConfig;
 
 
     public static RealmHolder getInstance() {
@@ -19,38 +18,39 @@ class RealmHolder {
     }
 
 
-
+    /*
+    Object
+    */
     public DynamicRealmObject getObject() {
         return mObject;
     }
-
 
 
     public void setObject(DynamicRealmObject object) {
         mObject = object;
     }
 
-
-
+    /*
+     Field
+    */
     public Field getField() {
         return mField;
     }
-
 
 
     public void setField(Field field) {
         mField = field;
     }
 
-
-
+    /*
+     Realm Config
+    */
     public RealmConfiguration getRealmConfiguration() {
-        return mRealmConfiguration;
+        return mRealmConfig;
     }
 
 
-
-    public void setRealmConfiguration(RealmConfiguration mRealmConfiguration) {
-        this.mRealmConfiguration = mRealmConfiguration;
+    public void setRealmConfiguration(RealmConfiguration realmConfig) {
+        mRealmConfig = realmConfig;
     }
 }

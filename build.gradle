@@ -2,15 +2,15 @@ buildscript {
     ext {
         gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
         gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
-        realmVersion = '0.91.0'
-        supportLibVersion = '23.4.0'
+        realmVersion = '1.1.0'
+        supportLibVersion = '24.1.1'
         buildToolsVersion = '23.0.3'
     }
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.1.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
         classpath "io.realm:realm-gradle-plugin:$realmVersion"
     }

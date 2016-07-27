@@ -17,6 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.jonasrottmann.realmbrowser.utils.Utils;
+import de.jonasrottmann.realmbrowser.views.BlobView;
+import de.jonasrottmann.realmbrowser.views.BoolView;
+import de.jonasrottmann.realmbrowser.views.DateView;
+import de.jonasrottmann.realmbrowser.views.FieldView;
+import de.jonasrottmann.realmbrowser.views.NumberView;
+import de.jonasrottmann.realmbrowser.views.RealmListView;
+import de.jonasrottmann.realmbrowser.views.StringView;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmModel;
@@ -30,31 +37,34 @@ import timber.log.Timber;
 public class RealmObjectActivity extends AppCompatActivity {
 
     private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
+    private static final String EXTRAS_FLAG_NEW_OBJECT = "NEW_OBJECT";
     private Class<? extends RealmModel> mRealmObjectClass;
+    private DynamicRealmObject mDynamicRealmObject;
     private List<Field> mFieldsList;
-    private HashMap<String, RealmAddEditFieldView> mFieldViewsList;
+    private HashMap<String, FieldView> mFieldViewsList;
     private DynamicRealm mDynamicRealm;
 
 
-
-    public static Intent getIntent(Context context, Class<? extends RealmModel> realmModelClass) {
+    public static Intent getIntent(Context context, Class<? extends RealmModel> realmModelClass, boolean newObject) {
         Intent intent = new Intent(context, RealmObjectActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRAS_REALM_MODEL_CLASS, realmModelClass);
+        intent.putExtra(EXTRAS_FLAG_NEW_OBJECT, newObject);
         return intent;
     }
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.realm_browser_ac_realm_addedit);
-
-        mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
         mDynamicRealm = DynamicRealm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
-        RealmObjectSchema schema = mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName());
+        mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
 
+        if (!getIntent().getBooleanExtra(EXTRAS_FLAG_NEW_OBJECT, true)) {
+            mDynamicRealmObject = RealmHolder.getInstance().getObject();
+        }
+
+        RealmObjectSchema schema = mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName());
         mFieldsList = new ArrayList<>();
         for (String s : schema.getFieldNames()) {
             try {
@@ -65,15 +75,39 @@ public class RealmObjectActivity extends AppCompatActivity {
         }
 
         // Init Views
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.realm_browser_addedit_linearLayout);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.realm_browser_linearLayout);
         mFieldViewsList = new HashMap<>();
-        int margin16 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, this.getResources().getDisplayMetrics());
+        int dp16 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, this.getResources().getDisplayMetrics());
         for (Field field : mFieldsList) {
-            RealmAddEditFieldView addEditFieldView = new RealmAddEditFieldView(this);
-            addEditFieldView.setField(schema, field);
-            addEditFieldView.setPadding(margin16, margin16 / 2, margin16, margin16 / 2);
-            linearLayout.addView(addEditFieldView);
-            mFieldViewsList.put(field.getName(), addEditFieldView);
+            FieldView realmFieldView;
+
+            if (Utils.isString(field)) {
+                realmFieldView = new StringView(this, schema, field);
+            } else if (Utils.isNumberField(field)) {
+                realmFieldView = new NumberView(this, schema, field);
+            } else if (Utils.isBoolean(field)) {
+                realmFieldView = new BoolView(this, schema, field);
+            } else if (Utils.isBlob(field)) {
+                realmFieldView = new BlobView(this, schema, field);
+            } else if (Utils.isDate(field)) {
+                realmFieldView = new DateView(this, schema, field);
+            } else if (Utils.isParametrizedField(field)) {
+                realmFieldView = new RealmListView(this, schema, field);
+            } else {
+                // Skip this field.
+                continue;
+            }
+
+            realmFieldView.setPadding(dp16, dp16 / 2, dp16, dp16 / 2);
+
+            if (mDynamicRealmObject != null) {
+                realmFieldView.setRealmObject(mDynamicRealmObject);
+                realmFieldView.toggleEditMode(false);
+            } else {
+                realmFieldView.toggleEditMode(true);
+            }
+            linearLayout.addView(realmFieldView);
+            mFieldViewsList.put(field.getName(), realmFieldView);
         }
 
         // Init Toolbar
@@ -81,18 +115,19 @@ public class RealmObjectActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(String.format("New %s", mRealmObjectClass.getSimpleName()));
+            if (mDynamicRealmObject == null)
+                actionBar.setTitle(String.format("New %s", mRealmObjectClass.getSimpleName()));
+            else
+                actionBar.setTitle(String.format("%s", mRealmObjectClass.getSimpleName()));
         }
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.realm_browser_menu_addedit, menu);
+        getMenuInflater().inflate(R.menu.realm_browser_menu_objectactivity, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
 
     @Override
@@ -101,13 +136,14 @@ public class RealmObjectActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_save) {
-            createObject();
+            if (createObject()) {
+                finish();
+            }
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
-
 
 
     @Override
@@ -117,11 +153,10 @@ public class RealmObjectActivity extends AppCompatActivity {
     }
 
 
-
-    private void createObject() {
+    private boolean createObject() {
         // Return if any field holds a invalid value
         for (String fieldName : mFieldViewsList.keySet()) {
-            if (!mFieldViewsList.get(fieldName).isValid()) return;
+            if (!mFieldViewsList.get(fieldName).isInputValid()) return false;
         }
 
 
@@ -137,11 +172,11 @@ public class RealmObjectActivity extends AppCompatActivity {
             } catch (IllegalArgumentException e) {
                 // TODO
                 mDynamicRealm.cancelTransaction();
-                return;
+                return false;
             } catch (RealmPrimaryKeyConstraintException e) {
                 mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(true);
                 mDynamicRealm.cancelTransaction();
-                return;
+                return false;
             }
         } else {
             realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName());
@@ -159,7 +194,6 @@ public class RealmObjectActivity extends AppCompatActivity {
         // Commit Realm Transaction
         mDynamicRealm.commitTransaction();
 
-        // Finish Activity
-        finish();
+        return true;
     }
 }

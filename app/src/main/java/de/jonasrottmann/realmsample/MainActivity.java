@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +25,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView mTxtTitle;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +40,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         RealmBrowser.showRealmFilesNotification(this);
     }
-
 
 
     @Override
@@ -64,7 +63,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
-
     private void updateTitle() {
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .name(REALM_FILE_NAME)
@@ -74,7 +72,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mTxtTitle.setText(String.format("Items in database: %d", size));
         realm.close();
     }
-
 
 
     private void clearRealm() {
@@ -90,7 +87,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         });
         realm.close();
     }
-
 
 
     private void insertUsers(int count) {
@@ -112,6 +108,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             user.setAddress(address);
             user.setUuid(UUID.randomUUID().toString());
             user.setByteArray(new byte[]{1, 2, 3});
+            user.setCreationDate(new Date(System.currentTimeMillis()));
 
             RealmList<RealmString> emailList = new RealmList<>();
             for (int k = 0; k < 5; k++) {
@@ -142,11 +139,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
-
     private void startRealmFilesActivity() {
         RealmBrowser.startRealmFilesActivity(this);
     }
-
 
 
     private void startRealmModelsActivity() {

@@ -1,5 +1,7 @@
 package de.jonasrottmann.realmsample.data;
 
+import java.util.Date;
+
 import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.annotations.PrimaryKey;
@@ -17,8 +19,8 @@ public class User implements RealmModel {
     private Address address;
     private RealmList<RealmString> emailList;
     private RealmList<Contact> contactList;
+    private Date creationDate;
     private byte[] byteArray;
-
 
 
     public void setEmailList(RealmList<RealmString> emailList) {
@@ -26,11 +28,9 @@ public class User implements RealmModel {
     }
 
 
-
     public void setAddress(Address address) {
         this.address = address;
     }
-
 
 
     public void setName(String name) {
@@ -38,11 +38,9 @@ public class User implements RealmModel {
     }
 
 
-
     public void setAge(int age) {
         this.age = age;
     }
-
 
 
     public void setIsBlocked(boolean isBlocked) {
@@ -50,11 +48,9 @@ public class User implements RealmModel {
     }
 
 
-
     public void setContactList(RealmList<Contact> contactList) {
         this.contactList = contactList;
     }
-
 
 
     public void setUuid(String uuid) {
@@ -62,8 +58,17 @@ public class User implements RealmModel {
     }
 
 
-
     public void setByteArray(byte[] byteArray) {
         this.byteArray = byteArray;
+    }
+
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 }

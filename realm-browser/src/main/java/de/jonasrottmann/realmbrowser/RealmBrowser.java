@@ -16,17 +16,14 @@ public final class RealmBrowser {
     private static final RealmBrowser sInstance = new RealmBrowser();
 
 
-
     public static RealmBrowser getInstance() {
         return sInstance;
     }
 
 
-
     public static void startRealmFilesActivity(@NonNull Context context) {
         context.startActivity(RealmFilesActivity.getIntent(context));
     }
-
 
 
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull String realmFileName) {
@@ -37,18 +34,15 @@ public final class RealmBrowser {
     }
 
 
-
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull RealmConfiguration realmConfiguration) {
         RealmHolder.getInstance().setRealmConfiguration(realmConfiguration);
         context.startActivity(RealmModelsActivity.getIntent(context));
     }
 
 
-
     public static void showRealmFilesNotification(@NonNull Context context) {
         showNotification(context, RealmFilesActivity.class);
     }
-
 
 
     private static void showNotification(@NonNull Context context, @NonNull Class activityClass) {

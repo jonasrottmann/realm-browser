@@ -8,11 +8,9 @@ public class Address extends RealmObject {
     private double lon;
 
 
-
     public double getLat() {
         return lat;
     }
-
 
 
     public void setLat(double lat) {
@@ -20,11 +18,9 @@ public class Address extends RealmObject {
     }
 
 
-
     public double getLon() {
         return lon;
     }
-
 
 
     public void setLon(double lon) {

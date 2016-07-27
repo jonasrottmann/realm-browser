@@ -10,11 +10,9 @@ public class RealmPreferences {
     private final Context mContext;
 
 
-
     public RealmPreferences(Context context) {
         mContext = context;
     }
-
 
 
     private SharedPreferences preferences() {
@@ -22,11 +20,9 @@ public class RealmPreferences {
     }
 
 
-
     public void setShouldWrapText(boolean value) {
         preferences().edit().putBoolean(WRAP_TEXT, value).commit();
     }
-
 
 
     public boolean shouldWrapText() {

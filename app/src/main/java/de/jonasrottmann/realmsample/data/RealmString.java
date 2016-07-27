@@ -7,10 +7,8 @@ public class RealmString extends RealmObject {
     private String value;
 
 
-
     public RealmString() {
     }
-
 
 
     public RealmString(String value) {
@@ -18,11 +16,9 @@ public class RealmString extends RealmObject {
     }
 
 
-
     public String getValue() {
         return value;
     }
-
 
 
     public void setValue(String value) {

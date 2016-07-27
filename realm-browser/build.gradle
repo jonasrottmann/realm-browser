@@ -5,13 +5,13 @@ apply plugin: 'realm-android'
 group = 'de.jonasrottmann.realm-browser'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion project.buildToolsVersion
     resourcePrefix 'realm_browser_'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode project.gitCommitCount
         versionName project.gitTag
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

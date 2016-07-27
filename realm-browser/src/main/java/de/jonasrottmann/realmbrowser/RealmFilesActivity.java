@@ -31,13 +31,11 @@ public class RealmFilesActivity extends AppCompatActivity {
     private ArrayAdapter<Pair<String, String>> mAdapter;
 
 
-
     public static Intent getIntent(@NonNull Context context) {
         Intent intent = new Intent(context, RealmFilesActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }
-
 
 
     @Override
@@ -74,7 +72,6 @@ public class RealmFilesActivity extends AppCompatActivity {
     }
 
 
-
     private boolean isValid(String fileName) {
         boolean isValid = true;
         int index = fileName.lastIndexOf(".");
@@ -84,7 +81,6 @@ public class RealmFilesActivity extends AppCompatActivity {
         }
         return isValid;
     }
-
 
 
     private void onItemClicked(@NonNull String realmFileName) {
@@ -104,18 +100,15 @@ public class RealmFilesActivity extends AppCompatActivity {
     }
 
 
-
     private static class Adapter extends ArrayAdapter<Pair<String, String>> {
 
         private int mResource;
-
 
 
         public Adapter(Context context, int res, ArrayList<Pair<String, String>> classes) {
             super(context, res, classes);
             mResource = res;
         }
-
 
 
         @Override

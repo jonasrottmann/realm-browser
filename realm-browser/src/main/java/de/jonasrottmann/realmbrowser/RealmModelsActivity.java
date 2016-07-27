@@ -27,7 +27,6 @@ public class RealmModelsActivity extends AppCompatActivity {
     private ArrayList<Class<? extends RealmModel>> mRealmModelClasses;
 
 
-
     public static Intent getIntent(@NonNull Activity activity) {
         Intent intent = new Intent(activity, RealmModelsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -35,13 +34,11 @@ public class RealmModelsActivity extends AppCompatActivity {
     }
 
 
-
     public static Intent getIntent(@NonNull Context context) {
         Intent intent = new Intent(context, RealmModelsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }
-
 
 
     @Override
@@ -66,7 +63,6 @@ public class RealmModelsActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onDestroy() {
         if (mRealm != null) {
@@ -76,11 +72,9 @@ public class RealmModelsActivity extends AppCompatActivity {
     }
 
 
-
     private void onItemClicked(Class<? extends RealmModel> realmModel) {
         RealmBrowserActivity.start(this, realmModel);
     }
-
 
 
     private static class Adapter extends ArrayAdapter<Class<? extends RealmModel>> {
@@ -89,13 +83,11 @@ public class RealmModelsActivity extends AppCompatActivity {
         private Realm mRealm;
 
 
-
         public Adapter(Context context, int res, ArrayList<Class<? extends RealmModel>> classes, Realm realm) {
             super(context, res, classes);
             mResource = res;
             mRealm = realm;
         }
-
 
 
         @Override
