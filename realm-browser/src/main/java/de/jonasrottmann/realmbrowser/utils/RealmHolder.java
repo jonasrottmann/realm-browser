@@ -1,11 +1,11 @@
-package de.jonasrottmann.realmbrowser;
+package de.jonasrottmann.realmbrowser.utils;
 
 import java.lang.reflect.Field;
 
 import io.realm.DynamicRealmObject;
 import io.realm.RealmConfiguration;
 
-class RealmHolder {
+public class RealmHolder {
 
     private static final RealmHolder sInstance = new RealmHolder();
     private DynamicRealmObject mObject;

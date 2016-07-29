@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.jonasrottmann.realmbrowser.model.RealmPreferences;
+import de.jonasrottmann.realmbrowser.utils.RealmHolder;
 import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.Case;
 import io.realm.DynamicRealm;
@@ -46,12 +47,12 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-public class RealmBrowserActivity extends AppCompatActivity implements RealmAdapter.Listener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener {
+public class RealmBrowserActivity extends AppCompatActivity implements RealmBrowserAdapter.Listener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
     private DynamicRealm mDynamicRealm;
     private Class<? extends RealmModel> mRealmObjectClass;
-    private RealmAdapter mAdapter;
+    private RealmBrowserAdapter mAdapter;
     private TextView mTxtIndex;
     private TextView mTxtColumn1;
     private TextView mTxtColumn2;
@@ -114,7 +115,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
                 Timber.d("Initializing field map.", e);
             }
         }
-        mAdapter = new RealmAdapter(this, mRealmObjects, mSelectedFieldList, this, mDynamicRealm);
+        mAdapter = new RealmBrowserAdapter(this, mRealmObjects, mSelectedFieldList, this, mDynamicRealm);
 
 
         // Init Views
@@ -271,15 +272,6 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmAdap
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-//    @Override
-//    public void onParametrizedFieldClicked(@NonNull DynamicRealmObject realmObject, @NonNull Field field) {
-//        RealmHolder.getInstance().setObject(realmObject);
-//        RealmHolder.getInstance().setField(field);
-//        String realmFileName = getIntent().getStringExtra(EXTRAS_REALM_FILE_NAME);
-//        RealmBrowserActivity.start(this, realmFileName);
-//    }
 
 
     @Override

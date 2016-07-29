@@ -3,7 +3,7 @@ package de.jonasrottmann.realmbrowser.views;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.ViewStub;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import java.lang.reflect.Field;
 
@@ -12,45 +12,36 @@ import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
 
-public class StringView extends FieldView {
+public class RealmObjectView extends FieldView {
 
-    EditText fieldEditText;
+    private TextView textView;
 
-    public StringView(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
+    public RealmObjectView(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isString(getField())) throw new IllegalArgumentException();
-    }
-
-    @Override
-    public String getFieldTypeString() {
-        return getField().getType().getSimpleName();
+        if (!Utils.isRealmObjectField(getField())) throw new IllegalArgumentException();
     }
 
     @Override
     public void inflateViewStub() {
         ViewStub stub = (ViewStub) findViewById(R.id.realm_browser_stub);
-        stub.setLayoutResource(R.layout.realm_browser_fieldview_edittext);
+        stub.setLayoutResource(R.layout.realm_browser_fieldview_textview);
         stub.inflate();
     }
 
     @Override
     public void initViewStubView() {
-        fieldEditText = (EditText) findViewById(R.id.realm_browser_field_edittext);
-        fieldEditText.setMaxLines(4);
+        textView = (TextView) findViewById(R.id.realm_browser_field_textview);
     }
 
     @Override
     public Object getValue() {
-        if (getRealmObjectSchema().isNullable(getField().getName()) && getFieldIsNullCheckBox().isChecked())
-            return null;
-
-        return fieldEditText.getText().toString();
+        return null;
     }
 
     @Override
     public void toggleEditMode(boolean enable) {
         super.toggleEditMode(enable);
-        fieldEditText.setEnabled(enable);
+        textView.setEnabled(enable);
     }
 
     @Override
@@ -60,11 +51,11 @@ public class StringView extends FieldView {
 
     @Override
     public void setRealmObject(@NonNull DynamicRealmObject realmObject) {
-        if (Utils.isString(getField())) {
-            if (realmObject.getString(getField().getName()) == null) {
+        if (Utils.isRealmObjectField(getField())) {
+            if (realmObject.getObject(getField().getName()) == null) {
                 getFieldIsNullCheckBox().setChecked(true);
             } else {
-                fieldEditText.setText(realmObject.getString(getField().getName()));
+                textView.setText(realmObject.getObject(getField().getName()).toString());
             }
         } else {
             throw new IllegalArgumentException();

@@ -3,9 +3,11 @@ package de.jonasrottmann.realmbrowser;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.jonasrottmann.realmbrowser.utils.RealmHolder;
 import de.jonasrottmann.realmbrowser.utils.Utils;
 import de.jonasrottmann.realmbrowser.views.BlobView;
 import de.jonasrottmann.realmbrowser.views.BoolView;
@@ -24,6 +27,7 @@ import de.jonasrottmann.realmbrowser.views.DateView;
 import de.jonasrottmann.realmbrowser.views.FieldView;
 import de.jonasrottmann.realmbrowser.views.NumberView;
 import de.jonasrottmann.realmbrowser.views.RealmListView;
+import de.jonasrottmann.realmbrowser.views.RealmObjectView;
 import de.jonasrottmann.realmbrowser.views.StringView;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
@@ -57,7 +61,7 @@ public class RealmObjectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.realm_browser_ac_realm_addedit);
+        setContentView(R.layout.realm_browser_ac_realm_object);
         mDynamicRealm = DynamicRealm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
         mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
 
@@ -80,7 +84,7 @@ public class RealmObjectActivity extends AppCompatActivity {
         mFieldViewsList = new HashMap<>();
         int dp16 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, this.getResources().getDisplayMetrics());
         for (final Field field : mFieldsList) {
-            FieldView realmFieldView;
+            final FieldView realmFieldView;
 
             if (Utils.isString(field)) {
                 realmFieldView = new StringView(this, schema, field);
@@ -101,6 +105,17 @@ public class RealmObjectActivity extends AppCompatActivity {
                             RealmHolder.getInstance().setObject(mDynamicRealmObject);
                             RealmHolder.getInstance().setField(field);
                             RealmBrowserActivity.start(RealmObjectActivity.this);
+                        }
+                    }
+                });
+            } else if (Utils.isRealmObjectField(field)) {
+                realmFieldView = new RealmObjectView(this, schema, field);
+                realmFieldView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mDynamicRealmObject != null) {
+                            // TODO
+                            Snackbar.make(realmFieldView, "TODO: Open this Activity...", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -181,10 +196,11 @@ public class RealmObjectActivity extends AppCompatActivity {
                 String primaryKeyFieldName = Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()));
                 realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName(), mFieldViewsList.get(primaryKeyFieldName).getValue());
             } catch (IllegalArgumentException e) {
-                // TODO
+                Log.e("RealmBrowser", "Error trying to create new Realm object of type " + mRealmObjectClass.getSimpleName(), e);
                 mDynamicRealm.cancelTransaction();
                 return false;
             } catch (RealmPrimaryKeyConstraintException e) {
+                Log.e("RealmBrowser", "Error trying to create new Realm object of type " + mRealmObjectClass.getSimpleName(), e);
                 mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(true);
                 mDynamicRealm.cancelTransaction();
                 return false;

@@ -22,7 +22,7 @@ import static android.support.v4.content.ContextCompat.getColor;
 import static android.support.v4.content.ContextCompat.getDrawable;
 
 public class NumberView extends FieldView {
-    private boolean isInputValid;
+    private boolean isInputValid = true;
     private EditText fieldEditText;
 
     public NumberView(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
@@ -71,6 +71,7 @@ public class NumberView extends FieldView {
 
     @Override
     public void toggleEditMode(boolean enable) {
+        super.toggleEditMode(enable);
         fieldEditText.setEnabled(enable);
     }
 

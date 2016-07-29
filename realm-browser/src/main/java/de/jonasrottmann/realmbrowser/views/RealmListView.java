@@ -45,7 +45,7 @@ public class RealmListView extends FieldView {
 
     @Override
     public void toggleEditMode(boolean enable) {
-
+        super.toggleEditMode(enable);
     }
 
     @Override

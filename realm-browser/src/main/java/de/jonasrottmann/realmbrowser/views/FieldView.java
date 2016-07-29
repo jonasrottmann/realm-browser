@@ -1,6 +1,7 @@
 package de.jonasrottmann.realmbrowser.views;
 
 import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -140,7 +141,10 @@ public abstract class FieldView extends LinearLayout {
     /**
      * @param enable
      */
-    public abstract void toggleEditMode(boolean enable);
+    @CallSuper
+    public void toggleEditMode(boolean enable) {
+        getFieldIsNullCheckBox().setEnabled(enable);
+    };
 
     /**
      * @return

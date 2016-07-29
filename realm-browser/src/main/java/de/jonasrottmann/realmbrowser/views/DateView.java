@@ -80,11 +80,17 @@ public class DateView extends FieldView {
 
     @Override
     public Object getValue() {
-        return null;
+        if (getFieldIsNullCheckBox().isChecked()) {
+            return null;
+        } else {
+            return newDateValue;
+        }
     }
 
     @Override
     public void toggleEditMode(boolean enable) {
+        super.toggleEditMode(enable);
+        textView.setEnabled(enable);
         editText.setVisibility(enable ? VISIBLE : GONE);
         infoImageView.setVisibility(enable ? VISIBLE : GONE);
         buttonPicker.setVisibility(enable ? VISIBLE : GONE);

@@ -15,7 +15,7 @@ public class User implements RealmModel {
     private String uuid;
     private int age;
     private boolean isBlocked;
-    private String name;
+    private RealmString name;
     private Address address;
     private RealmList<RealmString> emailList;
     private RealmList<Contact> contactList;
@@ -33,7 +33,7 @@ public class User implements RealmModel {
     }
 
 
-    public void setName(String name) {
+    public void setName(RealmString name) {
         this.name = name;
     }
 

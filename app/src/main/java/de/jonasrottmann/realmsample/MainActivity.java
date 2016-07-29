@@ -102,7 +102,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             address.setLon(24.0233077);
 
             User user = new User();
-            user.setName("Jon Doe " + i);
+            user.setName(new RealmString("Jon Doe " + i));
             user.setIsBlocked(Math.random() > 0.5);
             user.setAge(i);
             user.setAddress(address);

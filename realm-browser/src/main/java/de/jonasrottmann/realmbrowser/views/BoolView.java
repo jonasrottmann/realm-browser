@@ -43,6 +43,7 @@ public class BoolView extends FieldView {
 
     @Override
     public void toggleEditMode(boolean enable) {
+        super.toggleEditMode(enable);
         spinner.setEnabled(enable);
     }
 

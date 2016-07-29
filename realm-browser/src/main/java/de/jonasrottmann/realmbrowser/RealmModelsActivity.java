@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 
+import de.jonasrottmann.realmbrowser.utils.RealmHolder;
 import io.realm.Realm;
 import io.realm.RealmModel;
 

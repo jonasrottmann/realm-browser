@@ -40,7 +40,8 @@ public class BlobView extends FieldView {
 
     @Override
     public void toggleEditMode(boolean enable) {
-
+        super.toggleEditMode(enable);
+        textView.setEnabled(false);
     }
 
     @Override

@@ -19,7 +19,7 @@ import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 
-class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
+class RealmBrowserAdapter extends RecyclerView.Adapter<RealmBrowserAdapter.ViewHolder> {
 
     private final Context mContext;
     private final Listener mListener;
@@ -29,8 +29,8 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
     private List<Field> mFieldList;
 
 
-    public RealmAdapter(@NonNull Context context, @NonNull AbstractList<? extends DynamicRealmObject> realmObjects,
-                        @NonNull List<Field> fieldList, @NonNull Listener listener, @NonNull DynamicRealm realm) {
+    public RealmBrowserAdapter(@NonNull Context context, @NonNull AbstractList<? extends DynamicRealmObject> realmObjects,
+                               @NonNull List<Field> fieldList, @NonNull Listener listener, @NonNull DynamicRealm realm) {
         mRealmPreferences = new RealmPreferences(context);
         mContext = context;
         mRealmObjects = realmObjects;
@@ -51,7 +51,7 @@ class RealmAdapter extends RecyclerView.Adapter<RealmAdapter.ViewHolder> {
 
 
     @Override
-    public RealmAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RealmBrowserAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.realm_browser_item_realm_browser, parent, false);
         return new ViewHolder(v);
     }
