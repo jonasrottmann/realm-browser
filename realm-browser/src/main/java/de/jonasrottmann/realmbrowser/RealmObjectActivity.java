@@ -48,7 +48,7 @@ public class RealmObjectActivity extends AppCompatActivity {
     private List<Field> mFieldsList;
     private HashMap<String, FieldView> mFieldViewsList;
     private DynamicRealm mDynamicRealm;
-
+    private boolean mEditMode = false;
 
     public static Intent getIntent(Context context, Class<? extends RealmModel> realmModelClass, boolean newObject) {
         Intent intent = new Intent(context, RealmObjectActivity.class);
@@ -105,6 +105,9 @@ public class RealmObjectActivity extends AppCompatActivity {
                             RealmHolder.getInstance().setObject(mDynamicRealmObject);
                             RealmHolder.getInstance().setField(field);
                             RealmBrowserActivity.start(RealmObjectActivity.this);
+                        } else {
+                            // TODO
+                            Snackbar.make(realmFieldView, "TODO: Choose objects to add...", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -116,6 +119,8 @@ public class RealmObjectActivity extends AppCompatActivity {
                         if (mDynamicRealmObject != null) {
                             // TODO
                             Snackbar.make(realmFieldView, "TODO: Open this Activity...", Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            Snackbar.make(realmFieldView, "TODO: Choose object...", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -128,11 +133,10 @@ public class RealmObjectActivity extends AppCompatActivity {
 
             if (mDynamicRealmObject != null) {
                 realmFieldView.setRealmObject(mDynamicRealmObject);
-                realmFieldView.toggleEditMode(false);
-            } else {
-                realmFieldView.toggleEditMode(true);
             }
+
             linearLayout.addView(realmFieldView);
+
             mFieldViewsList.put(field.getName(), realmFieldView);
         }
 
@@ -155,6 +159,13 @@ public class RealmObjectActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (mDynamicRealmObject == null) {
+            menu.findItem(R.id.realm_browser_action_delete).setVisible(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -162,15 +173,24 @@ public class RealmObjectActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_save) {
-            if (createObject()) {
-                finish();
+            if (mDynamicRealmObject == null) {
+                if (createObject()) finish();
+            } else {
+                // TODO edit existing object
             }
+            return true;
+        } else if (item.getItemId() == R.id.realm_browser_action_delete) {
+            // TODO show dialog...
+            mDynamicRealm.beginTransaction();
+            mDynamicRealmObject.deleteFromRealm();
+            mDynamicRealm.commitTransaction();
+            // TODO show snackbar
+            finish();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
-
 
     @Override
     protected void onDestroy() {

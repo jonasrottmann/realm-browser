@@ -42,8 +42,7 @@ public class BoolView extends FieldView {
     }
 
     @Override
-    public void toggleEditMode(boolean enable) {
-        super.toggleEditMode(enable);
+    public void toggleInputMode(boolean enable) {
         spinner.setEnabled(enable);
     }
 

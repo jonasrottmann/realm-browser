@@ -39,8 +39,7 @@ public class RealmObjectView extends FieldView {
     }
 
     @Override
-    public void toggleEditMode(boolean enable) {
-        super.toggleEditMode(enable);
+    public void toggleInputMode(boolean enable) {
         textView.setEnabled(enable);
     }
 

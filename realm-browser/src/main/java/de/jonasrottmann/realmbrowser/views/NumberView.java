@@ -70,8 +70,7 @@ public class NumberView extends FieldView {
     }
 
     @Override
-    public void toggleEditMode(boolean enable) {
-        super.toggleEditMode(enable);
+    public void toggleInputMode(boolean enable) {
         fieldEditText.setEnabled(enable);
     }
 

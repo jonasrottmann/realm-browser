@@ -1,7 +1,6 @@
 package de.jonasrottmann.realmbrowser.views;
 
 import android.content.Context;
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -82,7 +81,7 @@ public abstract class FieldView extends LinearLayout {
             cbxFieldIsNull.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    toggleEditMode(!isChecked);
+                    toggleInputMode(!isChecked);
                 }
             });
         } else {
@@ -141,10 +140,7 @@ public abstract class FieldView extends LinearLayout {
     /**
      * @param enable
      */
-    @CallSuper
-    public void toggleEditMode(boolean enable) {
-        getFieldIsNullCheckBox().setEnabled(enable);
-    };
+    public abstract void toggleInputMode(boolean enable);
 
     /**
      * @return
