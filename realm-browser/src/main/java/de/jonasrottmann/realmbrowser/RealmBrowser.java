@@ -13,16 +13,6 @@ public final class RealmBrowser {
 
     public static final int NOTIFICATION_ID = 1000;
 
-    private static final RealmBrowser sInstance = new RealmBrowser();
-
-
-
-    public static RealmBrowser getInstance() {
-        return sInstance;
-    }
-
-
-
     public static void startRealmFilesActivity(@NonNull Context context) {
         context.startActivity(RealmFilesActivity.getIntent(context));
     }

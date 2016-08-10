@@ -15,14 +15,11 @@ import de.jonasrottmann.realmsample.data.Contact;
 import de.jonasrottmann.realmsample.data.RealmString;
 import de.jonasrottmann.realmsample.data.User;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    public static final String REALM_FILE_NAME = "db10.realm";
     private TextView mTxtTitle;
-
 
 
     @Override
@@ -66,10 +63,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private void updateTitle() {
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .name(REALM_FILE_NAME)
-                .build();
-        Realm realm = Realm.getInstance(config);
+        Realm realm = Realm.getDefaultInstance();
+
         int size = realm.where(User.class).findAll().size();
         mTxtTitle.setText(String.format("Items in database: %d", size));
         realm.close();
@@ -78,10 +73,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private void clearRealm() {
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .name(REALM_FILE_NAME)
-                .build();
-        Realm realm = Realm.getInstance(config);
+        Realm realm = Realm.getDefaultInstance();
+
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -94,10 +87,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private void insertUsers(int count) {
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .name(REALM_FILE_NAME)
-                .build();
-        Realm realm = Realm.getInstance(config);
+        Realm realm = Realm.getDefaultInstance();
 
         final List<User> userList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
@@ -150,6 +140,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private void startRealmModelsActivity() {
-        RealmBrowser.startRealmModelsActivity(this, REALM_FILE_NAME);
+        RealmBrowser.startRealmModelsActivity(this, Realm.getDefaultInstance().getConfiguration());
     }
 }
