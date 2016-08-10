@@ -28,23 +28,40 @@ Step 2. Add the dependency
 
 ```
 dependencies {
-    debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:v0.0.8'
-    testCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.8'
-    releaseCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.8'
+    debugCompile 'com.github.QuarkWorks.realm-browser:realm-browser:v0.0.10'
+    testCompile 'com.github.QuarkWorks.realm-browser:realm-browser-no-op:v0.0.10'
+    releaseCompile 'com.github.QuarkWorks.realm-browser:realm-browser-no-op:v0.0.10'
 }
 ```
 
-> ‼️ Make sure to use any version of this realm-browser from v0.0.8 and up only with a realm version in your project from 0.88.0 and up.
+The no-op version of Realm Browser has empty functions which do nothing. It is not necessary to include this,
+but you may if you do not want to access Realm Browser in release mode.
 
-> ‼️ This library is not yet compatible with the newly (in Realm 0.89.0) introduced interface [`RealmModel`](https://realm.io/docs/java/latest/#realmmodel-interface). You have to stick with extending `RealmObject` for now.
+> ‼️ Make sure to use any version of this realm-browser from v0.0.10 and up only with a realm version in your project from 0.91.0 and up.
+
+Realm Browser depends on Android support libraries, so you might want to exclude them from your project
+if they conflict with the ones you include:
+
+```
+depedencies {
+    debugCompile ('com.github.QuarkWorks.realm-browser:realm-browser:v0.0.10') {
+        exclude group: 'com.android.support';
+    }
+}
+```
+
+Step 3. Add ProGuard rules (optional)
+
+Use these if you enable minification for debug builds or want to use Realm Browser in release builds.
+
+```
+# Realm Browser
+-keep class de.jonasrottmann.realmbrowser.helper.* { *; }
+-keep class android.support.v7.widget.SearchView { *; }
+-keep class android.support.v7.view.** { *; }
+```
 
 ### Usage
-
-To initialize the Realm Browser add all classes which you want to see using the method below. Those classes must extend `RealmObject`.
-
-```
-RealmBrowser.getInstance().addRealmModel(Example.class, ...);
-```
 
 If you want to see all your databases call:
 
@@ -52,13 +69,17 @@ If you want to see all your databases call:
 RealmBrowser.startRealmFilesActivity(context);
 ```
 
-If you want to see all your table list call:
+If you want to see all the tables in a database call:
 
 ```
-RealmBrowser.startRealmModelsActivity(context, "<name of the database file>")
+RealmBrowser.startRealmModelsActivity(context, realmConfiguration);
 ```
 
-To display a notification from which the Realm Browser can be started.
+```
+RealmBrowser.startRealmModelsActivity(context, "<name of the database file>");
+```
+
+To display a notification from which the Realm Browser can be started:
 
 ```
 RealmBrowser.showRealmFilesNotification(context);
