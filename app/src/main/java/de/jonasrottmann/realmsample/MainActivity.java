@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import de.jonasrottmann.realmsample.data.Address;
@@ -14,23 +15,17 @@ import de.jonasrottmann.realmsample.data.Contact;
 import de.jonasrottmann.realmsample.data.RealmString;
 import de.jonasrottmann.realmsample.data.User;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    public static final String REALM_FILE_NAME = "db10.realm";
     private TextView mTxtTitle;
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        RealmBrowser.getInstance().addRealmModel(User.class, Address.class,
-                RealmString.class, Contact.class);
 
         mTxtTitle = (TextView) findViewById(R.id.txtTitle);
         findViewById(R.id.btnInsert).setOnClickListener(this);
@@ -53,7 +48,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 updateTitle();
                 break;
             case R.id.btnRemove:
-                removeAllUsers();
+                clearRealm();
                 updateTitle();
                 break;
             case R.id.btnOpenFile:
@@ -68,40 +63,31 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private void updateTitle() {
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .name(REALM_FILE_NAME)
-                .build();
-        Realm realm = Realm.getInstance(config);
-        int size = realm.allObjects(User.class).size();
+        Realm realm = Realm.getDefaultInstance();
+
+        int size = realm.where(User.class).findAll().size();
         mTxtTitle.setText(String.format("Items in database: %d", size));
         realm.close();
     }
 
 
 
-    private void removeAllUsers() {
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .name(REALM_FILE_NAME)
-                .build();
-        Realm realm = Realm.getInstance(config);
+    private void clearRealm() {
+        Realm realm = Realm.getDefaultInstance();
 
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.clear(User.class);
+                realm.deleteAll();
             }
         });
-
         realm.close();
     }
 
 
 
     private void insertUsers(int count) {
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .name(REALM_FILE_NAME)
-                .build();
-        Realm realm = Realm.getInstance(config);
+        Realm realm = Realm.getDefaultInstance();
 
         final List<User> userList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
@@ -114,6 +100,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
             user.setIsBlocked(Math.random() > 0.5);
             user.setAge(i);
             user.setAddress(address);
+            user.setUuid(UUID.randomUUID().toString());
+            user.setByteArray(new byte[]{1, 2, 3});
 
             RealmList<RealmString> emailList = new RealmList<>();
             for (int k = 0; k < 5; k++) {
@@ -152,7 +140,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private void startRealmModelsActivity() {
-        RealmBrowser.startRealmModelsActivity(this, REALM_FILE_NAME);
+        RealmBrowser.startRealmModelsActivity(this, Realm.getDefaultInstance().getConfiguration());
     }
-
 }

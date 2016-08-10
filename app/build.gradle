@@ -3,14 +3,13 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
-
+    buildToolsVersion project.buildToolsVersion
     defaultConfig {
         applicationId "de.jonasrottmann.realmsample"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode project.gitCommitCount
+        versionName project.gitTag
     }
     buildTypes {
         release {
@@ -21,9 +20,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.2.0'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile "com.android.support:appcompat-v7:$project.supportLibVersion"
     debugCompile project(':realm-browser')
-    testCompile project(':realm-browser-no-op')
     releaseCompile project(':realm-browser-no-op')
 }

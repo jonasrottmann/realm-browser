@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.jonasrottmann.realmsample" >
+    package="de.jonasrottmann.realmsample">
 
     <application
+        android:name=".Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/realm_browser_title" >
+            android:label="@string/realm_browser_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
