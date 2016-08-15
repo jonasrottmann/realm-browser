@@ -1,16 +1,24 @@
 package de.jonasrottmann.realmsample.data;
 
 import io.realm.RealmList;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
 
-public class User extends RealmObject {
 
+@RealmClass
+public class User implements RealmModel {
+
+    @PrimaryKey
+    private String uuid;
     private int age;
     private boolean isBlocked;
     private String name;
     private Address address;
     private RealmList<RealmString> emailList;
     private RealmList<Contact> contactList;
+    private byte[] byteArray;
+
 
 
     public void setEmailList(RealmList<RealmString> emailList) {
@@ -18,9 +26,11 @@ public class User extends RealmObject {
     }
 
 
+
     public void setAddress(Address address) {
         this.address = address;
     }
+
 
 
     public void setName(String name) {
@@ -28,9 +38,11 @@ public class User extends RealmObject {
     }
 
 
+
     public void setAge(int age) {
         this.age = age;
     }
+
 
 
     public void setIsBlocked(boolean isBlocked) {
@@ -38,7 +50,20 @@ public class User extends RealmObject {
     }
 
 
+
     public void setContactList(RealmList<Contact> contactList) {
         this.contactList = contactList;
+    }
+
+
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+
+
+    public void setByteArray(byte[] byteArray) {
+        this.byteArray = byteArray;
     }
 }
