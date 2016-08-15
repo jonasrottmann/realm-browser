@@ -1,4 +1,6 @@
 buildscript {
+    System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
+
     ext {
         gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
         gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
@@ -8,10 +10,14 @@ buildscript {
     }
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
+        classpath 'com.android.tools.build:gradle:2.2.0-alpha6'
         classpath "io.realm:realm-gradle-plugin:$realmVersion"
     }
+}
+
+plugins {
+    id "com.github.dcendents.android-maven" version "1.5" apply false
 }
