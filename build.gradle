@@ -1,19 +1,32 @@
 buildscript {
+    // Workaround for android plugin
     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
 
     ext {
         gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
         gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
-        realmVersion = '1.1.0'
-        supportLibVersion = '24.1.1'
+
         buildToolsVersion = '23.0.3'
+
+        compileSdkVersion = 24
+        targetSdkVersion = 24
+        minSdkVersion = 15
+
+        // plugins
+        androidGradlePluginVersion = '2.2.0-alpha6'
+        realmVersion = '1.1.1'
+
+        // dependencies
+        supportLibVersion = '24.1.1'
+        timberVersion = '4.1.2'
     }
+
     repositories {
         jcenter()
-        mavenCentral()
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0-alpha6'
+        classpath "com.android.tools.build:gradle:$androidGradlePluginVersion"
         classpath "io.realm:realm-gradle-plugin:$realmVersion"
     }
 }

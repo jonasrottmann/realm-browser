@@ -2,13 +2,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion project.compileSdkVersion
     buildToolsVersion project.buildToolsVersion
     resourcePrefix 'realm_browser_'
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
         versionCode project.gitCommitCount
         versionName project.gitTag
     }

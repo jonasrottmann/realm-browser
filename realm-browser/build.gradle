@@ -2,13 +2,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion project.compileSdkVersion
     buildToolsVersion project.buildToolsVersion
     resourcePrefix 'realm_browser_'
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
         versionCode project.gitCommitCount
         versionName project.gitTag
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -21,7 +21,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$project.supportLibVersion"
     compile "com.android.support:design:$project.supportLibVersion"
     compile "com.android.support:support-annotations:$project.supportLibVersion"
-    compile 'com.jakewharton.timber:timber:4.1.2'
+    compile "com.jakewharton.timber:timber:$project.timberVersion"
     testCompile "junit:junit:4.12"
     androidTestCompile "junit:junit:4.12"
     androidTestCompile "com.android.support:support-annotations:$project.supportLibVersion"
