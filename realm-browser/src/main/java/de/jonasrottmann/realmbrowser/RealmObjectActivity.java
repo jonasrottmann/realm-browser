@@ -3,16 +3,15 @@ package de.jonasrottmann.realmbrowser;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -106,8 +105,8 @@ public class RealmObjectActivity extends AppCompatActivity {
                             RealmHolder.getInstance().setField(field);
                             RealmBrowserActivity.start(RealmObjectActivity.this);
                         } else {
-                            // TODO
-                            Snackbar.make(realmFieldView, "TODO: Choose objects to add...", Snackbar.LENGTH_SHORT).show();
+                            // TODO choose objects to add
+                            Toast.makeText(RealmObjectActivity.this, "TODO", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -117,10 +116,11 @@ public class RealmObjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (mDynamicRealmObject != null) {
-                            // TODO
-                            Snackbar.make(realmFieldView, "TODO: Open this Activity...", Snackbar.LENGTH_SHORT).show();
+                            // TODO start this activity
+                            Toast.makeText(RealmObjectActivity.this, "TODO", Toast.LENGTH_SHORT).show();
                         } else {
-                            Snackbar.make(realmFieldView, "TODO: Choose object...", Snackbar.LENGTH_SHORT).show();
+                            // TODO choose object
+                            Toast.makeText(RealmObjectActivity.this, "TODO", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -176,7 +176,7 @@ public class RealmObjectActivity extends AppCompatActivity {
             if (mDynamicRealmObject == null) {
                 if (createObject()) finish();
             } else {
-                // TODO edit existing object
+                Toast.makeText(RealmObjectActivity.this, "TODO: implement", Toast.LENGTH_SHORT).show();
             }
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_delete) {
@@ -216,11 +216,11 @@ public class RealmObjectActivity extends AppCompatActivity {
                 String primaryKeyFieldName = Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()));
                 realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName(), mFieldViewsList.get(primaryKeyFieldName).getValue());
             } catch (IllegalArgumentException e) {
-                Log.e("RealmBrowser", "Error trying to create new Realm object of type " + mRealmObjectClass.getSimpleName(), e);
+                Timber.e(e, "Error trying to create new Realm object of type %s", mRealmObjectClass.getSimpleName());
                 mDynamicRealm.cancelTransaction();
                 return false;
             } catch (RealmPrimaryKeyConstraintException e) {
-                Log.e("RealmBrowser", "Error trying to create new Realm object of type " + mRealmObjectClass.getSimpleName(), e);
+                Timber.e(e, "Error trying to create new Realm object of type %s", mRealmObjectClass.getSimpleName());
                 mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(true);
                 mDynamicRealm.cancelTransaction();
                 return false;
