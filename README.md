@@ -28,23 +28,23 @@ Step 2. Add the dependency
 
 ```
 dependencies {
-    debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:v0.0.10'
-    testCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.10'
-    releaseCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.10'
+    debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:v0.0.8'
+    testCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.8'
+    releaseCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.8'
 }
 ```
 
 The no-op version of Realm Browser has empty functions which do nothing. It is not necessary to include this,
 but you may if you do not want to access Realm Browser in release mode.
 
-> ‼️ Make sure to use any version of this realm-browser from v0.0.10 and up only with a realm version in your project from 0.91.0 and up.
+> ‼️ v0.0.8 is not working with the newest realm release. Use the develop snapshot version `compile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"` meanwhile.
 
 Realm Browser depends on Android support libraries, so you might want to exclude them from your project
 if they conflict with the ones you include:
 
 ```
 depedencies {
-    debugCompile ('com.github.jonasrottmann.realm-browser:realm-browser:v0.0.10') {
+    debugCompile ('com.github.jonasrottmann.realm-browser:realm-browser:v0.0.8') {
         exclude group: 'com.android.support';
     }
 }
