@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
 android {
     compileSdkVersion 24
     buildToolsVersion project.buildToolsVersion
@@ -22,6 +26,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$project.supportLibVersion"
+
+    // Use local version of realm-browser
     debugCompile project(':realm-browser')
     releaseCompile project(':realm-browser-no-op')
+
+    // Use develop-snapshot version
+//    compile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"
 }
