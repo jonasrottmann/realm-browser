@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
+import de.jonasrottmann.realmbrowser.utils.RealmHolder;
 import io.realm.RealmConfiguration;
 
 public final class RealmBrowser {
@@ -18,7 +19,6 @@ public final class RealmBrowser {
     }
 
 
-
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull String realmFileName) {
         RealmConfiguration config = new RealmConfiguration.Builder(context)
                 .name(realmFileName)
@@ -27,18 +27,15 @@ public final class RealmBrowser {
     }
 
 
-
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull RealmConfiguration realmConfiguration) {
         RealmHolder.getInstance().setRealmConfiguration(realmConfiguration);
         context.startActivity(RealmModelsActivity.getIntent(context));
     }
 
 
-
     public static void showRealmFilesNotification(@NonNull Context context) {
         showNotification(context, RealmFilesActivity.class);
     }
-
 
 
     private static void showNotification(@NonNull Context context, @NonNull Class activityClass) {

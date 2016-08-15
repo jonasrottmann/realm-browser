@@ -75,9 +75,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
-            app:layout_behavior="de.jonasrottmann.realmbrowser.helper.ScrollAwareFABBehavior"
             android:src="@drawable/realm_browser_ic_add_white_24dp"
-            app:backgroundTint="@color/realm_browser_realm" />
+            app:backgroundTint="@color/realm_browser_realm"
+            app:layout_behavior="de.jonasrottmann.realmbrowser.helper.ScrollAwareFABBehavior" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/realm_browser_recyclerView"

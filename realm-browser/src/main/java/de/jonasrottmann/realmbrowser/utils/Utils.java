@@ -8,8 +8,10 @@ import android.text.style.StyleSpan;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.Date;
 
 import io.realm.DynamicRealmObject;
+import io.realm.RealmObject;
 import io.realm.RealmObjectSchema;
 
 public class Utils {
@@ -129,6 +131,14 @@ public class Utils {
     }
 
     public static boolean isBlob(@NonNull Field field) {
-        return field.getType().equals(byte[].class);
+        return field.getType().getName().equals(byte[].class.getName());
+    }
+
+    public static boolean isDate(@NonNull Field field) {
+        return field.getType().getName().equals(Date.class.getName());
+    }
+
+    public static boolean isRealmObjectField(@NonNull Field field) {
+        return RealmObject.class.isAssignableFrom(field.getType());
     }
 }
