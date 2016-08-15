@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -59,7 +60,7 @@ public class DateView extends FieldView {
         buttonPicker.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO
+                Toast.makeText(getContext(), "TODO", Toast.LENGTH_SHORT).show();
             }
         });
         buttonNow.setOnClickListener(new OnClickListener() {
