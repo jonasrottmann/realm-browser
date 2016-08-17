@@ -1,9 +1,11 @@
 package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
@@ -47,7 +49,6 @@ public class RealmObjectActivity extends AppCompatActivity {
     private List<Field> mFieldsList;
     private HashMap<String, FieldView> mFieldViewsList;
     private DynamicRealm mDynamicRealm;
-    private boolean mEditMode = false;
 
     public static Intent getIntent(Context context, Class<? extends RealmModel> realmModelClass, boolean newObject) {
         Intent intent = new Intent(context, RealmObjectActivity.class);
@@ -180,12 +181,26 @@ public class RealmObjectActivity extends AppCompatActivity {
             }
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_delete) {
-            // TODO show dialog...
-            mDynamicRealm.beginTransaction();
-            mDynamicRealmObject.deleteFromRealm();
-            mDynamicRealm.commitTransaction();
-            // TODO show snackbar
-            finish();
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Delete");
+            builder.setMessage(String.format("Are you sure you want to delete this %s object?", mRealmObjectClass.getSimpleName()));
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mDynamicRealm.beginTransaction();
+                    mDynamicRealmObject.deleteFromRealm();
+                    mDynamicRealm.commitTransaction();
+                    dialogInterface.dismiss();
+                    finish();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.show();
             return true;
         } else {
             return super.onOptionsItemSelected(item);

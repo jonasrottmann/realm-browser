@@ -5,14 +5,13 @@
         <item name="colorPrimary">@color/realm_browser_realm</item>
         <item name="colorPrimaryDark">@color/realm_browser_realm_dark</item>
         <item name="colorAccent">@color/realm_browser_realm</item>
+
+        <item name="alertDialogTheme">@style/realm_browser_AlertDialogStyle</item>
     </style>
 
-    <style name="realm_browser_BaseTheme.Theme" parent="realm_browser_BaseTheme">
-    </style>
+    <style name="realm_browser_BaseTheme.Theme" parent="realm_browser_BaseTheme"></style>
 
-    <style name="realm_browser_BaseTheme.DrawerTheme" parent="realm_browser_BaseTheme">
-    </style>
-
+    <style name="realm_browser_BaseTheme.DrawerTheme" parent="realm_browser_BaseTheme"></style>
 
     <style name="realm_browser_ColumnText">
         <item name="android:singleLine">true</item>
@@ -24,6 +23,10 @@
 
     <style name="realm_browser_ColumnText.Bold" parent="realm_browser_ColumnText">
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="realm_browser_AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/realm_browser_realm</item>
     </style>
 
 </resources>
