@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -49,6 +51,7 @@ public class RealmObjectActivity extends AppCompatActivity {
     private List<Field> mFieldsList;
     private HashMap<String, FieldView> mFieldViewsList;
     private DynamicRealm mDynamicRealm;
+    private LinearLayout mLinearLayout;
 
     public static Intent getIntent(Context context, Class<? extends RealmModel> realmModelClass, boolean newObject) {
         Intent intent = new Intent(context, RealmObjectActivity.class);
@@ -80,7 +83,7 @@ public class RealmObjectActivity extends AppCompatActivity {
         }
 
         // Init Views
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.realm_browser_linearLayout);
+        mLinearLayout = (LinearLayout) findViewById(R.id.realm_browser_linearLayout);
         mFieldViewsList = new HashMap<>();
         int dp16 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, this.getResources().getDisplayMetrics());
         for (final Field field : mFieldsList) {
@@ -136,7 +139,7 @@ public class RealmObjectActivity extends AppCompatActivity {
                 realmFieldView.setRealmObject(mDynamicRealmObject);
             }
 
-            linearLayout.addView(realmFieldView);
+            mLinearLayout.addView(realmFieldView);
 
             mFieldViewsList.put(field.getName(), realmFieldView);
         }
@@ -174,10 +177,8 @@ public class RealmObjectActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_save) {
-            if (mDynamicRealmObject == null) {
-                if (createObject()) finish();
-            } else {
-                Toast.makeText(RealmObjectActivity.this, "TODO: implement", Toast.LENGTH_SHORT).show();
+            if (saveObject(mDynamicRealmObject)) {
+                Snackbar.make(mLinearLayout, "Saved Changes.", Snackbar.LENGTH_SHORT).show();
             }
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_delete) {
@@ -213,36 +214,55 @@ public class RealmObjectActivity extends AppCompatActivity {
         mDynamicRealm.close();
     }
 
-
-    private boolean createObject() {
-        // Return if any field holds a invalid value
-        for (String fieldName : mFieldViewsList.keySet()) {
-            if (!mFieldViewsList.get(fieldName).isInputValid()) return false;
-        }
-
+    @Nullable
+    private DynamicRealmObject createObject() {
+        DynamicRealmObject realmObject = null;
 
         // Start Realm Transaction
         mDynamicRealm.beginTransaction();
-        DynamicRealmObject realmObject;
 
         // Create object
         if (mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).hasPrimaryKey()) {
+            // TODO show exceptions to user
             try {
                 String primaryKeyFieldName = Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()));
                 realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName(), mFieldViewsList.get(primaryKeyFieldName).getValue());
             } catch (IllegalArgumentException e) {
                 Timber.e(e, "Error trying to create new Realm object of type %s", mRealmObjectClass.getSimpleName());
                 mDynamicRealm.cancelTransaction();
-                return false;
+                Snackbar.make(mLinearLayout, "Error creating Object: IllegalArgumentException", Snackbar.LENGTH_SHORT).show();
             } catch (RealmPrimaryKeyConstraintException e) {
                 Timber.e(e, "Error trying to create new Realm object of type %s", mRealmObjectClass.getSimpleName());
                 mFieldViewsList.get(Utils.getPrimaryKeyFieldName(mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(true);
                 mDynamicRealm.cancelTransaction();
-                return false;
+                Snackbar.make(mLinearLayout, "Error creating Object: PrimaryKeyConstraintException", Snackbar.LENGTH_SHORT).show();
             }
         } else {
             realmObject = mDynamicRealm.createObject(mRealmObjectClass.getSimpleName());
         }
+
+        // Commit Realm Transaction
+        if (mDynamicRealm.isInTransaction()) mDynamicRealm.commitTransaction();
+
+        mDynamicRealmObject = realmObject;
+
+        return realmObject;
+    }
+
+
+    private boolean saveObject(@Nullable DynamicRealmObject realmObject) {
+        // Return if any field holds a invalid value
+        for (String fieldName : mFieldViewsList.keySet()) {
+            if (!mFieldViewsList.get(fieldName).isInputValid()) return false;
+        }
+
+        if (realmObject == null)
+            realmObject = createObject();
+        if (realmObject == null)
+            return false;
+
+        // Start Realm Transaction
+        mDynamicRealm.beginTransaction();
 
         // Set values
         for (String fieldName : mFieldViewsList.keySet()) {

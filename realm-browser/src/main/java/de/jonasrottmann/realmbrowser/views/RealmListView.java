@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.DynamicRealmObject;
+import io.realm.RealmList;
 import io.realm.RealmObjectSchema;
 
 public class RealmListView extends FieldView {
@@ -40,7 +41,7 @@ public class RealmListView extends FieldView {
 
     @Override
     public Object getValue() {
-        return null;
+        return new RealmList<>();
     }
 
     @Override

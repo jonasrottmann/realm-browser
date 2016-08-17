@@ -32,7 +32,6 @@ public class DateView extends FieldView {
     private ImageView infoImageView;
     private Button buttonPicker;
     private Button buttonNow;
-    private boolean isInputValid;
     private Date newDateValue;
 
     public DateView(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
@@ -100,7 +99,7 @@ public class DateView extends FieldView {
 
     @Override
     public boolean isInputValid() {
-        return isInputValid;
+        return validateInput(editText.getText().toString());
     }
 
     @Override
@@ -131,28 +130,32 @@ public class DateView extends FieldView {
             @SuppressWarnings("ResultOfMethodCallIgnored")
             @Override
             public void afterTextChanged(final Editable s) {
-                try {
-                    if (!s.toString().isEmpty()) {
-                        newDateValue = new Date(Long.parseLong(s.toString()));
-                        textView.setText(newDateValue.toString());
-                    }
-                    getFieldInfoImageView().setVisibility(GONE);
-                    isInputValid = true;
-                    DateView.this.setBackgroundColor(getColor(getContext(), android.R.color.transparent));
-                } catch (NumberFormatException e) {
-                    isInputValid = false;
-                    getFieldInfoImageView().setVisibility(VISIBLE);
-                    getFieldInfoImageView().setImageDrawable(getDrawable(getContext(), R.drawable.realm_browser_ic_warning_black_24dp));
-                    getFieldInfoImageView().setColorFilter(getColor(getContext(), R.color.realm_browser_error), SRC_ATOP);
-                    getFieldInfoImageView().setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Snackbar.make(DateView.this, s.toString() + " does not fit data type " + getField().getType().getSimpleName(), Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
-                    DateView.this.setBackgroundColor(getColor(getContext(), R.color.realm_browser_error_light));
-                }
+                validateInput(s.toString());
             }
         };
+    }
+
+    private boolean validateInput(final String s) {
+        try {
+            if (!s.isEmpty()) {
+                newDateValue = new Date(Long.parseLong(s));
+                textView.setText(newDateValue.toString());
+            }
+            getFieldInfoImageView().setVisibility(GONE);
+            DateView.this.setBackgroundColor(getColor(getContext(), android.R.color.transparent));
+            return true;
+        } catch (NumberFormatException e) {
+            getFieldInfoImageView().setVisibility(VISIBLE);
+            getFieldInfoImageView().setImageDrawable(getDrawable(getContext(), R.drawable.realm_browser_ic_warning_black_24dp));
+            getFieldInfoImageView().setColorFilter(getColor(getContext(), R.color.realm_browser_error), SRC_ATOP);
+            getFieldInfoImageView().setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Snackbar.make(DateView.this, s + " does not fit data type " + getField().getType().getSimpleName(), Snackbar.LENGTH_SHORT).show();
+                }
+            });
+            DateView.this.setBackgroundColor(getColor(getContext(), R.color.realm_browser_error_light));
+            return false;
+        }
     }
 }
