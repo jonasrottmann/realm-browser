@@ -6,15 +6,17 @@ repositories {
 }
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion project.compileSdkVersion
     buildToolsVersion project.buildToolsVersion
+
     defaultConfig {
         applicationId "de.jonasrottmann.realmsample"
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
         versionCode project.gitCommitCount
         versionName project.gitTag
     }
+
     buildTypes {
         release {
             minifyEnabled false
