@@ -105,8 +105,12 @@ public class DateView extends FieldView {
     @Override
     public void setRealmObject(@NonNull DynamicRealmObject realmObject) {
         if (Utils.isDate(getField())) {
-            editText.setText(String.valueOf(realmObject.getDate(getField().getName()).getTime()));
-            textView.setText(realmObject.getDate(getField().getName()).toString());
+            if (realmObject.getDate(getField().getName()) == null) {
+                getFieldIsNullCheckBox().setChecked(true);
+            } else {
+                editText.setText(String.valueOf(realmObject.getDate(getField().getName()).getTime()));
+                textView.setText(realmObject.getDate(getField().getName()).toString());
+            }
         } else {
             throw new IllegalArgumentException();
         }
