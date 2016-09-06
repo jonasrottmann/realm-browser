@@ -1,24 +1,21 @@
 buildscript {
-    // Workaround for using gradle 3.0 with android plugin
-     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
-
     ext {
         gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
         gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
-        buildToolsVersion = '23.0.3'
+        buildToolsVersion = '24.0.2'
 
         compileSdkVersion = 24
         targetSdkVersion = 24
         minSdkVersion = 15
 
         // plugins
-        androidGradlePluginVersion = '2.2.0-beta3'
+        androidGradlePluginVersion = '2.2.0-rc1'
         realmVersion = '1.2.0'
 
         // dependencies
         supportLibVersion = '24.2.0'
-        timberVersion = '4.1.2'
+        timberVersion = '4.3.0'
     }
 
     repositories {
