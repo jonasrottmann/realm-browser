@@ -10,12 +10,12 @@ import java.lang.reflect.Field;
 import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.DynamicRealmObject;
-import io.realm.RealmList;
 import io.realm.RealmObjectSchema;
 
 public class RealmListView extends FieldView {
 
     private TextView textView;
+    private DynamicRealmObject realmObject;
 
     public RealmListView(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
@@ -41,7 +41,8 @@ public class RealmListView extends FieldView {
 
     @Override
     public Object getValue() {
-        return new RealmList<>();
+        // TODO
+        return realmObject.getList(getField().getName());
     }
 
     @Override
@@ -56,6 +57,11 @@ public class RealmListView extends FieldView {
 
     @Override
     public void setRealmObject(@NonNull DynamicRealmObject realmObject) {
-
+        if (Utils.isParametrizedField(getField())) {
+            this.realmObject = realmObject;
+            textView.setText(String.format("Length: %s", realmObject.getList(getField().getName()).size()));
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 }

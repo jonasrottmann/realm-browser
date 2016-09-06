@@ -267,7 +267,7 @@ public class RealmObjectActivity extends AppCompatActivity {
         // Set values
         for (String fieldName : mFieldViewsList.keySet()) {
             if (!mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isNullable(fieldName) && mFieldViewsList.get(fieldName).getValue() == null) {
-                // prevent setting null to list fields
+                // TODO: prevent setting null to list fields
                 continue;
             }
             realmObject.set(mFieldViewsList.get(fieldName).getField().getName(), mFieldViewsList.get(fieldName).getValue());

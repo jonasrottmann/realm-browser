@@ -352,7 +352,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
 
     @Override
     public boolean onQueryTextChange(final String newText) {
-        AbstractList<? extends DynamicRealmObject> results = (AbstractList<? extends DynamicRealmObject>) filterRealmResults(newText);
+        AbstractList<? extends DynamicRealmObject> results = filterRealmResults(newText);
         mAdapter.setRealmList(results);
         mAdapter.notifyDataSetChanged();
         if (newText.isEmpty() && mSnackbar != null) {
