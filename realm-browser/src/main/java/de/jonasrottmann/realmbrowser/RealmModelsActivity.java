@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ public class RealmModelsActivity extends AppCompatActivity {
     private ArrayList<Class<? extends RealmModel>> realmModelClasses;
     private int sortMode;
     private Adapter adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static Intent getIntent(@NonNull Activity activity) {
         Intent intent = new Intent(activity, RealmModelsActivity.class);
@@ -47,13 +49,22 @@ public class RealmModelsActivity extends AppCompatActivity {
         return intent;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.realm_browser_ac_realm_list_view);
         setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(R.color.realm_browser_realm);
 
         realm = Realm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
         realmModelClasses = new ArrayList<>(realm.getConfiguration().getRealmObjectClasses());
@@ -126,7 +137,6 @@ public class RealmModelsActivity extends AppCompatActivity {
             this.realm = realm;
             this.res = res;
         }
-
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
