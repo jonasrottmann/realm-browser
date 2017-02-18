@@ -1,24 +1,22 @@
-package de.jonasrottmann.realmbrowser.views;
+package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.ViewStub;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
-import java.lang.reflect.Field;
-
-import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
+import java.lang.reflect.Field;
 
-public class BoolView extends FieldView {
+class RealmBrowserViewBool extends RealmBrowserViewField {
     private Spinner spinner;
 
-    public BoolView(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
+    public RealmBrowserViewBool(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isBoolean(getField())) throw new IllegalArgumentException();
+        if (!Utils.isBoolean(getField())) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override

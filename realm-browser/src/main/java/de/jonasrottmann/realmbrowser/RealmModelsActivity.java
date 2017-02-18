@@ -18,25 +18,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import io.realm.Realm;
+import io.realm.RealmModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 
-import de.jonasrottmann.realmbrowser.utils.RealmHolder;
-import io.realm.Realm;
-import io.realm.RealmModel;
-
 public class RealmModelsActivity extends AppCompatActivity {
-
-    private Realm mRealm;
-    private ArrayList<Class<? extends RealmModel>> mRealmModelClasses;
-    private int mSortMode;
-    private Adapter mAdapter;
 
     private static final int ASC = 0;
     private static final int DESC = 1;
+    private Realm realm;
+    private ArrayList<Class<? extends RealmModel>> realmModelClasses;
+    private int sortMode;
+    private Adapter adapter;
 
     public static Intent getIntent(@NonNull Activity activity) {
         Intent intent = new Intent(activity, RealmModelsActivity.class);
@@ -59,23 +55,23 @@ public class RealmModelsActivity extends AppCompatActivity {
         setContentView(R.layout.realm_browser_ac_realm_list_view);
         setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
 
-        mRealm = Realm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
-        mRealmModelClasses = new ArrayList<>(mRealm.getConfiguration().getRealmObjectClasses());
-        mSortMode = ASC;
-        Collections.sort(mRealmModelClasses, new Comparator<Class>() {
+        realm = Realm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
+        realmModelClasses = new ArrayList<>(realm.getConfiguration().getRealmObjectClasses());
+        sortMode = ASC;
+        Collections.sort(realmModelClasses, new Comparator<Class>() {
             @Override
             public int compare(Class c1, Class c2) {
                 return c1.getSimpleName().compareTo(c2.getSimpleName());
             }
         });
 
-        mAdapter = new Adapter(this, android.R.layout.simple_list_item_2, mRealmModelClasses, mRealm);
+        adapter = new Adapter(this, android.R.layout.simple_list_item_2, realmModelClasses, realm);
         ListView listView = (ListView) findViewById(R.id.realm_browser_listView);
-        listView.setAdapter(mAdapter);
+        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onItemClicked(mAdapter.getItem(position));
+                onItemClicked(adapter.getItem(position));
             }
         });
     }
@@ -91,14 +87,14 @@ public class RealmModelsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.realm_browser_action_sort) {
-            mSortMode = (mSortMode + 1) % 2;
-            Collections.reverse(mRealmModelClasses);
-            if (mSortMode == ASC) {
+            sortMode = (sortMode + 1) % 2;
+            Collections.reverse(realmModelClasses);
+            if (sortMode == ASC) {
                 item.setIcon(ContextCompat.getDrawable(this, R.drawable.realm_browser_ic_sort_ascending_white_24dp));
-            } else if (mSortMode == DESC) {
+            } else if (sortMode == DESC) {
                 item.setIcon(ContextCompat.getDrawable(this, R.drawable.realm_browser_ic_sort_descending_white_24dp));
             }
-            mAdapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -107,8 +103,8 @@ public class RealmModelsActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (mRealm != null) {
-            mRealm.close();
+        if (realm != null) {
+            realm.close();
         }
         super.onDestroy();
     }
@@ -121,14 +117,14 @@ public class RealmModelsActivity extends AppCompatActivity {
 
     private static class Adapter extends ArrayAdapter<Class<? extends RealmModel>> {
 
-        private int mResource;
-        private Realm mRealm;
+        private final int res;
+        private final Realm realm;
 
 
         public Adapter(Context context, int res, ArrayList<Class<? extends RealmModel>> classes, Realm realm) {
             super(context, res, classes);
-            mResource = res;
-            mRealm = realm;
+            this.realm = realm;
+            this.res = res;
         }
 
 
@@ -136,14 +132,15 @@ public class RealmModelsActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             Class realmModel = getItem(position);
 
-            if (convertView == null)
-                convertView = LayoutInflater.from(getContext()).inflate(mResource, parent, false);
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(res, parent, false);
+            }
 
             TextView title = (TextView) convertView.findViewById(android.R.id.text1);
             TextView count = (TextView) convertView.findViewById(android.R.id.text2);
 
             title.setText(realmModel.getSimpleName());
-            count.setText(String.format(Locale.US, "%d %s", mRealm.where(realmModel).findAll().size(), "rows"));
+            count.setText(String.format(Locale.US, "%d %s", realm.where(realmModel).findAll().size(), "rows"));
 
             return convertView;
         }

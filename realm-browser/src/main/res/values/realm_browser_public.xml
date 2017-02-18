@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public name="realm_browser_title" type="string" />
+    <public name="realm_browser_ic_rb" type="drawable" />
+</resources>

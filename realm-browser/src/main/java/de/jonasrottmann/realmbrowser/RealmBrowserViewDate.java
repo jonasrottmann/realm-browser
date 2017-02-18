@@ -1,4 +1,4 @@
-package de.jonasrottmann.realmbrowser.views;
+package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,20 +12,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.lang.reflect.Field;
-import java.util.Date;
-
-import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
+import java.lang.reflect.Field;
+import java.util.Date;
 
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.support.v4.content.ContextCompat.getColor;
 import static android.support.v4.content.ContextCompat.getDrawable;
 
-public class DateView extends FieldView {
+class RealmBrowserViewDate extends RealmBrowserViewField {
 
     private TextView textView;
     private EditText editText;
@@ -34,9 +30,11 @@ public class DateView extends FieldView {
     private Button buttonNow;
     private Date newDateValue;
 
-    public DateView(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
+    public RealmBrowserViewDate(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isDate(getField())) throw new IllegalArgumentException();
+        if (!Utils.isDate(getField())) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
@@ -73,7 +71,7 @@ public class DateView extends FieldView {
         infoImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(DateView.this, "Time in milliseconds since epoch.", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(RealmBrowserViewDate.this, "Time in milliseconds since epoch.", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -146,7 +144,7 @@ public class DateView extends FieldView {
                 textView.setText(newDateValue.toString());
             }
             getFieldInfoImageView().setVisibility(GONE);
-            DateView.this.setBackgroundColor(getColor(getContext(), android.R.color.transparent));
+            RealmBrowserViewDate.this.setBackgroundColor(getColor(getContext(), android.R.color.transparent));
             return true;
         } catch (NumberFormatException e) {
             getFieldInfoImageView().setVisibility(VISIBLE);
@@ -155,10 +153,10 @@ public class DateView extends FieldView {
             getFieldInfoImageView().setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(DateView.this, s + " does not fit data type " + getField().getType().getSimpleName(), Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(RealmBrowserViewDate.this, s + " does not fit data type " + getField().getType().getSimpleName(), Snackbar.LENGTH_SHORT).show();
                 }
             });
-            DateView.this.setBackgroundColor(getColor(getContext(), R.color.realm_browser_error_light));
+            RealmBrowserViewDate.this.setBackgroundColor(getColor(getContext(), R.color.realm_browser_error_light));
             return false;
         }
     }

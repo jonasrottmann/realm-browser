@@ -1,4 +1,4 @@
-package de.jonasrottmann.realmbrowser.views;
+package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,13 +10,10 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.lang.reflect.Field;
-
-import de.jonasrottmann.realmbrowser.R;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmFieldType;
 import io.realm.RealmObjectSchema;
+import java.lang.reflect.Field;
 
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.support.v4.content.ContextCompat.getColor;
@@ -25,21 +22,21 @@ import static android.support.v4.content.ContextCompat.getDrawable;
 /**
  * Created by jonas on 26/07/16.
  */
-public abstract class FieldView extends LinearLayout {
+abstract class RealmBrowserViewField extends LinearLayout {
     private TextView tvFieldName;
     private TextView tvFieldType;
     private ImageView ivFieldPrimaryKey;
     private ImageView ivFieldInfo;
     private CheckBox cbxFieldIsNull;
-    private Field mField;
-    private RealmObjectSchema mRealmObjectSchema;
+    private final Field field;
+    private final RealmObjectSchema realmObjectSchema;
 
 
-    public FieldView(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
+    public RealmBrowserViewField(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context);
 
-        mRealmObjectSchema = realmObjectSchema;
-        mField = field;
+        this.realmObjectSchema = realmObjectSchema;
+        this.field = field;
 
         initHeaderViews(context);
         inflateViewStub();
@@ -66,10 +63,10 @@ public abstract class FieldView extends LinearLayout {
     }
 
     private void setupPrimaryKeyImageView(@NonNull Field field) {
-        if (mRealmObjectSchema.isPrimaryKey(field.getName())) {
+        if (realmObjectSchema.isPrimaryKey(field.getName())) {
             ivFieldPrimaryKey.setImageDrawable(getDrawable(getContext(), R.drawable.realm_browser_ic_vpn_key_black_24dp));
             ivFieldPrimaryKey.setVisibility(VISIBLE);
-        } else if (mRealmObjectSchema.isRequired(field.getName())) {
+        } else if (realmObjectSchema.isRequired(field.getName())) {
             // TODO set key drawable with star
         } else {
             ivFieldPrimaryKey.setVisibility(GONE);
@@ -77,7 +74,7 @@ public abstract class FieldView extends LinearLayout {
     }
 
     private void setupNullableCheckBox(@NonNull Field field) {
-        if (mRealmObjectSchema.isNullable(field.getName()) && mRealmObjectSchema.getFieldType(field.getName()) != RealmFieldType.LIST) {
+        if (realmObjectSchema.isNullable(field.getName()) && realmObjectSchema.getFieldType(field.getName()) != RealmFieldType.LIST) {
             cbxFieldIsNull.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -96,7 +93,7 @@ public abstract class FieldView extends LinearLayout {
             ivFieldPrimaryKey.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(FieldView.this, "Primary key \"" + getValue() + "\" already exists.", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(RealmBrowserViewField.this, "Primary key \"" + getValue() + "\" already exists.", Snackbar.LENGTH_SHORT).show();
                 }
             });
             setBackgroundColor(getColor(getContext(), R.color.realm_browser_error_light));
@@ -158,11 +155,11 @@ public abstract class FieldView extends LinearLayout {
      * ********/
 
     protected RealmObjectSchema getRealmObjectSchema() {
-        return mRealmObjectSchema;
+        return realmObjectSchema;
     }
 
     public Field getField() {
-        return mField;
+        return field;
     }
 
     protected CheckBox getFieldIsNullCheckBox() {

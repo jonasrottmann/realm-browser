@@ -3,19 +3,21 @@ buildscript {
         gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
         gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
-        buildToolsVersion = '24.0.2'
+        buildToolsVersion = '25.0.1'
 
-        compileSdkVersion = 24
-        targetSdkVersion = 24
+        compileSdkVersion = 25
+        targetSdkVersion = 25
         minSdkVersion = 15
 
         // plugins
-        androidGradlePluginVersion = '2.2.0-rc2'
+        androidGradlePluginVersion = '2.2.3'
         realmVersion = '1.2.0'
 
         // dependencies
-        supportLibVersion = '24.2.0'
+        supportLibVersion = '25.1.1'
         timberVersion = '4.3.0'
+        realmVersion = '1.1.0'
+        supportLibVersion = '25.1.1'
     }
 
     repositories {

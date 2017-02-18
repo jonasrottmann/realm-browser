@@ -23,16 +23,27 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors {
+        normal {
+            applicationIdSuffix ".normal"
+        }
+        noop {
+            applicationIdSuffix ".noop"
+        }
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$project.supportLibVersion"
+    compile "com.jakewharton.timber:timber:$project.timberVersion"
 
-    // Use local version of realm-browser
-    debugCompile project(':realm-browser')
-    releaseCompile project(':realm-browser-no-op')
+    // test local version of realm-browser
+    normalCompile project(':realm-browser')
+    noopCompile project(':realm-browser-no-op')
 
     // Use develop-snapshot version
-//    compile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"
+//    normalCompile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"
+//    noopCompile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"
 }

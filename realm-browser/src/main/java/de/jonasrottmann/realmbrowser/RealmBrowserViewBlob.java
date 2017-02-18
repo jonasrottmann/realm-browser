@@ -1,24 +1,22 @@
-package de.jonasrottmann.realmbrowser.views;
+package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.ViewStub;
 import android.widget.TextView;
-
-import java.lang.reflect.Field;
-
-import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
+import java.lang.reflect.Field;
 
-public class BlobView extends FieldView {
+class RealmBrowserViewBlob extends RealmBrowserViewField {
 
     private TextView textView;
 
-    public BlobView(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
+    public RealmBrowserViewBlob(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isBlob(getField())) throw new IllegalArgumentException();
+        if (!Utils.isBlob(getField())) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override

@@ -26,16 +26,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.List;
-
-import de.jonasrottmann.realmbrowser.model.RealmPreferences;
-import de.jonasrottmann.realmbrowser.utils.RealmHolder;
-import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.Case;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
@@ -45,6 +35,11 @@ import io.realm.RealmObject;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.List;
 import timber.log.Timber;
 
 public class RealmBrowserActivity extends AppCompatActivity implements RealmBrowserAdapter.Listener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener {
@@ -53,19 +48,19 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
     private DynamicRealm mDynamicRealm;
     private Class<? extends RealmModel> mRealmObjectClass;
     private RealmBrowserAdapter mAdapter;
-    private TextView mTxtIndex;
-    private TextView mTxtColumn1;
-    private TextView mTxtColumn2;
-    private TextView mTxtColumn3;
-    private List<Field> mTmpSelectedFieldList;
-    private List<Field> mSelectedFieldList;
-    private List<Field> mFieldsList;
-    private AppCompatCheckBox[] mCheckBoxes;
-    private RealmPreferences mRealmPreferences;
-    private DrawerLayout mDrawerLayout;
-    private Snackbar mSnackbar;
-    private AbstractList<? extends DynamicRealmObject> mRealmObjects;
-    private FloatingActionButton mFab;
+    private TextView textView;
+    private TextView txtColumn1;
+    private TextView txtColumn2;
+    private TextView txtColumn3;
+    private List<Field> tmpSelectedFieldList;
+    private List<Field> selectedFieldList;
+    private List<Field> fieldsList;
+    private AppCompatCheckBox[] checkBoxes;
+    private RealmPreferences realmPreferences;
+    private DrawerLayout drawerLayout;
+    private Snackbar snackbar;
+    private AbstractList<? extends DynamicRealmObject> realmObjects;
+    private FloatingActionButton fab;
 
 
     public static void start(Context context, Class<? extends RealmModel> realmModelClass) {
@@ -91,11 +86,11 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         mDynamicRealm = DynamicRealm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
             mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
-            mRealmObjects = mDynamicRealm.where(mRealmObjectClass.getSimpleName()).findAll();
+            realmObjects = mDynamicRealm.where(mRealmObjectClass.getSimpleName()).findAll();
         } else {
             DynamicRealmObject dynamicRealmObject = RealmHolder.getInstance().getObject();
             Field field = RealmHolder.getInstance().getField();
-            mRealmObjects = dynamicRealmObject.getList(field.getName());
+            realmObjects = dynamicRealmObject.getList(field.getName());
             if (Utils.isParametrizedField(field)) {
                 ParameterizedType pType = (ParameterizedType) field.getGenericType();
                 Class<?> pTypeClass = (Class<?>) pType.getActualTypeArguments()[0];
@@ -105,17 +100,17 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
 
         RealmObjectSchema schema = mDynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName());
 
-        mSelectedFieldList = new ArrayList<>();
-        mTmpSelectedFieldList = new ArrayList<>();
-        mFieldsList = new ArrayList<>();
+        selectedFieldList = new ArrayList<>();
+        tmpSelectedFieldList = new ArrayList<>();
+        fieldsList = new ArrayList<>();
         for (String s : schema.getFieldNames()) {
             try {
-                mFieldsList.add(mRealmObjectClass.getDeclaredField(s));
+                fieldsList.add(mRealmObjectClass.getDeclaredField(s));
             } catch (NoSuchFieldException e) {
                 Timber.d("Initializing field map.", e);
             }
         }
-        mAdapter = new RealmBrowserAdapter(this, mRealmObjects, mSelectedFieldList, this, mDynamicRealm);
+        mAdapter = new RealmBrowserAdapter(this, realmObjects, selectedFieldList, this, mDynamicRealm);
 
 
         // Init Views
@@ -123,16 +118,16 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
-        mTxtIndex = (TextView) findViewById(R.id.realm_browser_txtIndex);
-        mTxtColumn1 = (TextView) findViewById(R.id.realm_browser_txtColumn1);
-        mTxtColumn2 = (TextView) findViewById(R.id.realm_browser_txtColumn2);
-        mTxtColumn3 = (TextView) findViewById(R.id.realm_browser_txtColumn3);
-        mFab = (FloatingActionButton) findViewById(R.id.realm_browser_fab);
+        textView = (TextView) findViewById(R.id.realm_browser_txtIndex);
+        txtColumn1 = (TextView) findViewById(R.id.realm_browser_txtColumn1);
+        txtColumn2 = (TextView) findViewById(R.id.realm_browser_txtColumn2);
+        txtColumn3 = (TextView) findViewById(R.id.realm_browser_txtColumn3);
+        fab = (FloatingActionButton) findViewById(R.id.realm_browser_fab);
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
-            mFab.setOnClickListener(createFABClickListener((Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS)));
+            fab.setOnClickListener(createFABClickListener((Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS)));
         } else {
             // Currently displaying RealmList of parametrized field => don't give option to add new object
-            mFab.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
         }
 
 
@@ -147,33 +142,33 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
 
 
         // Init Navigation View
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.realm_browser_drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.realm_browser_drawer_layout);
         NavigationView mNavigationView = (NavigationView) findViewById(R.id.realm_browser_navigationView);
         Menu menu = mNavigationView.getMenu();
 
         // Init Field Checkboxes
-        mCheckBoxes = new AppCompatCheckBox[mFieldsList.size()];
+        checkBoxes = new AppCompatCheckBox[fieldsList.size()];
         SubMenu subMenu = menu.addSubMenu("Fields");
-        for (int i = 0; i < mFieldsList.size(); i++) {
-            MenuItem m = subMenu.add(mFieldsList.get(i).getName());
+        for (int i = 0; i < fieldsList.size(); i++) {
+            MenuItem m = subMenu.add(fieldsList.get(i).getName());
             AppCompatCheckBox cb = new AppCompatCheckBox(this);
             cb.setOnCheckedChangeListener(this);
             cb.setTag(i);
-            mCheckBoxes[i] = cb;
+            checkBoxes[i] = cb;
             m.setActionView(cb);
         }
         selectDefaultFields();
-        updateColumnTitle(mSelectedFieldList);
+        updateColumnTitle(selectedFieldList);
 
         // Init Text Wrapping Switch
-        mRealmPreferences = new RealmPreferences(getApplicationContext());
+        realmPreferences = new RealmPreferences(getApplicationContext());
         MenuItem menuItem = menu.findItem(R.id.realm_browser_action_wrapping);
         SwitchCompat switchCompat = (SwitchCompat) MenuItemCompat.getActionView(menuItem);
-        switchCompat.setChecked(mRealmPreferences.shouldWrapText());
+        switchCompat.setChecked(realmPreferences.shouldWrapText());
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mRealmPreferences.setShouldWrapText(isChecked);
+                realmPreferences.setShouldWrapText(isChecked);
                 mAdapter.notifyDataSetChanged();
             }
         });
@@ -192,44 +187,48 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
 
     @NonNull
     private AbstractList<? extends DynamicRealmObject> filterRealmResults(@NonNull String filter) {
-        if (filter.isEmpty())
-            return mRealmObjects;
+        if (filter.isEmpty()) {
+            return realmObjects;
+        }
 
         RealmQuery<? extends DynamicRealmObject> query;
-        if (mRealmObjects instanceof RealmList) {
-            query = ((RealmList<? extends DynamicRealmObject>) mRealmObjects).where();
-        } else if (mRealmObjects instanceof RealmResults) {
+        if (realmObjects instanceof RealmList) {
+            query = ((RealmList<? extends DynamicRealmObject>) realmObjects).where();
+        } else if (realmObjects instanceof RealmResults) {
             query = mDynamicRealm.where(mRealmObjectClass.getSimpleName());
         } else {
             throw new IllegalArgumentException();
         }
 
         boolean openedGroup = false;
-        for (int i = 0; i < mFieldsList.size(); i++) {
-            if (mFieldsList.get(i).getType().equals(String.class)) {
+        for (int i = 0; i < fieldsList.size(); i++) {
+            if (fieldsList.get(i).getType().equals(String.class)) {
                 // STRING
                 if (!openedGroup) {
                     openedGroup = true;
                     query.beginGroup();
-                } else
+                } else {
                     query.or();
-                query.contains(mFieldsList.get(i).getName(), filter, Case.INSENSITIVE);
-            } else if (mFieldsList.get(i).getType().equals(Integer.class) || mFieldsList.get(i).getType().getName().equals("int")) {
+                }
+                query.contains(fieldsList.get(i).getName(), filter, Case.INSENSITIVE);
+            } else if (fieldsList.get(i).getType().equals(Integer.class) || fieldsList.get(i).getType().getName().equals("int")) {
                 // INTEGER
                 try {
                     int value = Integer.parseInt(filter.trim());
                     if (!openedGroup) {
                         openedGroup = true;
                         query.beginGroup();
-                    } else
+                    } else {
                         query.or();
-                    query.equalTo(mFieldsList.get(i).getName(), value);
+                    }
+                    query.equalTo(fieldsList.get(i).getName(), value);
                 } catch (NumberFormatException e) {
                 }
             }
             // TODO Long, Short, Byte, Double, Float, Date
-            if (openedGroup && i == mFieldsList.size() - 1)
+            if (openedGroup && i == fieldsList.size() - 1) {
                 query.endGroup();
+            }
         }
         return query.findAll();
     }
@@ -267,7 +266,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                drawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -283,46 +282,47 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
 
 
     private void selectDefaultFields() {
-        mSelectedFieldList.clear();
-        for (int i = 0; i < mFieldsList.size(); i++) {
+        selectedFieldList.clear();
+        for (int i = 0; i < fieldsList.size(); i++) {
             if (i < 3) {
-                mSelectedFieldList.add(mFieldsList.get(i));
-                mCheckBoxes[i].setChecked(true);
+                selectedFieldList.add(fieldsList.get(i));
+                checkBoxes[i].setChecked(true);
             }
         }
     }
 
 
     private void disableCheckBoxes() {
-        for (AppCompatCheckBox cb : mCheckBoxes) {
-            if (!cb.isChecked())
+        for (AppCompatCheckBox cb : checkBoxes) {
+            if (!cb.isChecked()) {
                 cb.setEnabled(false);
+            }
         }
     }
 
 
     private void enableCheckboxes() {
-        for (AppCompatCheckBox cb : mCheckBoxes) {
+        for (AppCompatCheckBox cb : checkBoxes) {
             cb.setEnabled(true);
         }
     }
 
 
     private void updateColumnTitle(final List<Field> columnsList) {
-        mTxtIndex.setText("#");
+        textView.setText("#");
 
         LinearLayout.LayoutParams layoutParams2 = createLayoutParams();
         LinearLayout.LayoutParams layoutParams3 = createLayoutParams();
 
         if (columnsList.size() > 0) {
-            mTxtColumn1.setText(columnsList.get(0).getName());
+            txtColumn1.setText(columnsList.get(0).getName());
 
             if (columnsList.size() > 1) {
-                mTxtColumn2.setText(columnsList.get(1).getName());
+                txtColumn2.setText(columnsList.get(1).getName());
                 layoutParams2.weight = 1;
 
                 if (columnsList.size() > 2) {
-                    mTxtColumn3.setText(columnsList.get(2).getName());
+                    txtColumn3.setText(columnsList.get(2).getName());
                     layoutParams3.weight = 1;
                 } else {
                     layoutParams3.weight = 0;
@@ -331,11 +331,11 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
                 layoutParams2.weight = 0;
             }
         } else {
-            mTxtColumn1.setText(null);
+            txtColumn1.setText(null);
         }
 
-        mTxtColumn2.setLayoutParams(layoutParams2);
-        mTxtColumn3.setLayoutParams(layoutParams3);
+        txtColumn2.setLayoutParams(layoutParams2);
+        txtColumn3.setLayoutParams(layoutParams3);
     }
 
 
@@ -355,11 +355,11 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         AbstractList<? extends DynamicRealmObject> results = filterRealmResults(newText);
         mAdapter.setRealmList(results);
         mAdapter.notifyDataSetChanged();
-        if (newText.isEmpty() && mSnackbar != null) {
-            mSnackbar.dismiss();
+        if (newText.isEmpty() && snackbar != null) {
+            snackbar.dismiss();
         } else {
-            mSnackbar = Snackbar.make(mDrawerLayout, String.format("%d entries found.", results.size()), Snackbar.LENGTH_INDEFINITE);
-            mSnackbar.show();
+            snackbar = Snackbar.make(drawerLayout, String.format("%d entries found.", results.size()), Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
         }
         return true;
     }
@@ -368,21 +368,21 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
     @Override
     public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
         int fieldIndex = (int) buttonView.getTag();
-        Field field = mFieldsList.get(fieldIndex);
-        if (isChecked && !mTmpSelectedFieldList.contains(field)) {
-            mTmpSelectedFieldList.add(field);
-        } else if (mTmpSelectedFieldList.contains(field)) {
-            mTmpSelectedFieldList.remove(field);
+        Field field = fieldsList.get(fieldIndex);
+        if (isChecked && !tmpSelectedFieldList.contains(field)) {
+            tmpSelectedFieldList.add(field);
+        } else if (tmpSelectedFieldList.contains(field)) {
+            tmpSelectedFieldList.remove(field);
         }
-        if (mTmpSelectedFieldList.size() > 2) {
+        if (tmpSelectedFieldList.size() > 2) {
             disableCheckBoxes();
         } else {
             enableCheckboxes();
         }
-        mSelectedFieldList.clear();
-        mSelectedFieldList.addAll(mTmpSelectedFieldList);
-        updateColumnTitle(mSelectedFieldList);
-        mAdapter.setFieldList(mSelectedFieldList);
+        selectedFieldList.clear();
+        selectedFieldList.addAll(tmpSelectedFieldList);
+        updateColumnTitle(selectedFieldList);
+        mAdapter.setFieldList(selectedFieldList);
         mAdapter.notifyDataSetChanged();
     }
 }

@@ -9,44 +9,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import io.realm.DynamicRealm;
+import io.realm.DynamicRealmObject;
 import java.lang.reflect.Field;
 import java.util.AbstractList;
 import java.util.List;
 
-import de.jonasrottmann.realmbrowser.model.RealmPreferences;
-import de.jonasrottmann.realmbrowser.utils.Utils;
-import io.realm.DynamicRealm;
-import io.realm.DynamicRealmObject;
-
 class RealmBrowserAdapter extends RecyclerView.Adapter<RealmBrowserAdapter.ViewHolder> {
 
-    private final Context mContext;
-    private final Listener mListener;
-    private final RealmPreferences mRealmPreferences;
-    private final DynamicRealm mRealm;
-    private AbstractList<? extends DynamicRealmObject> mRealmObjects;
-    private List<Field> mFieldList;
+    private final Context context;
+    private final Listener listener;
+    private final RealmPreferences realmPreferences;
+    private final DynamicRealm realm;
+    private AbstractList<? extends DynamicRealmObject> dynamicRealmObjects;
+    private List<Field> fieldList;
 
 
-    public RealmBrowserAdapter(@NonNull Context context, @NonNull AbstractList<? extends DynamicRealmObject> realmObjects,
-                               @NonNull List<Field> fieldList, @NonNull Listener listener, @NonNull DynamicRealm realm) {
-        mRealmPreferences = new RealmPreferences(context);
-        mContext = context;
-        mRealmObjects = realmObjects;
-        mFieldList = fieldList;
-        mListener = listener;
-        mRealm = realm;
+    public RealmBrowserAdapter(@NonNull Context context, @NonNull AbstractList<? extends DynamicRealmObject> realmObjects, @NonNull List<Field> fieldList, @NonNull Listener listener,
+        @NonNull DynamicRealm realm) {
+        realmPreferences = new RealmPreferences(context);
+        this.context = context;
+        dynamicRealmObjects = realmObjects;
+        this.fieldList = fieldList;
+        this.listener = listener;
+        this.realm = realm;
     }
 
 
     public void setFieldList(List<Field> fieldList) {
-        mFieldList = fieldList;
+        this.fieldList = fieldList;
     }
 
 
     public void setRealmList(AbstractList<? extends DynamicRealmObject> realmObjects) {
-        mRealmObjects = realmObjects;
+        dynamicRealmObjects = realmObjects;
     }
 
 
@@ -59,19 +55,19 @@ class RealmBrowserAdapter extends RecyclerView.Adapter<RealmBrowserAdapter.ViewH
 
     @Override
     public int getItemCount() {
-        return mRealmObjects == null ? 0 : mRealmObjects.size();
+        return dynamicRealmObjects == null ? 0 : dynamicRealmObjects.size();
     }
 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (position % 2 == 0) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.realm_browser_grey));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.realm_browser_grey));
         } else {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.realm_browser_white));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.realm_browser_white));
         }
 
-        if (mFieldList.isEmpty()) {
+        if (fieldList.isEmpty()) {
             holder.txtIndex.setText(null);
             holder.txtColumn1.setText(null);
             holder.txtColumn2.setText(null);
@@ -79,7 +75,7 @@ class RealmBrowserAdapter extends RecyclerView.Adapter<RealmBrowserAdapter.ViewH
         } else {
             holder.txtIndex.setText(String.valueOf(position));
 
-            DynamicRealmObject realmObject = mRealmObjects.get(position);
+            DynamicRealmObject realmObject = dynamicRealmObjects.get(position);
             initRowWeight(holder);
             initRowTextWrapping(holder);
             initRowText(holder, realmObject);
@@ -91,13 +87,13 @@ class RealmBrowserAdapter extends RecyclerView.Adapter<RealmBrowserAdapter.ViewH
         LinearLayout.LayoutParams layoutParams2 = createLayoutParams();
         LinearLayout.LayoutParams layoutParams3 = createLayoutParams();
 
-        if (mFieldList.size() == 1) {
+        if (fieldList.size() == 1) {
             layoutParams2.weight = 0;
             layoutParams3.weight = 0;
-        } else if (mFieldList.size() == 2) {
+        } else if (fieldList.size() == 2) {
             layoutParams2.weight = 1;
             layoutParams3.weight = 0;
-        } else if (mFieldList.size() == 3) {
+        } else if (fieldList.size() == 3) {
             layoutParams2.weight = 1;
             layoutParams3.weight = 1;
         }
@@ -107,7 +103,7 @@ class RealmBrowserAdapter extends RecyclerView.Adapter<RealmBrowserAdapter.ViewH
 
 
     private void initRowTextWrapping(ViewHolder holder) {
-        boolean shouldWrapText = mRealmPreferences.shouldWrapText();
+        boolean shouldWrapText = realmPreferences.shouldWrapText();
         holder.txtColumn1.setSingleLine(!shouldWrapText);
         holder.txtColumn2.setSingleLine(!shouldWrapText);
         holder.txtColumn3.setSingleLine(!shouldWrapText);
@@ -115,18 +111,18 @@ class RealmBrowserAdapter extends RecyclerView.Adapter<RealmBrowserAdapter.ViewH
 
 
     private void initRowText(ViewHolder holder, DynamicRealmObject realmObject) {
-        if (mFieldList.size() == 1) {
-            initFieldText(holder.txtColumn1, realmObject, mFieldList.get(0));
+        if (fieldList.size() == 1) {
+            initFieldText(holder.txtColumn1, realmObject, fieldList.get(0));
             holder.txtColumn2.setText(null);
             holder.txtColumn3.setText(null);
-        } else if (mFieldList.size() == 2) {
-            initFieldText(holder.txtColumn1, realmObject, mFieldList.get(0));
-            initFieldText(holder.txtColumn2, realmObject, mFieldList.get(1));
+        } else if (fieldList.size() == 2) {
+            initFieldText(holder.txtColumn1, realmObject, fieldList.get(0));
+            initFieldText(holder.txtColumn2, realmObject, fieldList.get(1));
             holder.txtColumn3.setText(null);
-        } else if (mFieldList.size() == 3) {
-            initFieldText(holder.txtColumn1, realmObject, mFieldList.get(0));
-            initFieldText(holder.txtColumn2, realmObject, mFieldList.get(1));
-            initFieldText(holder.txtColumn3, realmObject, mFieldList.get(2));
+        } else if (fieldList.size() == 3) {
+            initFieldText(holder.txtColumn1, realmObject, fieldList.get(0));
+            initFieldText(holder.txtColumn2, realmObject, fieldList.get(1));
+            initFieldText(holder.txtColumn3, realmObject, fieldList.get(2));
         }
     }
 
@@ -141,7 +137,7 @@ class RealmBrowserAdapter extends RecyclerView.Adapter<RealmBrowserAdapter.ViewH
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onRowClicked(realmObject);
+                listener.onRowClicked(realmObject);
             }
         };
     }

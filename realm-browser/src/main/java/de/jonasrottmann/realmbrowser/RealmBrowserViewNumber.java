@@ -1,4 +1,4 @@
-package de.jonasrottmann.realmbrowser.views;
+package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,25 +9,23 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.EditText;
-
-import java.lang.reflect.Field;
-
-import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.utils.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
+import java.lang.reflect.Field;
 
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.support.v4.content.ContextCompat.getColor;
 import static android.support.v4.content.ContextCompat.getDrawable;
 
-public class NumberView extends FieldView {
+class RealmBrowserViewNumber extends RealmBrowserViewField {
     private boolean isInputValid = true;
     private EditText fieldEditText;
 
-    public NumberView(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
+    public RealmBrowserViewNumber(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isNumberField(getField())) throw new IllegalArgumentException();
+        if (!Utils.isNumberField(getField())) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
@@ -42,16 +40,19 @@ public class NumberView extends FieldView {
         fieldEditText = (EditText) findViewById(R.id.realm_browser_field_edittext);
         fieldEditText.setMaxLines(1);
         fieldEditText.addTextChangedListener(createTextWatcher());
-        if (Utils.isDouble(getField()) || Utils.isFloat(getField()))
+        if (Utils.isDouble(getField()) || Utils.isFloat(getField())) {
             fieldEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
-        else
+        } else {
             fieldEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
+        }
     }
 
     @Override
     public Object getValue() {
         String value = fieldEditText.getText().toString();
-        if (value.isEmpty()) value = "0";
+        if (value.isEmpty()) {
+            value = "0";
+        }
 
         if (Utils.isByte(getField())) {
             return Byte.parseByte(value);
@@ -124,7 +125,7 @@ public class NumberView extends FieldView {
                     }
                     getFieldInfoImageView().setVisibility(GONE);
                     isInputValid = true;
-                    NumberView.this.setBackgroundColor(getColor(getContext(), android.R.color.transparent));
+                    RealmBrowserViewNumber.this.setBackgroundColor(getColor(getContext(), android.R.color.transparent));
                 } catch (NumberFormatException e) {
                     isInputValid = false;
                     getFieldInfoImageView().setVisibility(VISIBLE);
@@ -133,10 +134,10 @@ public class NumberView extends FieldView {
                     getFieldInfoImageView().setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Snackbar.make(NumberView.this, s.toString() + " does not fit data type " + getField().getType().getSimpleName(), Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(RealmBrowserViewNumber.this, s.toString() + " does not fit data type " + getField().getType().getSimpleName(), Snackbar.LENGTH_SHORT).show();
                         }
                     });
-                    NumberView.this.setBackgroundColor(getColor(getContext(), R.color.realm_browser_error_light));
+                    RealmBrowserViewNumber.this.setBackgroundColor(getColor(getContext(), R.color.realm_browser_error_light));
                 }
             }
         };

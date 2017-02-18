@@ -16,20 +16,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.exceptions.RealmMigrationNeededException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.jonasrottmann.realmbrowser.utils.RealmHolder;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.exceptions.RealmMigrationNeededException;
-
 public class RealmFilesActivity extends AppCompatActivity {
 
-    private List<String> mIgnoreExtensionList;
-    private ArrayAdapter<Pair<String, String>> mAdapter;
+    private List<String> ignoreExtensionList;
+    private ArrayAdapter<Pair<String, String>> adapter;
 
 
     public static Intent getIntent(@NonNull Context context) {
@@ -45,11 +42,12 @@ public class RealmFilesActivity extends AppCompatActivity {
         setContentView(R.layout.realm_browser_ac_realm_list_view);
         setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
 
-        mIgnoreExtensionList = new ArrayList<>();
-        mIgnoreExtensionList.add(".log");
-        mIgnoreExtensionList.add(".log_a");
-        mIgnoreExtensionList.add(".log_b");
-        mIgnoreExtensionList.add(".lock");
+        ignoreExtensionList = new ArrayList<>();
+        ignoreExtensionList.add(".log");
+        ignoreExtensionList.add(".log_a");
+        ignoreExtensionList.add(".log_b");
+        ignoreExtensionList.add(".lock");
+        ignoreExtensionList.add(".management");
 
         File dataDir = new File(getApplicationInfo().dataDir, "files");
         File[] files = dataDir.listFiles();
@@ -61,13 +59,13 @@ public class RealmFilesActivity extends AppCompatActivity {
             }
         }
 
-        mAdapter = new Adapter(this, android.R.layout.simple_list_item_2, fileList);
+        adapter = new Adapter(this, android.R.layout.simple_list_item_2, fileList);
         ListView listView = (ListView) findViewById(R.id.realm_browser_listView);
-        listView.setAdapter(mAdapter);
+        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onItemClicked(mAdapter.getItem(position).first);
+                onItemClicked(adapter.getItem(position).first);
             }
         });
     }
@@ -78,7 +76,7 @@ public class RealmFilesActivity extends AppCompatActivity {
         int index = fileName.lastIndexOf(".");
         if (index > 0) {
             String extension = fileName.substring(index);
-            isValid = !mIgnoreExtensionList.contains(extension);
+            isValid = !ignoreExtensionList.contains(extension);
         }
         return isValid;
     }
@@ -86,9 +84,7 @@ public class RealmFilesActivity extends AppCompatActivity {
 
     private void onItemClicked(@NonNull String realmFileName) {
         try {
-            RealmConfiguration config = new RealmConfiguration.Builder(this)
-                    .name(realmFileName)
-                    .build();
+            RealmConfiguration config = new RealmConfiguration.Builder(this).name(realmFileName).build();
             RealmHolder.getInstance().setRealmConfiguration(config);
             Realm realm = Realm.getInstance(config);
             realm.close();
@@ -103,21 +99,23 @@ public class RealmFilesActivity extends AppCompatActivity {
 
     private static class Adapter extends ArrayAdapter<Pair<String, String>> {
 
-        private int mResource;
+        private final int resource;
 
 
-        public Adapter(Context context, int res, ArrayList<Pair<String, String>> classes) {
+        Adapter(Context context, int res, ArrayList<Pair<String, String>> classes) {
             super(context, res, classes);
-            mResource = res;
+            resource = res;
         }
 
 
+        @NonNull
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Pair<String, String> filePair = getItem(position);
 
-            if (convertView == null)
-                convertView = LayoutInflater.from(getContext()).inflate(mResource, parent, false);
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(resource, parent, false);
+            }
 
             TextView title = (TextView) convertView.findViewById(android.R.id.text1);
             TextView filesize = (TextView) convertView.findViewById(android.R.id.text2);
