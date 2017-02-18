@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
+import io.realm.RealmFieldType;
 import io.realm.RealmModel;
 import io.realm.RealmObjectSchema;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
@@ -261,6 +262,10 @@ public class RealmObjectActivity extends AppCompatActivity {
 
         // Set values
         for (String fieldName : fieldViewsList.keySet()) {
+            if (dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).getFieldType(fieldName) == RealmFieldType.LIST) {
+                continue;
+            }
+
             if (!dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isNullable(fieldName) && fieldViewsList.get(fieldName).getValue() == null) {
                 // TODO: prevent setting null to list fields
                 continue;
