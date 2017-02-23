@@ -16,7 +16,6 @@ buildscript {
         // dependencies
         supportLibVersion = '25.1.1'
         timberVersion = '4.3.0'
-        realmVersion = '1.1.0'
         supportLibVersion = '25.1.1'
     }
 

@@ -2,6 +2,7 @@ package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.support.test.InstrumentationRegistry;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import java.io.File;
@@ -27,9 +28,9 @@ import static org.junit.Assert.assertTrue;
  * Source: <a href="https://github.com/realm/realm-java">github.com/realm/realm-java</a>
  */
 public class TestRealmConfigurationFactory extends TemporaryFolder {
-    private final Map<RealmConfiguration, Boolean> map = new ConcurrentHashMap<>();
-    private final Set<RealmConfiguration> configurations = Collections.newSetFromMap(map);
-    private boolean unitTestFailed = false;
+    private Map<RealmConfiguration, Boolean> map = new ConcurrentHashMap<RealmConfiguration, Boolean>();
+    private Set<RealmConfiguration> configurations = Collections.newSetFromMap(map);
+    protected boolean unitTestFailed = false;
 
     @Override
     public Statement apply(final Statement base, Description description) {
@@ -52,6 +53,7 @@ public class TestRealmConfigurationFactory extends TemporaryFolder {
     @Override
     protected void before() throws Throwable {
         super.before();
+        Realm.init(InstrumentationRegistry.getTargetContext());
     }
 
     @Override
@@ -72,7 +74,9 @@ public class TestRealmConfigurationFactory extends TemporaryFolder {
     }
 
     public RealmConfiguration createConfiguration() {
-        RealmConfiguration configuration = new RealmConfiguration.Builder(getRoot()).build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder()
+            .directory(getRoot())
+            .build();
 
         configurations.add(configuration);
         return configuration;
@@ -81,46 +85,74 @@ public class TestRealmConfigurationFactory extends TemporaryFolder {
     public RealmConfiguration createConfiguration(String subDir, String name) {
         final File folder = new File(getRoot(), subDir);
         assertTrue(folder.mkdirs());
-        RealmConfiguration configuration = new RealmConfiguration.Builder(folder).name(name).build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder()
+            .directory(folder)
+            .name(name)
+            .build();
 
         configurations.add(configuration);
         return configuration;
     }
 
     public RealmConfiguration createConfiguration(String name) {
-        RealmConfiguration configuration = new RealmConfiguration.Builder(getRoot()).name(name).build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder()
+            .directory(getRoot())
+            .name(name)
+            .build();
 
         configurations.add(configuration);
         return configuration;
     }
 
     public RealmConfiguration createConfiguration(String name, byte[] key) {
-        RealmConfiguration configuration = new RealmConfiguration.Builder(getRoot()).name(name).encryptionKey(key).build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder()
+            .directory(getRoot())
+            .name(name)
+            .encryptionKey(key)
+            .build();
 
         configurations.add(configuration);
         return configuration;
     }
 
     public RealmConfiguration.Builder createConfigurationBuilder() {
-        return new RealmConfiguration.Builder(getRoot());
+        return new RealmConfiguration.Builder().directory(getRoot());
     }
 
     // Copies a Realm file from assets to temp dir
     public void copyRealmFromAssets(Context context, String realmPath, String newName) throws IOException {
-        // Delete the existing file before copy
-        RealmConfiguration configToDelete = new RealmConfiguration.Builder(getRoot()).name(newName).build();
-        Realm.deleteRealm(configToDelete);
+        RealmConfiguration config = new RealmConfiguration.Builder()
+            .directory(getRoot())
+            .name(newName)
+            .build();
 
-        AssetManager assetManager = context.getAssets();
-        InputStream is = assetManager.open(realmPath);
-        File file = new File(getRoot(), newName);
-        FileOutputStream outputStream = new FileOutputStream(file);
-        byte[] buf = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = is.read(buf)) > -1) {
-            outputStream.write(buf, 0, bytesRead);
+        copyRealmFromAssets(context, realmPath, config);
+    }
+
+    public void copyRealmFromAssets(Context context, String realmPath, RealmConfiguration config) throws IOException {
+        // Deletes the existing file before copy
+        Realm.deleteRealm(config);
+
+        File outFile = new File(config.getRealmDirectory(), config.getRealmFileName());
+
+        InputStream is = null;
+        FileOutputStream os = null;
+        try {
+            is = context.getAssets().open(realmPath);
+            os = new FileOutputStream(outFile);
+
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = is.read(buf)) > -1) {
+                os.write(buf, 0, bytesRead);
+            }
+        } finally {
+            if (is != null) {
+                try { is.close(); } catch (IOException ignore) {}
+            }
+            if (os != null) {
+                try { os.close(); } catch (IOException ignore) {}
+            }
         }
-        outputStream.close();
-        is.close();
     }
 }

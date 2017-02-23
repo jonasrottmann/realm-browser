@@ -1,14 +1,16 @@
 package de.jonasrottmann.realmbrowser;
 
+import io.realm.DynamicRealm;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import io.realm.DynamicRealm;
-
 public class RealmBrowserTest {
 
+    private RealmConfiguration defaultConfig;
     private DynamicRealm dynamicRealm;
 
     @Rule
@@ -16,12 +18,20 @@ public class RealmBrowserTest {
 
     @Before
     public void setUp() {
-        dynamicRealm = DynamicRealm.getInstance(configFactory.createConfiguration());
+        defaultConfig = configFactory.createConfiguration();
+        {
+            // Needed as of https://github.com/realm/realm-java/issues/2623#issuecomment-212250150
+            Realm realm = Realm.getInstance(defaultConfig);
+            realm.close();
+        }
+        dynamicRealm = DynamicRealm.getInstance(defaultConfig);
     }
 
     @After
     public void tearDown() {
-        dynamicRealm.close();
+        if (dynamicRealm != null) {
+            dynamicRealm.close();
+        }
     }
 
     @Test

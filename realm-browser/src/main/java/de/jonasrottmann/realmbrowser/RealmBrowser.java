@@ -26,7 +26,7 @@ public final class RealmBrowser {
      */
     @SuppressWarnings("WeakerAccess")
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull String realmFileName) {
-        RealmConfiguration config = new RealmConfiguration.Builder(context).name(realmFileName).build();
+        RealmConfiguration config = new RealmConfiguration.Builder().name(realmFileName).build();
         startRealmModelsActivity(context, config);
     }
 

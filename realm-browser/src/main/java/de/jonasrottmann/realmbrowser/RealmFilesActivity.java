@@ -89,7 +89,7 @@ public class RealmFilesActivity extends AppCompatActivity {
 
     private void onItemClicked(@NonNull String realmFileName) {
         try {
-            RealmConfiguration config = new RealmConfiguration.Builder(this).name(realmFileName).build();
+            RealmConfiguration config = new RealmConfiguration.Builder().name(realmFileName).build();
             RealmHolder.getInstance().setRealmConfiguration(config);
             Realm realm = Realm.getInstance(config);
             realm.close();

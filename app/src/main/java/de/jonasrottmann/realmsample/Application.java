@@ -13,7 +13,7 @@ public class Application extends android.app.Application {
         super.onCreate();
         Timber.plant(new Timber.DebugTree());
 
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
+        RealmConfiguration config = new RealmConfiguration.Builder()
                 .name(REALM_FILE_NAME)
                 .deleteRealmIfMigrationNeeded()
                 .build();

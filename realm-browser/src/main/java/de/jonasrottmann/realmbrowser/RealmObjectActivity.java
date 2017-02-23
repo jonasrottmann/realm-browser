@@ -10,7 +10,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +36,7 @@ public class RealmObjectActivity extends AppCompatActivity {
     private static final String EXTRAS_FLAG_NEW_OBJECT = "NEW_OBJECT";
     private Class<? extends RealmModel> mRealmObjectClass;
     private DynamicRealmObject dynamicRealmObject;
-    private List<Field> fieldList;
+    private List<Field> classFields;
     private HashMap<String, RealmBrowserViewField> fieldViewsList;
     private DynamicRealm dynamicRealm;
     private LinearLayout linearLayout;
@@ -57,15 +56,17 @@ public class RealmObjectActivity extends AppCompatActivity {
         dynamicRealm = DynamicRealm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
         mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
 
+        // Get Extra
         if (!getIntent().getBooleanExtra(EXTRAS_FLAG_NEW_OBJECT, true)) {
             dynamicRealmObject = RealmHolder.getInstance().getObject();
         }
 
+        // Fill fields list
         RealmObjectSchema schema = dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName());
-        fieldList = new ArrayList<>();
+        classFields = new ArrayList<>();
         for (String s : schema.getFieldNames()) {
             try {
-                fieldList.add(mRealmObjectClass.getDeclaredField(s));
+                classFields.add(mRealmObjectClass.getDeclaredField(s));
             } catch (NoSuchFieldException e) {
                 Timber.d("Initializing field map.", e);
             }
@@ -74,10 +75,10 @@ public class RealmObjectActivity extends AppCompatActivity {
         // Init Views
         linearLayout = (LinearLayout) findViewById(R.id.realm_browser_linearLayout);
         fieldViewsList = new HashMap<>();
-        int dp16 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, this.getResources().getDisplayMetrics());
-        for (final Field field : fieldList) {
-            RealmBrowserViewField realmFieldView;
+        int margin = this.getResources().getDimensionPixelSize(R.dimen.realm_browser_activity_margin);
 
+        for (final Field field : classFields) {
+            RealmBrowserViewField realmFieldView;
             if (Utils.isString(field)) {
                 realmFieldView = new RealmBrowserViewString(this, schema, field);
             } else if (Utils.isNumberField(field)) {
@@ -121,15 +122,15 @@ public class RealmObjectActivity extends AppCompatActivity {
                 // Skip this field.
                 continue;
             }
+            realmFieldView.setPadding(margin, margin / 2, margin, margin / 2);
 
-            realmFieldView.setPadding(dp16, dp16 / 2, dp16, dp16 / 2);
-
+            // Add the object to the view for setting the current value etc.
             if (dynamicRealmObject != null) {
                 realmFieldView.setRealmObject(dynamicRealmObject);
             }
 
+            // Add View
             linearLayout.addView(realmFieldView);
-
             fieldViewsList.put(field.getName(), realmFieldView);
         }
 
@@ -252,9 +253,9 @@ public class RealmObjectActivity extends AppCompatActivity {
 
         if (realmObject == null) {
             realmObject = createObject();
-        }
-        if (realmObject == null) {
-            return false;
+            if (realmObject == null) {
+                return false;
+            }
         }
 
         // Start Realm Transaction
@@ -263,11 +264,11 @@ public class RealmObjectActivity extends AppCompatActivity {
         // Set values
         for (String fieldName : fieldViewsList.keySet()) {
             if (dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).getFieldType(fieldName) == RealmFieldType.LIST) {
+                // Prevent setting null to list fields at the moment
                 continue;
             }
-
             if (!dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isNullable(fieldName) && fieldViewsList.get(fieldName).getValue() == null) {
-                // TODO: prevent setting null to list fields
+                // Prevent setting null to not nullable fields
                 continue;
             }
             realmObject.set(fieldViewsList.get(fieldName).getField().getName(), fieldViewsList.get(fieldName).getValue());
