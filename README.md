@@ -12,7 +12,7 @@ This is a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk
 
 The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/realm-browser/).
 
-1. Add the JitPack repository to your build file
+1. **Add the JitPack repository to your build file**
   ```
   allprojects {
           repositories {
@@ -23,7 +23,7 @@ The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/real
   }
   ```
   
-2. Add the dependency
+2. **Add the dependency**
   ```
   dependencies {
       debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:v0.0.9'
@@ -33,8 +33,7 @@ The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/real
   ```
   The no-op version of Realm Browser has empty functions which do nothing. It is not necessary to include this, but you may if you do not want to access Realm Browser in release mode. If you want to use a build of the newest development use `compile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"` instead.
 
-3. Exclude support libraries (maybe optional)
-  Realm Browser depends on Android support libraries, so you might want to exclude them from your project if they conflict with the ones you include:
+3. Exclude support libraries (maybe optional): Realm Browser depends on Android support libraries, so you might want to exclude them from your project if they conflict with the ones you include:
   ```
   depedencies {
       debugCompile ('com.github.jonasrottmann.realm-browser:realm-browser:v0.0.9') {
@@ -43,8 +42,7 @@ The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/real
   }
   ```
 
-4. Add ProGuard rules (optional)
-  Use these if you enable minification for debug builds or want to use Realm Browser in release builds.
+4. Add ProGuard rules (optional): Use these if you enable minification for debug builds or want to use Realm Browser in release builds.
   ```
   # Realm Browser
   -keep class de.jonasrottmann.realmbrowser.* { *; }
