@@ -22,6 +22,7 @@ The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/real
       }
   }
   ```
+  
 2. Add the dependency
   ```
   dependencies {
