@@ -12,8 +12,7 @@ This is a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk
 
 The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/realm-browser/).
 
-Step 1. Add the JitPack repository to your build file
-
+1. Add the JitPack repository to your build file
 ```
 allprojects {
         repositories {
@@ -23,40 +22,31 @@ allprojects {
     }
 }
 ```
-
-Step 2. Add the dependency
-
+2. Add the dependency
 ```
 dependencies {
-    debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:v0.0.8'
-    testCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.8'
-    releaseCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.8'
+    debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:v0.0.9'
+    testCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.9'
+    releaseCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:v0.0.9'
 }
 ```
+The no-op version of Realm Browser has empty functions which do nothing. It is not necessary to include this, but you may if you do not want to access Realm Browser in release mode. If you want to use a build of the newest development use `compile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"` instead.
 
-The no-op version of Realm Browser has empty functions which do nothing. It is not necessary to include this,
-but you may if you do not want to access Realm Browser in release mode.
-
-> ‼️ v0.0.8 is not working with the newest realm release. Use the develop snapshot version `compile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"` meanwhile.
-
-Realm Browser depends on Android support libraries, so you might want to exclude them from your project
-if they conflict with the ones you include:
-
+3. Exclude support libraries (maybe optional)
+Realm Browser depends on Android support libraries, so you might want to exclude them from your project if they conflict with the ones you include:
 ```
 depedencies {
-    debugCompile ('com.github.jonasrottmann.realm-browser:realm-browser:v0.0.8') {
+    debugCompile ('com.github.jonasrottmann.realm-browser:realm-browser:v0.0.9') {
         exclude group: 'com.android.support';
     }
 }
 ```
 
-Step 3. Add ProGuard rules (optional)
-
+4. Add ProGuard rules (optional)
 Use these if you enable minification for debug builds or want to use Realm Browser in release builds.
-
 ```
 # Realm Browser
--keep class de.jonasrottmann.realmbrowser.helper.* { *; }
+-keep class de.jonasrottmann.realmbrowser.* { *; }
 -keep class android.support.v7.widget.SearchView { *; }
 -keep class android.support.v7.view.** { *; }
 ```
