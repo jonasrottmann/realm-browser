@@ -12,6 +12,10 @@ android {
         versionCode project.gitCommitCount
         versionName project.gitTag
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {

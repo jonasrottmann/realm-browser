@@ -3,7 +3,7 @@ buildscript {
         gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
         gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
-        buildToolsVersion = '25.0.1'
+        buildToolsVersion = '25.0.2'
 
         compileSdkVersion = 25
         targetSdkVersion = 25
@@ -14,9 +14,8 @@ buildscript {
         realmVersion = '2.3.1'
 
         // dependencies
-        supportLibVersion = '25.1.1'
         timberVersion = '4.3.0'
-        supportLibVersion = '25.1.1'
+        supportLibVersion = '25.2.0'
     }
 
     repositories {

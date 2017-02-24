@@ -1,16 +1,42 @@
 language: android
 
+# Use the Travis Container-Based Infrastructure
+sudo: false
+
+jdk:
+  - oraclejdk8
+
+env:
+  global:
+    - ANDROID_BUILD_TOOLS_VERSION=25.0.2
+    - ADB_INSTALL_TIMEOUT=20 # install timeout in minutes (2 minutes by default)
+  matrix:
+    - ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
+
 android:
   components:
-    # Update Android SDK Tools
-    - tools
-
-    - build-tools-23.0.3
-    - android-24
+    - tools # to get the new `repository-11.xml`
+    - tools # to install new Android SDK tools
+    - platform-tools
+    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
+    - $ANDROID_TARGET
+    - android-25
 
     # Support library
     - extra-android-support
     - extra-android-m2repository
 
+    # System images
+    - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
+
+before_script:
+  - chmod +x ./gradlew
+  # Emulator Management: Create, Start and Wait
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
+
 script:
-    - chmod +x ./gradlew
+  - ./gradlew assemble
+  - ./gradlew build check # Local unit tests
+  - ./gradlew build connectedCheck # Instrumented unit tests

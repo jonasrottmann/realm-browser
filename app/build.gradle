@@ -32,6 +32,10 @@ android {
             applicationIdSuffix ".noop"
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
