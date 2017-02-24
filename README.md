@@ -82,7 +82,8 @@ What's on the roadmap... 🚀
 - [ ] Bidirectional scrolling in the browser window
 - [ ] Clean up
 - [ ] Nice architecture
-- [ ] Live reload the browser if updates happen in the background 
+- [ ] Live reload the browser if updates happen in the background
+- [ ] Javadoc 📚
 
 ### License
 
