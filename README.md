@@ -80,6 +80,9 @@ What's on the roadmap... 🚀
 - [ ] Tests
 - [ ] Be able to edit/create objects
 - [ ] Bidirectional scrolling in the browser window
+- [ ] Clean up
+- [ ] Nice architecture
+- [ ] Live reload the browser if updates happen in the background 
 
 ### License
 
