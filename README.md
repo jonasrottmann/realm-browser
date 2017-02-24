@@ -7,7 +7,6 @@ This is a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk
 <img src="screenshots/sc_1.png" width="256"> | <img src="screenshots/sc_2.png" width="256"> | <img src="screenshots/sc_3.png" width="256">
 --- | --- | ---
 
-
 ### Integration [![](https://jitpack.io/v/jonasrottmann/realm-browser.svg)](https://jitpack.io/#jonasrottmann/realm-browser) [![Build Status](https://travis-ci.org/jonasrottmann/realm-browser.svg?branch=release)](https://travis-ci.org/jonasrottmann/realm-browser)
 
 The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/realm-browser/).
@@ -22,7 +21,7 @@ The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/real
       }
   }
   ```
-  
+
 2. **Add the dependency**
   ```
   dependencies {
@@ -75,6 +74,12 @@ RealmBrowser.showRealmFilesNotification(context);
 ```
 
 For a full working example check out the [sample app](https://github.com/jonasrottmann/realm-browser/blob/release/app/src/main/java/de/jonasrottmann/realmsample/MainActivity.java).
+
+### TODO
+What's on the roadmap... 🚀
+- [ ] Tests
+- [ ] Be able to edit/create objects
+- [ ] Bidirectional scrolling in the browser window
 
 ### License
 
