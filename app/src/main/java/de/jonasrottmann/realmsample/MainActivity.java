@@ -35,8 +35,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.btnOpenModel).setOnClickListener(this);
 
         updateTitle();
-
-        RealmBrowser.showRealmFilesNotification(this);
     }
 
 

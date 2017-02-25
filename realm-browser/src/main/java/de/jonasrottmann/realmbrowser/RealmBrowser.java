@@ -45,19 +45,32 @@ public final class RealmBrowser {
      */
     @SuppressWarnings("WeakerAccess")
     public static void showRealmFilesNotification(@NonNull Context context) {
-        showNotification(context, RealmFilesActivity.class);
+        Intent notifyIntent = new Intent(context, RealmFilesActivity.class);
+        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        showNotification(context, notifyPendingIntent);
     }
 
-    private static void showNotification(@NonNull Context context, @NonNull Class activityClass) {
+    /**
+     *
+     * @param context A valid {@link Context}
+     * @param realmConfiguration The config of the realm to open.
+     */
+    @SuppressWarnings("WeakerAccess")
+    public static void showRealmModelsNotification(@NonNull Context context, @NonNull RealmConfiguration realmConfiguration) {
+        RealmHolder.getInstance().setRealmConfiguration(realmConfiguration);
+        Intent notifyIntent = RealmModelsActivity.getIntent(context);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        showNotification(context, pendingIntent);
+    }
+
+    private static void showNotification(@NonNull Context context, @NonNull PendingIntent pendingIntent) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.realm_browser_ic_rb)
             .setContentTitle(context.getString(R.string.realm_browser_title))
-            .setContentText(context.getString(R.string.realm_browser_click_to_launch))
+            .setContentText(context.getApplicationContext().getPackageName())
             .setAutoCancel(false);
-        Intent notifyIntent = new Intent(context, activityClass);
-        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(notifyPendingIntent);
+        builder.setContentIntent(pendingIntent);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
     }
