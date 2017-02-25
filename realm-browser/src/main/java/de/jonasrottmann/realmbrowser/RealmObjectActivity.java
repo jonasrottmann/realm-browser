@@ -27,9 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import timber.log.Timber;
 
-/**
- * Created by Jonas Rottmann on 15/03/16.
- */
 public class RealmObjectActivity extends AppCompatActivity {
 
     private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
@@ -271,6 +268,12 @@ public class RealmObjectActivity extends AppCompatActivity {
                 // Prevent setting null to not nullable fields
                 continue;
             }
+            if (dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isPrimaryKey(fieldName)) {
+                // Prevent changeing of PK
+                // TODO delete object and create new one with changed PK
+                continue;
+            }
+
             realmObject.set(fieldViewsList.get(fieldName).getField().getName(), fieldViewsList.get(fieldName).getValue());
         }
 
