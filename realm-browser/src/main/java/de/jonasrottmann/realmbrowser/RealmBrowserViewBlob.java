@@ -49,7 +49,7 @@ class RealmBrowserViewBlob extends RealmBrowserViewField {
     @Override
     public void setRealmObject(@NonNull DynamicRealmObject realmObject) {
         if (Utils.isBlob(getField())) {
-            textView.setText(Utils.createBlobValueString(realmObject, getField()));
+            textView.setText(Utils.createBlobValueString(realmObject.getBlob(getField().getName())));
         } else {
             throw new IllegalArgumentException();
         }

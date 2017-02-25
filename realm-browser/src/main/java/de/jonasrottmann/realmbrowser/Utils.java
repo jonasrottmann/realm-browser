@@ -15,6 +15,11 @@ import java.util.Date;
 class Utils {
     @NonNull
     static String createParametrizedName(@NonNull Field field) {
+        //noinspection ConstantConditions
+        if (field == null) {
+            throw new IllegalArgumentException("The passed in Field cannot be null.");
+        }
+
         ParameterizedType pType = (ParameterizedType) field.getGenericType();
         String rawType = pType.getRawType().toString();
         int rawTypeIndex = rawType.lastIndexOf(".");
@@ -32,16 +37,13 @@ class Utils {
     }
 
     @Nullable
-    static String createBlobValueString(@NonNull DynamicRealmObject realmObject, @NonNull Field field) {
-        if (realmObject.getBlob(field.getName()) == null) {
-            return null;
-        }
-
+    static String createBlobValueString(byte[] blobValue) {
+        if (blobValue == null) return null;
         StringBuilder builder = new StringBuilder("byte[] = ");
         builder.append("{");
-        for (int i = 0; i < realmObject.getBlob(field.getName()).length; i++) {
-            builder.append(String.valueOf(realmObject.getBlob(field.getName())[i]));
-            if (i < realmObject.getBlob(field.getName()).length - 1) {
+        for (int i = 0; i < blobValue.length; i++) {
+            builder.append(String.valueOf(blobValue[i]));
+            if (i < blobValue.length - 1) {
                 builder.append(", ");
             }
         }
@@ -57,7 +59,7 @@ class Utils {
             value = createParametrizedName(field);
         } else if (isBlob(field)) {
             // byte[]
-            value = createBlobValueString(realmObject, field);
+            value = createBlobValueString(realmObject.getBlob(field.getName()));
         } else {
             // Strings, Numbers, Objects
             if (realmObject.get(field.getName()) != null) {
