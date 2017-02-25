@@ -52,29 +52,29 @@ class Utils {
     }
 
     @NonNull
-    static CharSequence getFieldValueString(@NonNull DynamicRealmObject realmObject, Field field) {
-        String value = null;
+    static CharSequence getFieldValueString(@NonNull DynamicRealmObject realmObject, @NonNull Field field) {
+        String valueString = null;
+
         if (isParametrizedField(field)) {
-            // RealmList
-            value = createParametrizedName(field);
+            valueString = createParametrizedName(field);
         } else if (isBlob(field)) {
-            // byte[]
-            value = createBlobValueString(realmObject.getBlob(field.getName()));
+            valueString = createBlobValueString(realmObject.getBlob(field.getName()));
         } else {
             // Strings, Numbers, Objects
-            if (realmObject.get(field.getName()) != null) {
-                value = String.valueOf(realmObject.get(field.getName()));
+            Object fieldValue = realmObject.get(field.getName());
+            if (fieldValue != null) {
+                valueString = String.valueOf(fieldValue);
             }
         }
 
-        if (value == null) {
+        if (valueString == null) {
             // Display null in italics to be able to distinguish between null and a string that actually says "null"
-            value = "null";
-            SpannableString nullString = new SpannableString(value);
-            nullString.setSpan(new StyleSpan(Typeface.ITALIC), 0, value.length(), 0);
+            valueString = "null";
+            SpannableString nullString = new SpannableString(valueString);
+            nullString.setSpan(new StyleSpan(Typeface.ITALIC), 0, valueString.length(), 0);
             return nullString;
         } else {
-            return value;
+            return valueString;
         }
     }
 

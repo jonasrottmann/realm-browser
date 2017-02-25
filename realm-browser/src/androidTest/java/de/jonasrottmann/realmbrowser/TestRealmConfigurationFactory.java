@@ -1,7 +1,6 @@
 package de.jonasrottmann.realmbrowser;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.support.test.InstrumentationRegistry;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -27,10 +26,10 @@ import static org.junit.Assert.assertTrue;
  * <p/>
  * Source: <a href="https://github.com/realm/realm-java">github.com/realm/realm-java</a>
  */
-public class TestRealmConfigurationFactory extends TemporaryFolder {
+class TestRealmConfigurationFactory extends TemporaryFolder {
     private Map<RealmConfiguration, Boolean> map = new ConcurrentHashMap<RealmConfiguration, Boolean>();
     private Set<RealmConfiguration> configurations = Collections.newSetFromMap(map);
-    protected boolean unitTestFailed = false;
+    private boolean unitTestFailed = false;
 
     @Override
     public Statement apply(final Statement base, Description description) {
@@ -74,9 +73,7 @@ public class TestRealmConfigurationFactory extends TemporaryFolder {
     }
 
     public RealmConfiguration createConfiguration() {
-        RealmConfiguration configuration = new RealmConfiguration.Builder()
-            .directory(getRoot())
-            .build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder().directory(getRoot()).build();
 
         configurations.add(configuration);
         return configuration;
@@ -85,31 +82,21 @@ public class TestRealmConfigurationFactory extends TemporaryFolder {
     public RealmConfiguration createConfiguration(String subDir, String name) {
         final File folder = new File(getRoot(), subDir);
         assertTrue(folder.mkdirs());
-        RealmConfiguration configuration = new RealmConfiguration.Builder()
-            .directory(folder)
-            .name(name)
-            .build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder().directory(folder).name(name).build();
 
         configurations.add(configuration);
         return configuration;
     }
 
     public RealmConfiguration createConfiguration(String name) {
-        RealmConfiguration configuration = new RealmConfiguration.Builder()
-            .directory(getRoot())
-            .name(name)
-            .build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder().directory(getRoot()).name(name).build();
 
         configurations.add(configuration);
         return configuration;
     }
 
     public RealmConfiguration createConfiguration(String name, byte[] key) {
-        RealmConfiguration configuration = new RealmConfiguration.Builder()
-            .directory(getRoot())
-            .name(name)
-            .encryptionKey(key)
-            .build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder().directory(getRoot()).name(name).encryptionKey(key).build();
 
         configurations.add(configuration);
         return configuration;
@@ -121,10 +108,7 @@ public class TestRealmConfigurationFactory extends TemporaryFolder {
 
     // Copies a Realm file from assets to temp dir
     public void copyRealmFromAssets(Context context, String realmPath, String newName) throws IOException {
-        RealmConfiguration config = new RealmConfiguration.Builder()
-            .directory(getRoot())
-            .name(newName)
-            .build();
+        RealmConfiguration config = new RealmConfiguration.Builder().directory(getRoot()).name(newName).build();
 
         copyRealmFromAssets(context, realmPath, config);
     }
@@ -148,10 +132,16 @@ public class TestRealmConfigurationFactory extends TemporaryFolder {
             }
         } finally {
             if (is != null) {
-                try { is.close(); } catch (IOException ignore) {}
+                try {
+                    is.close();
+                } catch (IOException ignore) {
+                }
             }
             if (os != null) {
-                try { os.close(); } catch (IOException ignore) {}
+                try {
+                    os.close();
+                } catch (IOException ignore) {
+                }
             }
         }
     }
