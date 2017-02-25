@@ -7,10 +7,6 @@ import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 
-/**
- * Created by Jonas Rottmann on 25.02.17.
- * Copyright © 2017 fluidmobile. All rights reserved.
- */
 public class UtilsTest {
     @Test
     public void testCreateParametrizedNameForListField() throws NoSuchFieldException {
@@ -20,10 +16,12 @@ public class UtilsTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testCreateParametrizedNameForNull() throws NoSuchFieldException {
+        //noinspection ConstantConditions
         Utils.createParametrizedName(null);
     }
 
     private static class TestClass {
+        @SuppressWarnings("unused")
         List<String> stringList;
     }
 
