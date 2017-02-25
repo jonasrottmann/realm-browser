@@ -1,22 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
+apply plugin: 'com.getkeepsafe.dexcount'
 
-android {
-    compileSdkVersion project.compileSdkVersion
-    buildToolsVersion project.buildToolsVersion
-    resourcePrefix 'realm_browser_'
-
-    defaultConfig {
-        minSdkVersion project.minSdkVersion
-        targetSdkVersion project.targetSdkVersion
-        versionCode project.gitCommitCount
-        versionName project.gitTag
-    }
-
-    lintOptions {
-        abortOnError false
-    }
-}
+apply from: rootProject.file('androidlib.gradle')
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

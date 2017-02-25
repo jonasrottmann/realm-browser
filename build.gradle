@@ -12,6 +12,7 @@ buildscript {
         // plugins
         androidGradlePluginVersion = '2.2.3'
         realmVersion = '2.3.1'
+        dexcountVersion = '0.6.2'
 
         // dependencies
         timberVersion = '4.3.0'
@@ -25,6 +26,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$androidGradlePluginVersion"
         classpath "io.realm:realm-gradle-plugin:$realmVersion"
+        classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$dexcountVersion"
     }
 }
 
