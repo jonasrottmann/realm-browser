@@ -20,6 +20,7 @@ import io.realm.DynamicRealmObject;
 import io.realm.RealmFieldType;
 import io.realm.RealmModel;
 import io.realm.RealmObjectSchema;
+import io.realm.RealmSchema;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class RealmObjectActivity extends AppCompatActivity {
     private Class<? extends RealmModel> mRealmObjectClass;
     private DynamicRealmObject dynamicRealmObject;
     private List<Field> classFields;
+    private RealmBrowserViewField primaryKeyFieldView;
     private HashMap<String, RealmBrowserViewField> fieldViewsList;
     private DynamicRealm dynamicRealm;
     private LinearLayout linearLayout;
@@ -120,6 +122,10 @@ public class RealmObjectActivity extends AppCompatActivity {
                 continue;
             }
             realmFieldView.setPadding(margin, margin / 2, margin, margin / 2);
+
+            if (dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isPrimaryKey(field.getName())) {
+                primaryKeyFieldView = realmFieldView;
+            }
 
             // Add the object to the view for setting the current value etc.
             if (dynamicRealmObject != null) {
@@ -248,36 +254,45 @@ public class RealmObjectActivity extends AppCompatActivity {
             }
         }
 
-        if (realmObject == null) {
-            realmObject = createObject();
-            if (realmObject == null) {
+        RealmObjectSchema realmObjectSchema = dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName());
+
+        DynamicRealmObject newRealmObject = null;
+        if (realmObject == null || realmObject.get(realmObjectSchema.getPrimaryKey()) != primaryKeyFieldView.getValue()) {
+            // PK has been changed or dont have and old object to change -> create new object
+            newRealmObject = createObject();
+            if (newRealmObject == null) {
                 return false;
             }
         }
 
-        // Start Realm Transaction
         dynamicRealm.beginTransaction();
-
         // Set values
         for (String fieldName : fieldViewsList.keySet()) {
-            if (dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).getFieldType(fieldName) == RealmFieldType.LIST) {
+            if (realmObjectSchema.getFieldType(fieldName) == RealmFieldType.LIST) {
                 // Prevent setting null to list fields at the moment
+                if (newRealmObject != null && realmObject != null) {
+                    newRealmObject.getList(fieldName).addAll(realmObject.getList(fieldName));
+                }
                 continue;
             }
-            if (!dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isNullable(fieldName) && fieldViewsList.get(fieldName).getValue() == null) {
+            if (!realmObjectSchema.isNullable(fieldName) && fieldViewsList.get(fieldName).getValue() == null) {
                 // Prevent setting null to not nullable fields
                 continue;
             }
-            if (dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isPrimaryKey(fieldName)) {
-                // Prevent changeing of PK
-                // TODO delete object and create new one with changed PK
+            if (realmObjectSchema.isPrimaryKey(fieldName)) {
+                // Prevent changing of PK, should be handled with creation of new object with new PK
                 continue;
             }
-
-            realmObject.set(fieldViewsList.get(fieldName).getField().getName(), fieldViewsList.get(fieldName).getValue());
+            if (newRealmObject == null) {
+                realmObject.set(fieldName, fieldViewsList.get(fieldName).getValue());
+            } else {
+                newRealmObject.set(fieldName, fieldViewsList.get(fieldName).getValue());
+            }
         }
-
-        // Commit Realm Transaction
+        // Delete old object if no new object was created
+        if (newRealmObject != null && realmObject != null && realmObject.isManaged()) {
+            realmObject.deleteFromRealm();
+        }
         dynamicRealm.commitTransaction();
 
         return true;
