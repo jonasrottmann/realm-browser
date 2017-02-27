@@ -86,6 +86,10 @@ What's on the roadmap... 🚀
 - [ ] Live reload the browser if updates happen in the background
 - [ ] Javadoc 📚
 
+### Other browsers
+
+If you're looking for a Realm browser for your iOS Swift projects check out [bearjaw/RBSRealmBrowser](https://github.com/bearjaw/RBSRealmBrowser) 🎉
+
 ### License
 
 ```
