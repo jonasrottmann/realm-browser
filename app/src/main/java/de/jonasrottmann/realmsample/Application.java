@@ -23,5 +23,9 @@ public class Application extends android.app.Application {
         Realm.setDefaultConfiguration(config);
 
         RealmBrowser.showRealmModelsNotification(this, config);
+
+        RealmBrowser.addFilesShortcut(this);
+
+        RealmBrowser.addModelsShortcut(this, config);
     }
 }

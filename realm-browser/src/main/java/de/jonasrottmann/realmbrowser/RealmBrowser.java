@@ -1,12 +1,19 @@
 package de.jonasrottmann.realmbrowser;
 
+import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import io.realm.RealmConfiguration;
+import java.util.Collections;
 
 public final class RealmBrowser {
 
@@ -52,7 +59,6 @@ public final class RealmBrowser {
     }
 
     /**
-     *
      * @param context A valid {@link Context}
      * @param realmConfiguration The config of the realm to open.
      */
@@ -73,5 +79,55 @@ public final class RealmBrowser {
         builder.setContentIntent(pendingIntent);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    /**
+     * @param context A valid {@link Context}
+     * @return The id of the added shortcut (<code>null</code> if this feature is not supported on the device). Is used if you want to remove this shortcut later on.
+     */
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    @SuppressWarnings("WeakerAccess")
+    @Nullable
+    public static String addFilesShortcut(@NonNull Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            final String id = "realm_browser_ac_files";
+            final ShortcutManager shortcutManager = context.getSystemService(ShortcutManager.class);
+            final ShortcutInfo shortcut = new ShortcutInfo.Builder(context, id).setShortLabel("Files")
+                .setLongLabel("Open Realm Browser files activity")
+                .setIcon(Icon.createWithResource(context, R.drawable.realm_browser_ic_rb)) // TODO create icon according to shortcut design guidelines
+                .setIntent(RealmFilesActivity.getIntent(context).setAction(Intent.ACTION_VIEW))
+                .build();
+            shortcutManager.addDynamicShortcuts(Collections.singletonList(shortcut));
+            return id;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param context A valid {@link Context}
+     * @param realmConfiguration The config of the realm to open.
+     * @return The id of the added shortcut (<code>null</code> if this feature is not supported on the device). Is used if you want to remove this shortcut later on.
+     */
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    @SuppressWarnings("WeakerAccess")
+    @Nullable
+    public static String addModelsShortcut(@NonNull Context context, @NonNull RealmConfiguration realmConfiguration) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            RealmHolder.getInstance().setRealmConfiguration(realmConfiguration);
+            final String id = "realm_browser_ac_models";
+            final ShortcutManager shortcutManager = context.getSystemService(ShortcutManager.class);
+            final ShortcutInfo shortcut = new ShortcutInfo.Builder(context, id).setShortLabel("Models")
+                .setLongLabel("Open Realm Browser models activity")
+                .setIcon(Icon.createWithResource(context, R.drawable.realm_browser_ic_rb)) // TODO create icon according to shortcut design guidelines
+                .setIntents(new Intent[] {
+                    RealmFilesActivity.getIntent(context).setAction(Intent.ACTION_VIEW), RealmModelsActivity.getIntent(context).setAction(Intent.ACTION_VIEW)
+                })
+                .build();
+            shortcutManager.addDynamicShortcuts(Collections.singletonList(shortcut));
+            return id;
+        } else {
+            return null;
+        }
     }
 }

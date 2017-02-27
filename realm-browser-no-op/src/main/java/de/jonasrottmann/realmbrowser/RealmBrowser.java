@@ -52,4 +52,25 @@ public final class RealmBrowser {
     public static void showRealmFilesNotification(Context context) {
 
     }
+
+    /**
+     * Non operational implementation of realm-browser method because you are using the <b>realm-browser-no-op</b> library.
+     *
+     * @param context Not used.
+     * @return <code>null</code>
+     */
+    public static String addFilesShortcut(Context context) {
+        return null;
+    }
+
+    /**
+     * Non operational implementation of realm-browser method because you are using the <b>realm-browser-no-op</b> library.
+     *
+     * @param context Not used.
+     * @param realmConfiguration Not used.
+     * @return <code>null</code>
+     */
+    public static String addModelsShortcut(Context context, RealmConfiguration realmConfiguration) {
+        return null;
+    }
 }
