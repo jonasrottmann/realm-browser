@@ -110,7 +110,6 @@ abstract class RealmBrowserViewField extends LinearLayout {
      * *********************/
 
     /**
-     * TODO override for realmlist fields, binary etc...
      *
      * @return
      */

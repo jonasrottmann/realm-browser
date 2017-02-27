@@ -20,7 +20,6 @@ import io.realm.DynamicRealmObject;
 import io.realm.RealmFieldType;
 import io.realm.RealmModel;
 import io.realm.RealmObjectSchema;
-import io.realm.RealmSchema;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import java.util.List;
 import timber.log.Timber;
 
 public class RealmObjectActivity extends AppCompatActivity {
-
     private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
     private static final String EXTRAS_FLAG_NEW_OBJECT = "NEW_OBJECT";
     private Class<? extends RealmModel> mRealmObjectClass;

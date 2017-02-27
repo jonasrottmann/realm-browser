@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="realm_browser_BaseTheme.DrawerTheme" parent="realm_browser_BaseTheme">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -8,6 +7,6 @@
 
     <style name="realm_browser_BaseTheme.Theme" parent="realm_browser_BaseTheme">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@color/realm_browser_realm_dark</item>
+        <item name="android:statusBarColor">@color/realm_browser_blue</item>
     </style>
 </resources>

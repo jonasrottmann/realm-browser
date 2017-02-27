@@ -2,7 +2,6 @@
     <string name="realm_browser_title">Realm Browser</string>
     <string name="realm_browser_test_text_small">Lorem ipsum</string>
     <string name="realm_browser_wrap_text">Wrap text inside column</string>
-    <string name="realm_browser_click_to_launch">Click to launch</string>
     <string name="realm_browser_open_navigation_drawer">Open</string>
     <string name="realm_browser_close_navigation_drawer">Close</string>
     <string name="realm_browser_action_filter">Filter</string>

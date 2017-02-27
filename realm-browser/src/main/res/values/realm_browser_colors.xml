@@ -3,9 +3,27 @@
     <color name="realm_browser_grey">#eeeeee</color>
     <color name="realm_browser_grey_dark">#666666</color>
     <color name="realm_browser_white">#ffffff</color>
-    <color name="realm_browser_realm">#DB5C67</color>
-    <color name="realm_browser_realm_dark">#92474C</color>
 
-    <color name="realm_browser_error">@color/realm_browser_realm</color>
-    <color name="realm_browser_error_light">@color/realm_browser_grey</color>
+    <color name="realm_browser_error">@color/realm_browser_dark_orange</color>
+    <color name="realm_browser_error_light">@color/realm_browser_light_orange</color>
+
+    <color name="realm_browser_light_orange">#FCC397</color>
+    <color name="realm_browser_orange">#FC9F95</color>
+    <color name="realm_browser_dark_orange">#F77C88</color>
+    <color name="realm_browser_light_purple">#F25192</color>
+    <color name="realm_browser_purple">#D34CA3</color>
+    <color name="realm_browser_dark_purple">#9A50A5</color>
+    <color name="realm_browser_light_blue">#59569E</color>
+    <color name="realm_browser_blue">#39477F</color>
+
+    <integer-array name="realm_browser_realmcolors">
+        <item>@color/realm_browser_light_orange</item>
+        <item>@color/realm_browser_orange</item>
+        <item>@color/realm_browser_dark_orange</item>
+        <item>@color/realm_browser_light_purple</item>
+        <item>@color/realm_browser_purple</item>
+        <item>@color/realm_browser_dark_purple</item>
+        <item>@color/realm_browser_light_blue</item>
+        <item>@color/realm_browser_blue</item>
+    </integer-array>
 </resources>

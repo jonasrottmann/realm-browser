@@ -42,7 +42,6 @@ public class RealmModelsActivity extends AppCompatActivity {
         return intent;
     }
 
-
     public static Intent getIntent(@NonNull Context context) {
         Intent intent = new Intent(context, RealmModelsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -64,7 +63,7 @@ public class RealmModelsActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-        swipeRefreshLayout.setColorSchemeResources(R.color.realm_browser_realm);
+        swipeRefreshLayout.setColorSchemeResources(R.color.realm_browser_dark_purple);
 
         realm = Realm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
         realmModelClasses = new ArrayList<>(realm.getConfiguration().getRealmObjectClasses());

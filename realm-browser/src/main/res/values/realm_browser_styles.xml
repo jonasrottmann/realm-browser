@@ -2,9 +2,9 @@
 <resources>
 
     <style name="realm_browser_BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/realm_browser_realm</item>
-        <item name="colorPrimaryDark">@color/realm_browser_realm_dark</item>
-        <item name="colorAccent">@color/realm_browser_realm</item>
+        <item name="colorPrimary">@color/realm_browser_light_blue</item>
+        <item name="colorPrimaryDark">@color/realm_browser_blue</item>
+        <item name="colorAccent">@color/realm_browser_purple</item>
 
         <item name="alertDialogTheme">@style/realm_browser_AlertDialogStyle</item>
     </style>
@@ -26,7 +26,7 @@
     </style>
 
     <style name="realm_browser_AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@color/realm_browser_realm</item>
+        <item name="colorAccent">@color/realm_browser_light_blue</item>
     </style>
 
 </resources>
