@@ -1,6 +1,6 @@
 apply plugin: 'android-maven'
 
-group = 'de.jonasrottmann.realm-browser'
+group = 'de.jonasrottmann.realmbrowser'
 
 // build a jar with source files
 task sourcesJar(type: Jar) {
