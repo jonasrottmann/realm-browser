@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/realm_browser_action_filter"
+        android:icon="@drawable/realm_browser_ic_search_white_24dp"
+        android:title="@string/realm_browser_action_filter"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/realm_browser_action_sort"
         android:icon="@drawable/realm_browser_ic_sort_ascending_white_24dp"
         android:title="Sort"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

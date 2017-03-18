@@ -1,59 +1,78 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'realm-android'
-
-group = 'de.jonasrottmann.realm-browser'
+apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion project.compileSdkVersion
     buildToolsVersion project.buildToolsVersion
     resourcePrefix 'realm_browser_'
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
         versionCode project.gitCommitCount
         versionName project.gitTag
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
+
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    // This enables long timeouts required on slow environments, e.g. Travis
+    adbOptions {
+        timeOutInMs 10 * 60 * 1000 // 10 minutes
+        installOptions "-d", "-t"
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
     compile "com.android.support:appcompat-v7:$project.supportLibVersion"
     compile "com.android.support:recyclerview-v7:$project.supportLibVersion"
     compile "com.android.support:design:$project.supportLibVersion"
     compile "com.android.support:support-annotations:$project.supportLibVersion"
-    compile 'com.jakewharton.timber:timber:4.1.2'
+    compile "com.jakewharton.timber:timber:$project.timberVersion"
+
     testCompile "junit:junit:4.12"
     androidTestCompile "junit:junit:4.12"
     androidTestCompile "com.android.support:support-annotations:$project.supportLibVersion"
-    androidTestCompile "com.android.support.test:runner:0.4.1"
-    androidTestCompile "com.android.support.test:rules:0.4.1"
-    androidTestApt "io.realm:realm-annotations:$project.realmVersion"
-    androidTestApt "io.realm:realm-annotations-processor:$project.realmVersion"
+    androidTestCompile "com.android.support.test:runner:0.5"
+    androidTestCompile "com.android.support.test:rules:0.5"
+    androidTestAnnotationProcessor "io.realm:realm-annotations:$project.realmVersion"
+    androidTestAnnotationProcessor "io.realm:realm-annotations-processor:$project.realmVersion"
 }
 
-// build a jar with source files
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-task javadoc(type: Javadoc) {
-    failOnError false
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.compile
-}
-
-// build a jar with javadoc
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
+apply from: rootProject.file('coverage.gradle')
+apply from: rootProject.file('publish.gradle')
