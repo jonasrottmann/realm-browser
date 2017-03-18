@@ -69,7 +69,6 @@ To display a notification from which the Realm Browser can be started:
 ```
 RealmBrowser.showRealmFilesNotification(context);
 ```
-or
 ```
 RealmBrowser.showRealmModelsNotification(context, realmConfiguration);
 ```
@@ -79,7 +78,6 @@ There are also [App Shortcuts](https://developer.android.com/guide/topics/ui/sho
 ```
 RealmBrowser.addFilesShortcut(context);
 ```
-or
 ```
 RealmBrowser.addModelsShortcut(context, realmConfiguration)
 ```
