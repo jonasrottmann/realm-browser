@@ -78,8 +78,11 @@ public class FilesActivity extends AppCompatActivity implements FilesContract.Vi
     }
 
     @Override
-    public void showFilesList(@NonNull ArrayList<FilesPojo> filesList) {
+    public void updateWithFiles(@NonNull ArrayList<FilesPojo> filesList) {
         adapter.swapList(filesList);
+        if (filesList.size() == 0) {
+            // TODO show empty list placeholder
+        }
     }
 
     @Override

@@ -39,10 +39,12 @@ class FilesInteractor extends BaseInteractorImpl<FilesContract.Presenter> implem
         File dataDir = new File(context.getApplicationInfo().dataDir, "files");
         File[] files = dataDir.listFiles();
         ArrayList<FilesPojo> fileList = new ArrayList<>();
-        for (File file : files) {
-            String fileName = file.getName();
-            if (isValidFileName(fileName)) {
-                fileList.add(new FilesPojo(fileName, Formatter.formatShortFileSize(context, file.length()), file.length()));
+        if (files != null) {
+            for (File file : files) {
+                String fileName = file.getName();
+                if (isValidFileName(fileName)) {
+                    fileList.add(new FilesPojo(fileName, Formatter.formatShortFileSize(context, file.length()), file.length()));
+                }
             }
         }
         getPresenter().updateWithFiles(fileList);
