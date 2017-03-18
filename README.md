@@ -52,7 +52,7 @@ The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/real
 
 ### Usage
 
-If you want to see all your databases call:
+If you want to see all your database files:
 
 ```
 RealmBrowser.startRealmFilesActivity(context);
@@ -64,14 +64,24 @@ If you want to see all the tables in a database call:
 RealmBrowser.startRealmModelsActivity(context, realmConfiguration);
 ```
 
-```
-RealmBrowser.startRealmModelsActivity(context, "<name of the database file>");
-```
-
 To display a notification from which the Realm Browser can be started:
 
 ```
 RealmBrowser.showRealmFilesNotification(context);
+```
+or
+```
+RealmBrowser.showRealmModelsNotification(context, realmConfiguration);
+```
+
+There are also [App Shortcuts](https://developer.android.com/guide/topics/ui/shortcuts.html) available for devices running Android 7.1 or newer:
+
+```
+RealmBrowser.addFilesShortcut(context);
+```
+or
+```
+RealmBrowser.addModelsShortcut(context, realmConfiguration)
 ```
 
 For a full working example check out the [sample app](https://github.com/jonasrottmann/realm-browser/blob/release/app/src/main/java/de/jonasrottmann/realmsample/MainActivity.java).
