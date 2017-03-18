@@ -1,5 +1,6 @@
 package de.jonasrottmann.realmbrowser;
 
+import de.jonasrottmann.realmbrowser.helper.TestRealmConfigurationFactory;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;

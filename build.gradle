@@ -10,13 +10,14 @@ buildscript {
         minSdkVersion = 15
 
         // plugins
-        androidGradlePluginVersion = '2.2.3'
-        realmVersion = '2.3.1'
+        androidGradlePluginVersion = '2.3.0'
+        realmVersion = '3.0.0'
         dexcountVersion = '0.6.2'
 
         // dependencies
         timberVersion = '4.3.0'
-        supportLibVersion = '25.2.0'
+        supportLibVersion = '25.3.0'
+        lombokVersion = '1.12.6'
     }
 
     repositories {

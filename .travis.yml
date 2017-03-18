@@ -37,6 +37,10 @@ before_script:
   - android-wait-for-emulator
 
 script:
-  - ./gradlew assemble
-  - ./gradlew build check # Local unit tests
-  - ./gradlew build connectedCheck # Instrumented unit tests
+  - ./gradlew clean
+  - ./gradlew check # Local unit tests
+  - ./gradlew connectedCheck # Instrumented unit tests
+  - ./gradlew jacocoTestReport
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

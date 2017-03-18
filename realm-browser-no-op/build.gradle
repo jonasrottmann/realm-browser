@@ -2,7 +2,23 @@ apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
 apply plugin: 'com.getkeepsafe.dexcount'
 
-apply from: rootProject.file('androidlib.gradle')
+android {
+    compileSdkVersion project.compileSdkVersion
+    buildToolsVersion project.buildToolsVersion
+    resourcePrefix 'realm_browser_'
+
+    defaultConfig {
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
+        versionCode project.gitCommitCount
+        versionName project.gitTag
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

@@ -15,6 +15,7 @@ android {
         targetSdkVersion project.targetSdkVersion
         versionCode project.gitCommitCount
         versionName project.gitTag
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
     buildTypes {
@@ -42,6 +43,10 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$project.supportLibVersion"
     compile "com.jakewharton.timber:timber:$project.timberVersion"
+
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
 
     // test local version of realm-browser
     normalCompile project(':realm-browser')

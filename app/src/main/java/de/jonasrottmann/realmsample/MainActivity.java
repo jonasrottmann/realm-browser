@@ -4,24 +4,22 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import de.jonasrottmann.realmsample.data.Address;
 import de.jonasrottmann.realmsample.data.Contact;
 import de.jonasrottmann.realmsample.data.RealmString;
 import de.jonasrottmann.realmsample.data.User;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmList;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
     private TextView mTxtTitle;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +94,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             user.setAge(i);
             user.setAddress(address);
             user.setUuid(UUID.randomUUID().toString());
-            user.setByteArray(new byte[]{1, 2, 3});
+            user.setByteArray(new byte[] { 1, 2, 3 });
             user.setCreationDate(new Date(System.currentTimeMillis()));
 
             RealmList<RealmString> emailList = new RealmList<>();
@@ -134,6 +132,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private void startRealmModelsActivity() {
-        RealmBrowser.startRealmModelsActivity(this, Realm.getDefaultInstance().getConfiguration());
+        Realm realm = Realm.getDefaultInstance();
+        RealmConfiguration configuration = realm.getConfiguration();
+        realm.close();
+        RealmBrowser.startRealmModelsActivity(this, configuration);
     }
 }

@@ -1,12 +1,12 @@
 <resources>
     <string name="realm_browser_title">Realm Browser</string>
     <string name="realm_browser_test_text_small">Lorem ipsum</string>
-    <string name="realm_browser_wrap_text">Wrap text inside column</string>
-    <string name="realm_browser_open_navigation_drawer">Open</string>
-    <string name="realm_browser_close_navigation_drawer">Close</string>
-    <string name="realm_browser_action_filter">Filter</string>
-    <string name="realm_browser_action_delete">Delete</string>
-    <string name="realm_browser_action_save">Save</string>
+    <string translatable="true" name="realm_browser_wrap_text">Wrap text inside column</string>
+    <string translatable="true" name="realm_browser_open_navigation_drawer">Open</string>
+    <string translatable="true" name="realm_browser_close_navigation_drawer">Close</string>
+    <string translatable="true" name="realm_browser_action_filter">Filter</string>
+    <string translatable="true" name="realm_browser_action_delete">Delete</string>
+    <string translatable="true" name="realm_browser_action_save">Save</string>
 
     <string-array name="realm_browser_boolean">
         <item>true</item>
