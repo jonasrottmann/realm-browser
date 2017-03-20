@@ -15,7 +15,7 @@ import de.jonasrottmann.realmbrowser.files.model.FilesPojo;
 public interface FilesContract {
 
     interface View extends BaseView<Presenter> {
-        void showFilesList(@NonNull ArrayList<FilesPojo> filesList);
+        void updateWithFiles(@NonNull ArrayList<FilesPojo> filesList);
 
         Context getViewContext();
 

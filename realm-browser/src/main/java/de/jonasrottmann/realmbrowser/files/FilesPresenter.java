@@ -61,7 +61,7 @@ public class FilesPresenter extends BasePresenterImpl<FilesContract.View> implem
     public void updateWithFiles(ArrayList<FilesPojo> filesList) {
         if (isViewAttached()) {
             //noinspection ConstantConditions
-            getView().showFilesList(filesList);
+            getView().updateWithFiles(filesList);
         }
     }
 }
