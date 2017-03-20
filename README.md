@@ -1,8 +1,8 @@
 ### Description
 
-Android [Realm](https://github.com/realm/realm-java) Browser
+This library project provides a convenient way for Android developers to see the contents of their [Realm](https://github.com/realm/realm-java) database files on the device.
 
-This is a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk/realm-browser) which was originally created by Danylyk Dmytro.
+It's a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk/realm-browser) which was originally created by Danylyk Dmytro but sadly discontinued.
 
 <img src="screenshots/appshortcuts.png" width="256"> | <img src="screenshots/files.png" width="256"> | <img src="screenshots/models.png" width="256">
 --- | --- | ---
