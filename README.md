@@ -4,8 +4,9 @@ Android [Realm](https://github.com/realm/realm-java) Browser
 
 This is a fork of [dmytrodanylyk/realm-browser](https://github.com/dmytrodanylyk/realm-browser) which was originally created by Danylyk Dmytro.
 
-<img src="screenshots/sc_1.png" width="256"> | <img src="screenshots/sc_2.png" width="256"> | <img src="screenshots/sc_3.png" width="256">
+<img src="screenshots/appshortcuts.png" width="256"> | <img src="screenshots/files.png" width="256"> | <img src="screenshots/models.png" width="256">
 --- | --- | ---
+<img src="screenshots/browser.png" width="256"> | <img src="screenshots/browser_fieldselection.png" width="256"> | <img src="screenshots/object.png" width="256">
 
 ### Integration [![](https://jitpack.io/v/jonasrottmann/realm-browser.svg)](https://jitpack.io/#jonasrottmann/realm-browser) [![codecov](https://codecov.io/gh/jonasrottmann/realm-browser/branch/release/graph/badge.svg)](https://codecov.io/gh/jonasrottmann/realm-browser)
 Releases: [![Build Status](https://travis-ci.org/jonasrottmann/realm-browser.svg?branch=release)](https://travis-ci.org/jonasrottmann/realm-browser) - Develop branch (Snapshots): [![Build Status](https://travis-ci.org/jonasrottmann/realm-browser.svg?branch=develop)](https://travis-ci.org/jonasrottmann/realm-browser)
