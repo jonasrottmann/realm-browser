@@ -40,6 +40,11 @@ public class ModelsPresenter extends BasePresenterImpl<ModelsContract.View> impl
             RealmBrowserActivity.start(getView().getViewContext(), item.getKlass());
         }
     }
+
+    @Override
+    public void onShareSelected() {
+        interactor.onShareSelected();
+    }
     //endregion
 
     //region InteractorOutput
@@ -48,6 +53,14 @@ public class ModelsPresenter extends BasePresenterImpl<ModelsContract.View> impl
         if (isViewAttached()) {
             //noinspection ConstantConditions
             getView().updateWithModels(modelsList, sortMode);
+        }
+    }
+
+    @Override
+    public void presentShareDialog(@NonNull String path) {
+        if (isViewAttached()) {
+            //noinspection ConstantConditions
+            getView().presentShareDialog(path);
         }
     }
     //endregion
