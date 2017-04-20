@@ -28,6 +28,8 @@ public interface ModelsContract {
         void updateWithModels(@NonNull ArrayList<ModelPojo> filesList, @SortMode int sortMode);
 
         Context getViewContext();
+
+        void presentShareDialog(@NonNull String path);
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -37,9 +39,13 @@ public interface ModelsContract {
 
         void onSortModeChanged();
 
+        void onShareSelected();
+
         void onFilterChanged(@NonNull String filter);
 
         void updateWithModels(@NonNull ArrayList<ModelPojo> modelsList, @SortMode int sortMode);
+
+        void presentShareDialog(@NonNull String path);
     }
 
     interface Interactor extends BaseInteractor {
@@ -48,5 +54,7 @@ public interface ModelsContract {
         void updateWithFilter(String filter);
 
         void updateWithSortModeChanged();
+
+        void onShareSelected();
     }
 }

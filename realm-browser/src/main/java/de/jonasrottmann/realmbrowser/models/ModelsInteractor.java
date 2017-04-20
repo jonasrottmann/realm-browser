@@ -42,6 +42,11 @@ class ModelsInteractor extends BaseInteractorImpl<ModelsContract.Presenter> impl
         this.sortMode = (this.sortMode + 1) % 2;
         requestForContentUpdate();
     }
+
+    @Override
+    public void onShareSelected() {
+        getPresenter().presentShareDialog(RealmHolder.getInstance().getRealmConfiguration().getPath());
+    }
     //endregion
 
     //region Helper

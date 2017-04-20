@@ -2,11 +2,13 @@ package de.jonasrottmann.realmbrowser.models.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,11 +18,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import java.io.File;
+import java.util.ArrayList;
+
 import de.jonasrottmann.realmbrowser.R;
+import de.jonasrottmann.realmbrowser.helper.RealmHolder;
 import de.jonasrottmann.realmbrowser.models.ModelsContract;
 import de.jonasrottmann.realmbrowser.models.ModelsPresenter;
 import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
-import java.util.ArrayList;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ModelsActivity extends AppCompatActivity implements ModelsContract.View, SearchView.OnQueryTextListener {
@@ -113,6 +119,9 @@ public class ModelsActivity extends AppCompatActivity implements ModelsContract.
         if (item.getItemId() == R.id.realm_browser_action_sort) {
             presenter.onSortModeChanged();
             return true;
+        } else if (item.getItemId() == R.id.realm_browser_action_share) {
+            presenter.onShareSelected();
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -143,6 +152,16 @@ public class ModelsActivity extends AppCompatActivity implements ModelsContract.
             this.presenter = new ModelsPresenter();
         }
         this.presenter.attachView(this);
+    }
+
+    @Override
+    public void presentShareDialog(@NonNull String path) {
+        Uri contentUri = FileProvider.getUriForFile(this, "de.jonasrottmann.realmbrowser", new File(RealmHolder.getInstance().getRealmConfiguration().getPath()));
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+        intentShareFile.setType("application/*");
+        intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intentShareFile.putExtra(Intent.EXTRA_STREAM, contentUri);
+        startActivity(Intent.createChooser(intentShareFile, "Share Realm File"));
     }
 
     @Override

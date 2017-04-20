@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.jonasrottmann.realmbrowser">
+          package="de.jonasrottmann.realmbrowser">
 
     <application>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="de.jonasrottmann.realmbrowser"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/realm_browser_filepaths"/>
+        </provider>
+
         <activity
             android:name=".models.view.ModelsActivity"
             android:label="@string/realm_browser_title"
-            android:theme="@style/realm_browser_BaseTheme.Theme" />
+            android:theme="@style/realm_browser_BaseTheme.Theme"/>
         <activity
             android:name=".object.view.RealmObjectActivity"
             android:label="@string/realm_browser_title"
             android:theme="@style/realm_browser_BaseTheme.Theme"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".browser.view.RealmBrowserActivity"
             android:label="@string/realm_browser_title"
-            android:theme="@style/realm_browser_BaseTheme.DrawerTheme" />
+            android:theme="@style/realm_browser_BaseTheme.DrawerTheme"/>
 
         <activity
             android:name=".files.view.FilesActivity"
             android:label="@string/realm_browser_title"
-            android:theme="@style/realm_browser_BaseTheme.Theme" />
+            android:theme="@style/realm_browser_BaseTheme.Theme"/>
 
     </application>
 
