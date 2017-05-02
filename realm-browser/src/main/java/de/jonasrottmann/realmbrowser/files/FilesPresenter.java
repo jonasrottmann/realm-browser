@@ -6,12 +6,14 @@ import android.support.annotation.RestrictTo;
 
 import java.util.ArrayList;
 
+import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.basemvp.BasePresenterImpl;
 import de.jonasrottmann.realmbrowser.files.model.FilesPojo;
 import de.jonasrottmann.realmbrowser.helper.RealmHolder;
 import de.jonasrottmann.realmbrowser.models.view.ModelsActivity;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.exceptions.RealmFileException;
 import io.realm.exceptions.RealmMigrationNeededException;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -47,12 +49,17 @@ public class FilesPresenter extends BasePresenterImpl<FilesContract.View> implem
         } catch (RealmMigrationNeededException e) {
             if (isViewAttached()) {
                 //noinspection ConstantConditions
-                getView().showToast("RealmMigrationNeededException");
+                getView().showToast(String.format("%s %s", getView().getViewContext().getString(R.string.realm_browser_open_error), getView().getViewContext().getString(R.string.realm_browser_error_migration)));
+            }
+        } catch (RealmFileException e) {
+            if (isViewAttached()) {
+                //noinspection ConstantConditions
+                getView().showToast(String.format("%s %s", getView().getViewContext().getString(R.string.realm_browser_open_error), e.getMessage()));
             }
         } catch (Exception e) {
             if (isViewAttached()) {
                 //noinspection ConstantConditions
-                getView().showToast("Can't open realm instance. You must close all open realm instances before opening this file.");
+                getView().showToast(String.format("%s %s", getView().getViewContext().getString(R.string.realm_browser_open_error), getView().getViewContext().getString(R.string.realm_browser_error_openinstances)));
             }
         }
     }
