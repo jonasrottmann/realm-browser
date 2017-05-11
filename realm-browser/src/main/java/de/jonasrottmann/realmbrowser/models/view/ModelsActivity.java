@@ -15,9 +15,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.helper.RealmHolder;
 import de.jonasrottmann.realmbrowser.models.ModelsContract;
 import de.jonasrottmann.realmbrowser.models.ModelsPresenter;
+import de.jonasrottmann.realmbrowser.models.model.InformationPojo;
 import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -122,6 +125,9 @@ public class ModelsActivity extends AppCompatActivity implements ModelsContract.
         } else if (item.getItemId() == R.id.realm_browser_action_share) {
             presenter.onShareSelected();
             return true;
+        } else if (item.getItemId() == R.id.realm_browser_action_info) {
+            presenter.onInformationSelected();
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -162,6 +168,11 @@ public class ModelsActivity extends AppCompatActivity implements ModelsContract.
         intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intentShareFile.putExtra(Intent.EXTRA_STREAM, contentUri);
         startActivity(Intent.createChooser(intentShareFile, "Share Realm File"));
+    }
+
+    @Override
+    public void showInformation(@NonNull InformationPojo informationPojo) {
+        Toast.makeText(this, String.format("%s\nSize: %s", informationPojo.getPath(), Formatter.formatShortFileSize(this, informationPojo.getSizeInByte())), Toast.LENGTH_LONG).show();
     }
 
     @Override

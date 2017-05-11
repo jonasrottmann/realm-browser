@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import de.jonasrottmann.realmbrowser.basemvp.BaseInteractor;
 import de.jonasrottmann.realmbrowser.basemvp.BasePresenter;
 import de.jonasrottmann.realmbrowser.basemvp.BaseView;
+import de.jonasrottmann.realmbrowser.models.model.InformationPojo;
 import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
@@ -30,6 +31,8 @@ public interface ModelsContract {
         Context getViewContext();
 
         void presentShareDialog(@NonNull String path);
+
+        void showInformation(@NonNull InformationPojo informationPojo);
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -43,9 +46,13 @@ public interface ModelsContract {
 
         void onFilterChanged(@NonNull String filter);
 
+        void onInformationSelected();
+
         void updateWithModels(@NonNull ArrayList<ModelPojo> modelsList, @SortMode int sortMode);
 
         void presentShareDialog(@NonNull String path);
+
+        void showInformation(@NonNull InformationPojo informationPojo);
     }
 
     interface Interactor extends BaseInteractor {
@@ -56,5 +63,7 @@ public interface ModelsContract {
         void updateWithSortModeChanged();
 
         void onShareSelected();
+
+        void onInformationSelected();
     }
 }

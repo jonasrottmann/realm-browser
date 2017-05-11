@@ -7,7 +7,7 @@
         android:icon="@drawable/realm_browser_ic_search_white_24dp"
         android:title="@string/realm_browser_action_filter"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/realm_browser_action_sort"
@@ -16,9 +16,15 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/realm_browser_action_info"
+        android:icon="@drawable/realm_browser_ic_information_outline_white_24dp"
+        android:title="File Information"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/realm_browser_action_share"
         android:icon="@drawable/realm_browser_ic_share_white_24dp"
-        android:title="Share Realm File"
-        app:showAsAction="always"/>
+        android:title="Share File"
+        app:showAsAction="ifRoom"/>
 
 </menu>
