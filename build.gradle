@@ -11,7 +11,7 @@ buildscript {
 
         // plugins
         androidGradlePluginVersion = '2.3.1'
-        realmVersion = '3.1.2'
+        realmVersion = '3.1.4'
         dexcountVersion = '0.6.4'
 
         // dependencies

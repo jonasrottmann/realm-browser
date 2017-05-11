@@ -7,6 +7,9 @@
     <string translatable="true" name="realm_browser_action_filter">Filter</string>
     <string translatable="true" name="realm_browser_action_delete">Delete</string>
     <string translatable="true" name="realm_browser_action_save">Save</string>
+    <string translatable="true" name="realm_browser_open_error">Can\'t open realm instance.</string>
+    <string translatable="true" name="realm_browser_error_openinstances">Make sure to close all open realm instances before opening this file.</string>
+    <string translatable="true" name="realm_browser_error_migration">Migration needed.</string>
 
     <string-array name="realm_browser_boolean">
         <item>true</item>

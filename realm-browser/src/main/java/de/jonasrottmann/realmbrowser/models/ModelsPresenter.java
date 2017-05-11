@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import de.jonasrottmann.realmbrowser.basemvp.BasePresenterImpl;
 import de.jonasrottmann.realmbrowser.browser.view.RealmBrowserActivity;
+import de.jonasrottmann.realmbrowser.models.model.InformationPojo;
 import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -31,6 +32,11 @@ public class ModelsPresenter extends BasePresenterImpl<ModelsContract.View> impl
     @Override
     public void onFilterChanged(@NonNull String filter) {
         interactor.updateWithFilter(filter);
+    }
+
+    @Override
+    public void onInformationSelected() {
+        interactor.onInformationSelected();
     }
 
     @Override
@@ -61,6 +67,14 @@ public class ModelsPresenter extends BasePresenterImpl<ModelsContract.View> impl
         if (isViewAttached()) {
             //noinspection ConstantConditions
             getView().presentShareDialog(path);
+        }
+    }
+
+    @Override
+    public void showInformation(@NonNull InformationPojo informationPojo) {
+        if (isViewAttached()) {
+            //noinspection ConstantConditions
+            getView().showInformation(informationPojo);
         }
     }
     //endregion

@@ -4,12 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 import de.jonasrottmann.realmbrowser.basemvp.BaseInteractorImpl;
 import de.jonasrottmann.realmbrowser.helper.RealmHolder;
+import de.jonasrottmann.realmbrowser.models.model.InformationPojo;
 import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
 import io.realm.Realm;
 import io.realm.RealmModel;
@@ -46,6 +48,16 @@ class ModelsInteractor extends BaseInteractorImpl<ModelsContract.Presenter> impl
     @Override
     public void onShareSelected() {
         getPresenter().presentShareDialog(RealmHolder.getInstance().getRealmConfiguration().getPath());
+    }
+
+    @Override
+    public void onInformationSelected() {
+        File realmFile = new File(RealmHolder.getInstance().getRealmConfiguration().getPath());
+        long sizeInByte = 0;
+        if (realmFile.exists() && !realmFile.isDirectory()) {
+            sizeInByte = realmFile.length();
+        }
+        getPresenter().showInformation(new InformationPojo(sizeInByte, realmFile.getPath()));
     }
     //endregion
 
