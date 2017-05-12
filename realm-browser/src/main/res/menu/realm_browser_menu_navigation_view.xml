@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:title="Settings">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="@string/realm_browser_drawer_settings_title">
         <menu>
             <item
                 android:id="@+id/realm_browser_action_wrapping"
                 android:icon="@drawable/realm_browser_ic_wrap_text_dark_24dp"
-                android:title="Enable Text Wrapping"
-                app:actionLayout="@layout/realm_browser_action_view_switch" />
+                android:title="@string/realm_browser_enable_text_wrapping"
+                app:actionLayout="@layout/realm_browser_action_view_switch"/>
         </menu>
     </item>
 </menu>
