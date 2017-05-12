@@ -18,6 +18,7 @@ import de.jonasrottmann.realmbrowser.models.view.ModelsActivity;
 import io.realm.RealmConfiguration;
 import java.util.Collections;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public final class RealmBrowser {
 
     private static final int NOTIFICATION_ID = 1000;
@@ -25,7 +26,6 @@ public final class RealmBrowser {
     /**
      * @param context A valid {@link Context}
      */
-    @SuppressWarnings("WeakerAccess")
     public static void startRealmFilesActivity(@NonNull Context context) {
         context.startActivity(FilesActivity.getIntent(context));
     }
@@ -34,7 +34,6 @@ public final class RealmBrowser {
      * @param context A valid {@link Context}
      * @param realmFileName The name of the realm file to open.
      */
-    @SuppressWarnings("WeakerAccess")
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull String realmFileName) {
         RealmConfiguration config = new RealmConfiguration.Builder().name(realmFileName).build();
         startRealmModelsActivity(context, config);
@@ -44,7 +43,6 @@ public final class RealmBrowser {
      * @param context A valid {@link Context}
      * @param realmConfiguration The config of the realm to open.
      */
-    @SuppressWarnings("WeakerAccess")
     public static void startRealmModelsActivity(@NonNull Context context, @NonNull RealmConfiguration realmConfiguration) {
         RealmHolder.getInstance().setRealmConfiguration(realmConfiguration);
         context.startActivity(ModelsActivity.getIntent(context));
@@ -53,7 +51,6 @@ public final class RealmBrowser {
     /**
      * @param context A valid {@link Context}
      */
-    @SuppressWarnings("WeakerAccess")
     public static void showRealmFilesNotification(@NonNull Context context) {
         Intent notifyIntent = new Intent(context, FilesActivity.class);
         notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -65,7 +62,6 @@ public final class RealmBrowser {
      * @param context A valid {@link Context}
      * @param realmConfiguration The config of the realm to open.
      */
-    @SuppressWarnings("WeakerAccess")
     public static void showRealmModelsNotification(@NonNull Context context, @NonNull RealmConfiguration realmConfiguration) {
         RealmHolder.getInstance().setRealmConfiguration(realmConfiguration);
         Intent notifyIntent = ModelsActivity.getIntent(context);
@@ -89,7 +85,6 @@ public final class RealmBrowser {
      * @return The id of the added shortcut (<code>null</code> if this feature is not supported on the device). Is used if you want to remove this shortcut later on.
      */
     @TargetApi(Build.VERSION_CODES.N_MR1)
-    @SuppressWarnings("WeakerAccess")
     @Nullable
     public static String addFilesShortcut(@NonNull Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
@@ -113,7 +108,6 @@ public final class RealmBrowser {
      * @return The id of the added shortcut (<code>null</code> if this feature is not supported on the device). Is used if you want to remove this shortcut later on.
      */
     @TargetApi(Build.VERSION_CODES.N_MR1)
-    @SuppressWarnings("WeakerAccess")
     @Nullable
     public static String addModelsShortcut(@NonNull Context context, @NonNull RealmConfiguration realmConfiguration) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {

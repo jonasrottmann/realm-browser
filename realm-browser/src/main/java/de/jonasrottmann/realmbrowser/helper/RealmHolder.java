@@ -1,5 +1,7 @@
 package de.jonasrottmann.realmbrowser.helper;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 import java.lang.reflect.Field;
@@ -11,11 +13,12 @@ import io.realm.RealmConfiguration;
 public class RealmHolder {
 
     private static final RealmHolder instance = new RealmHolder();
+
     private DynamicRealmObject object;
     private Field field;
     private RealmConfiguration realmConfiguration;
 
-
+    @NonNull
     public static RealmHolder getInstance() {
         return instance;
     }
@@ -24,6 +27,7 @@ public class RealmHolder {
     /*
     Object
     */
+    @Nullable
     public DynamicRealmObject getObject() {
         return object;
     }
@@ -36,6 +40,7 @@ public class RealmHolder {
     /*
      Field
     */
+    @Nullable
     public Field getField() {
         return field;
     }
@@ -48,6 +53,7 @@ public class RealmHolder {
     /*
      Realm Config
     */
+    @Nullable
     public RealmConfiguration getRealmConfiguration() {
         return realmConfiguration;
     }
