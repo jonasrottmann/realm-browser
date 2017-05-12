@@ -4,6 +4,7 @@
     <string translatable="true" name="realm_browser_drawer_settings_title">Settings</string>
     <string translatable="true" name="realm_browser_enable_text_wrapping">Enable Text Wrapping</string>
     <string translatable="true" name="realm_browser_wrap_text">Wrap text inside column</string>
+    <string translatable="true" name="realm_browser_drawer_fields_title">Fields</string>
     <string translatable="true" name="realm_browser_open_navigation_drawer">Open</string>
     <string translatable="true" name="realm_browser_close_navigation_drawer">Close</string>
     <string translatable="true" name="realm_browser_action_filter">Filter</string>
