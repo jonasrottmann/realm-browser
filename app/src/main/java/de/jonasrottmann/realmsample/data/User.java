@@ -21,12 +21,12 @@ public class User implements RealmModel {
     private RealmList<Contact> contactList;
     private Date creationDate;
     private byte[] byteArray;
+    private Image image;
 
 
     public void setEmailList(RealmList<RealmString> emailList) {
         this.emailList = emailList;
     }
-
 
     public void setAddress(Address address) {
         this.address = address;
@@ -70,5 +70,13 @@ public class User implements RealmModel {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 }

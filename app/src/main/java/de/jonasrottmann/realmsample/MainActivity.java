@@ -1,21 +1,29 @@
 package de.jonasrottmann.realmsample;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import de.jonasrottmann.realmsample.data.Address;
 import de.jonasrottmann.realmsample.data.Contact;
+import de.jonasrottmann.realmsample.data.Image;
 import de.jonasrottmann.realmsample.data.RealmString;
 import de.jonasrottmann.realmsample.data.User;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -82,11 +90,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void insertUsers(int count) {
         Realm realm = Realm.getDefaultInstance();
 
+        Drawable d = ContextCompat.getDrawable(this, R.drawable.beach_mini);
+        Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
         final List<User> userList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             Address address = new Address();
             address.setLat(49.8397473);
             address.setLon(24.0233077);
+
+            Image image = new Image();
+            image.setId(i);
+            image.setBytes(stream.toByteArray());
 
             User user = new User();
             user.setName(new RealmString("Jon Doe " + i));
@@ -94,8 +111,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
             user.setAge(i);
             user.setAddress(address);
             user.setUuid(UUID.randomUUID().toString());
-            user.setByteArray(new byte[] { 1, 2, 3 });
+            user.setByteArray(new byte[]{1, 2, 3});
             user.setCreationDate(new Date(System.currentTimeMillis()));
+            user.setImage(image);
 
             RealmList<RealmString> emailList = new RealmList<>();
             for (int k = 0; k < 5; k++) {
