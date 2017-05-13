@@ -24,14 +24,18 @@ import java.util.List;
 
 import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.browser.view.RealmBrowserActivity;
-import de.jonasrottmann.realmbrowser.helper.RealmHolder;
+import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
+import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
 import io.realm.RealmObjectSchema;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import timber.log.Timber;
+
+import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_FIELD;
+import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_OBJECT;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RealmObjectActivity extends AppCompatActivity {
@@ -43,6 +47,7 @@ public class RealmObjectActivity extends AppCompatActivity {
     private List<Field> classFields;
     private RealmBrowserViewField primaryKeyFieldView;
     private HashMap<String, RealmBrowserViewField> fieldViewsList;
+    @Nullable
     private DynamicRealm dynamicRealm;
     private LinearLayout linearLayout;
 
@@ -57,12 +62,16 @@ public class RealmObjectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.realm_browser_ac_realm_object);
-        dynamicRealm = DynamicRealm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
+        RealmConfiguration configuration = (RealmConfiguration) DataHolder.getInstance().retrieve(DataHolder.DATA_HOLDER_KEY_CONFIG);
+        if (configuration != null) {
+            dynamicRealm = DynamicRealm.getInstance(configuration);
+        }
+
         mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
 
         // Get Extra
         if (!getIntent().getBooleanExtra(EXTRAS_FLAG_NEW_OBJECT, true)) {
-            currentDynamicRealmObject = RealmHolder.getInstance().getObject();
+            currentDynamicRealmObject = (DynamicRealmObject) DataHolder.getInstance().retrieve(DATA_HOLDER_KEY_OBJECT);
         }
 
         // Fill fields list
@@ -99,8 +108,8 @@ public class RealmObjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (currentDynamicRealmObject != null) {
-                            RealmHolder.getInstance().setObject(currentDynamicRealmObject);
-                            RealmHolder.getInstance().setField(field);
+                            DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, currentDynamicRealmObject);
+                            DataHolder.getInstance().save(DATA_HOLDER_KEY_FIELD, field);
                             RealmBrowserActivity.start(RealmObjectActivity.this);
                         } else {
                             // TODO choose objects to add
@@ -210,11 +219,15 @@ public class RealmObjectActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dynamicRealm.close();
+        if (dynamicRealm != null && !dynamicRealm.isClosed()) {
+            dynamicRealm.close();
+        }
     }
 
     @Nullable
     private DynamicRealmObject createObject() {
+        if (dynamicRealm == null) return null;
+
         DynamicRealmObject newRealmObject = null;
 
         // Start Realm Transaction
@@ -248,6 +261,11 @@ public class RealmObjectActivity extends AppCompatActivity {
     }
 
     private boolean saveObject() {
+        if (dynamicRealm == null) {
+            Timber.e("No realm instance.");
+            return false;
+        }
+
         // Return if any field holds a invalid value
         for (String fieldName : fieldViewsList.keySet()) {
             if (!fieldViewsList.get(fieldName).isInputValid()) {

@@ -35,9 +35,10 @@ import java.util.List;
 import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.browser.BrowserContract;
 import de.jonasrottmann.realmbrowser.browser.BrowserPresenter;
-import de.jonasrottmann.realmbrowser.helper.RealmHolder;
+import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
+import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmModel;
 
@@ -48,6 +49,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
 
     private BrowserContract.Presenter presenter;
 
+    @Nullable
     private DynamicRealm dynamicRealm;
     private RealmBrowserAdapter mAdapter;
     private TextView textView;
@@ -83,7 +85,8 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         super.onCreate(savedInstanceState);
         setContentView(R.layout.realm_browser_ac_realm_browser);
 
-        dynamicRealm = DynamicRealm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
+        RealmConfiguration configuration = (RealmConfiguration) DataHolder.getInstance().retrieve(DataHolder.DATA_HOLDER_KEY_CONFIG);
+        if (configuration != null) dynamicRealm = DynamicRealm.getInstance(configuration);
 
         mAdapter = new RealmBrowserAdapter(this, new RealmList<DynamicRealmObject>(), new ArrayList<Field>(), this, false);
 

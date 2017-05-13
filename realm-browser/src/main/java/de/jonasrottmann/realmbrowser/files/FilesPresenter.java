@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.basemvp.BasePresenterImpl;
 import de.jonasrottmann.realmbrowser.files.model.FilesPojo;
-import de.jonasrottmann.realmbrowser.helper.RealmHolder;
+import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.models.view.ModelsActivity;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -39,7 +39,7 @@ public class FilesPresenter extends BasePresenterImpl<FilesContract.View> implem
     public void onFileSelected(FilesPojo item) {
         try {
             RealmConfiguration config = new RealmConfiguration.Builder().name(item.getName()).build();
-            RealmHolder.getInstance().setRealmConfiguration(config);
+            DataHolder.getInstance().save(DataHolder.DATA_HOLDER_KEY_CONFIG, config);
             Realm realm = Realm.getInstance(config);
             realm.close();
             if (isViewAttached()) {

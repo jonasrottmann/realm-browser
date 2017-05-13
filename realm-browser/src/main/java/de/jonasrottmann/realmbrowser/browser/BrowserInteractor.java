@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.jonasrottmann.realmbrowser.basemvp.BaseInteractorImpl;
-import de.jonasrottmann.realmbrowser.helper.RealmHolder;
+import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.helper.RealmPreferences;
 import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.DynamicRealm;
@@ -21,9 +21,11 @@ import io.realm.RealmObject;
 import io.realm.RealmObjectSchema;
 import timber.log.Timber;
 
+import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_FIELD;
+import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_OBJECT;
+
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> implements BrowserContract.Interactor {
-
     private Class<? extends RealmModel> realmModelClass = null;
     private DynamicRealm dynamicRealm;
     private List<Field> fields;
@@ -36,21 +38,25 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
     //region InteractorInput
     @Override
     public void requestForContentUpdate(@NonNull Context context, @NonNull DynamicRealm dynamicRealm, @Nullable Class<? extends RealmModel> modelClass) {
+        if (dynamicRealm.isClosed()) return;
+
         this.realmModelClass = modelClass;
         this.dynamicRealm = dynamicRealm;
 
         getPresenter().updateWithFABVisibility(this.realmModelClass != null);
 
-        if (!dynamicRealm.isClosed() && this.realmModelClass != null) {
+        if (this.realmModelClass != null) {
             getPresenter().updateWithRealmObjects(dynamicRealm.where(this.realmModelClass.getSimpleName()).findAll());
-        } else if (!dynamicRealm.isClosed()) {
-            DynamicRealmObject dynamicRealmObject = RealmHolder.getInstance().getObject();
-            Field field = RealmHolder.getInstance().getField();
-            getPresenter().updateWithRealmObjects(dynamicRealmObject.getList(field.getName()));
-            if (Utils.isParametrizedField(field)) {
-                ParameterizedType pType = (ParameterizedType) field.getGenericType();
-                Class<?> pTypeClass = (Class<?>) pType.getActualTypeArguments()[0];
-                this.realmModelClass = (Class<? extends RealmObject>) pTypeClass;
+        } else {
+            DynamicRealmObject dynamicRealmObject = (DynamicRealmObject) DataHolder.getInstance().retrieve(DATA_HOLDER_KEY_OBJECT);
+            Field field = (Field) DataHolder.getInstance().retrieve(DATA_HOLDER_KEY_FIELD);
+            if (dynamicRealmObject != null && field != null) {
+                getPresenter().updateWithRealmObjects(dynamicRealmObject.getList(field.getName()));
+                if (Utils.isParametrizedField(field)) {
+                    this.realmModelClass = (Class<? extends RealmObject>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+                }
+            } else {
+                Timber.e("Error while trying to get realm object and field from DataHolder.");
             }
         }
 
@@ -86,8 +92,8 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
     }
 
     @Override
-    public void onRowSelected(@NonNull DynamicRealmObject realmObject) {
-        RealmHolder.getInstance().setObject(realmObject);
+    public void onRowSelected(@NonNull DynamicRealmObject dynamicRealmObject) {
+        DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, dynamicRealmObject);
         getPresenter().showObjectActivity(this.realmModelClass);
     }
 
