@@ -92,6 +92,11 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
     }
 
     @Override
+    public void onInformationSelected() {
+        getPresenter().showInformation(dynamicRealm.where(realmModelClass.getSimpleName()).count());
+    }
+
+    @Override
     public void onRowSelected(@NonNull DynamicRealmObject dynamicRealmObject) {
         DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, dynamicRealmObject);
         getPresenter().showObjectActivity(this.realmModelClass);

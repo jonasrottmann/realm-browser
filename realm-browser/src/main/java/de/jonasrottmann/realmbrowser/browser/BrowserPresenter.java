@@ -56,6 +56,11 @@ public class BrowserPresenter extends BasePresenterImpl<BrowserContract.View> im
     }
 
     @Override
+    public void onInformationSelected() {
+        interactor.onInformationSelected();
+    }
+
+    @Override
     public void onRowSelected(@NonNull DynamicRealmObject realmObject) {
         interactor.onRowSelected(realmObject);
     }
@@ -75,6 +80,14 @@ public class BrowserPresenter extends BasePresenterImpl<BrowserContract.View> im
         if (isViewAttached()) {
             //noinspection ConstantConditions
             getView().getViewContext().startActivity(RealmObjectActivity.getIntent(getView().getViewContext(), modelClass, false));
+        }
+    }
+
+    @Override
+    public void showInformation(long numberOfRows) {
+        if (isViewAttached()) {
+            //noinspection ConstantConditions
+            getView().showInformation(numberOfRows);
         }
     }
 

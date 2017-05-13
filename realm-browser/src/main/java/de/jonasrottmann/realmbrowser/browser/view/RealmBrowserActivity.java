@@ -26,11 +26,13 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.browser.BrowserContract;
@@ -160,17 +162,19 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.realm_browser_menu, menu);
+        getMenuInflater().inflate(R.menu.realm_browser_menu_browseractivity, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                presenter.onShowMenuSelected();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            presenter.onShowMenuSelected();
+            return true;
+        } else if (item.getItemId() == R.id.realm_browser_action_info) {
+            presenter.onInformationSelected();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -313,5 +317,10 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         } else {
             enableCheckboxes();
         }
+    }
+
+    @Override
+    public void showInformation(long numberOfRows) {
+        Toast.makeText(this, String.format(Locale.getDefault(), "Number of rows: %d", numberOfRows), Toast.LENGTH_SHORT).show();
     }
 }

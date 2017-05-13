@@ -33,6 +33,8 @@ public interface BrowserContract {
         void updateWithTextWrap(boolean wrapText);
 
         void updateWithFieldList(@NonNull List<Field> fields, Integer[] selectedFieldIndices);
+
+        void showInformation(long numberOfRows);
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -46,11 +48,15 @@ public interface BrowserContract {
 
         void onNewObjectSelected();
 
+        void onInformationSelected();
+
         void onRowSelected(@NonNull DynamicRealmObject realmObject);
 
         void showNewObjectActivity(@NonNull final Class<? extends RealmModel> modelClass);
 
         void showObjectActivity(@NonNull final Class<? extends RealmModel> modelClass);
+
+        void showInformation(long numberOfRows);
 
         void updateWithRealmObjects(AbstractList<? extends DynamicRealmObject> objects);
 
@@ -69,6 +75,8 @@ public interface BrowserContract {
         void onWrapTextOptionChanged(boolean wrapText, @NonNull Context context);
 
         void onNewObjectSelected();
+
+        void onInformationSelected();
 
         void onRowSelected(@NonNull DynamicRealmObject realmObject);
 
