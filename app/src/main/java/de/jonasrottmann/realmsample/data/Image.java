@@ -1,10 +1,8 @@
 package de.jonasrottmann.realmsample.data;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 public class Image extends RealmObject {
-    @PrimaryKey
     private int id;
     private byte[] bytes;
 
