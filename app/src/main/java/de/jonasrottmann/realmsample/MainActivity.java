@@ -3,7 +3,6 @@ package de.jonasrottmann.realmsample;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -90,10 +89,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void insertUsers(int count) {
         Realm realm = Realm.getDefaultInstance();
 
-        Drawable d = ContextCompat.getDrawable(this, R.drawable.beach_mini);
-        Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        ((BitmapDrawable) ContextCompat.getDrawable(this, R.drawable.beach_mini)).getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, stream);
 
         final List<User> userList = new ArrayList<>();
         for (int i = 0; i < count; i++) {

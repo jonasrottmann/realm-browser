@@ -63,7 +63,7 @@ class RealmBrowserViewBlob extends RealmBrowserViewField {
             if (realmObject.getBlob(getField().getName()) == null) {
                 updateFieldIsNullCheckBoxValue(true);
             } else {
-                textView.setText(Utils.createBlobValueString(realmObject.getBlob(getField().getName())));
+                textView.setText(Utils.createBlobValueString(realmObject.getBlob(getField().getName()), 1000));
             }
         } else {
             throw new IllegalArgumentException();

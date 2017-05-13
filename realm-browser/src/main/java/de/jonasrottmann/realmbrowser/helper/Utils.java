@@ -45,18 +45,20 @@ public class Utils {
     }
 
     @Nullable
-    public static String createBlobValueString(byte[] blobValue) {
+    public static String createBlobValueString(byte[] blobValue, int limit) {
         if (blobValue == null) {
             return null;
         }
+
         StringBuilder builder = new StringBuilder("byte[] = ");
         builder.append("{");
-        for (int i = 0; i < blobValue.length; i++) {
+        for (int i = 0; i < (limit == 0 ? blobValue.length : Math.min(blobValue.length, limit)); i++) {
             builder.append(String.valueOf(blobValue[i]));
             if (i < blobValue.length - 1) {
                 builder.append(", ");
             }
         }
+        if (limit != 0) builder.append("...");
         builder.append("}");
         return builder.toString();
     }
@@ -68,7 +70,7 @@ public class Utils {
         if (isParametrizedField(field)) {
             valueString = createParametrizedName(field);
         } else if (isBlob(field)) {
-            valueString = createBlobValueString(realmObject.getBlob(field.getName()));
+            valueString = createBlobValueString(realmObject.getBlob(field.getName()), 8);
         } else {
             // Strings, Numbers, Objects
             Object fieldValue = realmObject.get(field.getName());

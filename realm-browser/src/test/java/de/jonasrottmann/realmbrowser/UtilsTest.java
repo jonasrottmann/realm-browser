@@ -1,8 +1,10 @@
 package de.jonasrottmann.realmbrowser;
 
-import de.jonasrottmann.realmbrowser.helper.Utils;
-import java.lang.reflect.Field;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
+
+import de.jonasrottmann.realmbrowser.helper.Utils;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -28,22 +30,27 @@ public class UtilsTest {
     //region createBlobValueString
     @Test
     public void createBlobValueStringForNull() {
-        assertNull(Utils.createBlobValueString(null));
+        assertNull(Utils.createBlobValueString(null, 0));
     }
 
     @Test
     public void createBlobValueStringForEmptyBlob() {
-        assertEquals("byte[] = {}", Utils.createBlobValueString(new byte[] {}));
+        assertEquals("byte[] = {}", Utils.createBlobValueString(new byte[]{}, 0));
     }
 
     @Test
     public void createBlobValueStringForSingleEntryBlob() {
-        assertEquals("byte[] = {1}", Utils.createBlobValueString(new byte[] { 1 }));
+        assertEquals("byte[] = {1}", Utils.createBlobValueString(new byte[]{1}, 0));
     }
 
     @Test
-    public void createBlobValueStringForThreeEntryBlob() {
-        assertEquals("byte[] = {1, 2, 3}", Utils.createBlobValueString(new byte[] { 1, 2, 3 }));
+    public void createBlobValueStringForBlob() {
+        assertEquals("byte[] = {1, 2, 3, 4, 5, 6, 7, 8, 9}", Utils.createBlobValueString(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, 0));
+    }
+
+    @Test
+    public void createBlobValueStringForBlobLimited() {
+        assertEquals("byte[] = {1, 2, 3, ...}", Utils.createBlobValueString(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, 3));
     }
     //endregion
 
