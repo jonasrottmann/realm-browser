@@ -45,7 +45,7 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class RealmBrowserActivity extends AppCompatActivity implements RealmBrowserAdapter.Listener, CompoundButton.OnCheckedChangeListener, BrowserContract.View {
+public class RealmBrowserActivity extends AppCompatActivity implements RealmBrowserAdapter.Listener, NavigationView.OnNavigationItemSelectedListener, CompoundButton.OnCheckedChangeListener, BrowserContract.View {
     private static final String EXTRAS_DISPLAY_MODE = "DISPLAY_MODE";
 
     private BrowserContract.Presenter presenter;
@@ -108,21 +108,9 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         drawerLayout = (DrawerLayout) findViewById(R.id.realm_browser_drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.realm_browser_navigationView);
         wrapTextSwitch = (SwitchCompat) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.realm_browser_action_wrapping));
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.realm_browser_action_about) {
-                    presenter.onAboutSelected();
-                    return true;
-                } else if (item.getItemId() == R.id.realm_browser_action_wrapping) {
-                    presenter.onWrapTextOptionToggled();
-                    return true;
-                }
-                return false;
-            }
-        });
+        navigationView.setNavigationItemSelectedListener(this);
         MenuItem about = navigationView.getMenu().findItem(R.id.realm_browser_action_about);
-        about.setTitle(String.format("Version: %s", BuildConfig.VERSION_NAME));
+        about.setTitle(String.format("%s", BuildConfig.VERSION_NAME));
 
         // Presenter
         attachPresenter((BrowserContract.Presenter) getLastCustomNonConfigurationInstance());
@@ -153,13 +141,11 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         super.onDestroy();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.realm_browser_menu_browseractivity, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -173,11 +159,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onRowClicked(@NonNull DynamicRealmObject realmObject) {
-        presenter.onRowSelected(realmObject);
-    }
-
+    //region Private
     private void disableCheckBoxes() {
         for (AppCompatCheckBox cb : checkBoxes) {
             if (!cb.isChecked()) {
@@ -222,18 +204,40 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         txtColumn3.setLayoutParams(layoutParams3);
     }
 
-
     private LinearLayout.LayoutParams createLayoutParams() {
         return new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
+    //endregion
 
+    //region RealmBrowserAdapter.Listener
+    @Override
+    public void onRowClicked(@NonNull DynamicRealmObject realmObject) {
+        presenter.onRowSelected(realmObject);
+    }
+    //endregion
 
+    //region CompoundButton.OnCheckedChangeListener
     @Override
     public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
         presenter.onFieldSelectionChanged((int) buttonView.getTag(), isChecked);
     }
+    //endregion
 
+    //region NavigationView.OnNavigationItemSelectedListener
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.realm_browser_action_about) {
+            presenter.onAboutSelected();
+            return true;
+        } else if (item.getItemId() == R.id.realm_browser_action_wrapping) {
+            presenter.onWrapTextOptionToggled();
+            return true;
+        }
+        return false;
+    }
+    //endregion
 
+    //region ViewInput
     @Override
     public void attachPresenter(@Nullable BrowserContract.Presenter presenter) {
         this.presenter = presenter;
@@ -317,4 +321,5 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
     public void showInformation(long numberOfRows) {
         Toast.makeText(this, String.format(Locale.getDefault(), "Number of rows: %d", numberOfRows), Toast.LENGTH_SHORT).show();
     }
+    //endregion
 }
