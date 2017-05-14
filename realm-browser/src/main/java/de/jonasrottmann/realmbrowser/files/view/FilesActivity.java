@@ -64,7 +64,7 @@ public class FilesActivity extends AppCompatActivity implements FilesContract.Vi
     }
 
     @Override
-    public void showToast(String message) {
+    public void showToast(@Nullable String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
