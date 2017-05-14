@@ -110,11 +110,6 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
     }
 
     @Override
-    public void onAboutSelected(@NonNull Context context) {
-        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.realm_browser_git))));
-    }
-
-    @Override
     public void onRowSelected(@NonNull DynamicRealmObject dynamicRealmObject) {
         if (this.realmModelClass != null) {
             DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, dynamicRealmObject);

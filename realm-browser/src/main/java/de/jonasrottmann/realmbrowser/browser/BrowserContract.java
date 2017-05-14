@@ -90,8 +90,6 @@ public interface BrowserContract {
 
         void onInformationSelected();
 
-        void onAboutSelected(@NonNull Context context);
-
         void onRowSelected(@NonNull DynamicRealmObject realmObject);
 
         void onFieldSelectionChanged(int fieldIndex, boolean checked);

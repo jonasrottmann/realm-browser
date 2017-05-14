@@ -1,6 +1,8 @@
 package de.jonasrottmann.realmbrowser.browser;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -9,6 +11,7 @@ import java.lang.reflect.Field;
 import java.util.AbstractList;
 import java.util.List;
 
+import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.basemvp.BasePresenterImpl;
 import de.jonasrottmann.realmbrowser.object.view.RealmObjectActivity;
 import io.realm.DynamicRealm;
@@ -64,7 +67,7 @@ public class BrowserPresenter extends BasePresenterImpl<BrowserContract.View> im
     public void onAboutSelected() {
         if (isViewAttached()) {
             //noinspection ConstantConditions
-            interactor.onAboutSelected(getView().getViewContext());
+            getView().getViewContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getView().getViewContext().getString(R.string.realm_browser_git))));
         }
     }
 
