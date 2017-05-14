@@ -1,5 +1,7 @@
 package de.jonasrottmann.realmsample;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -12,6 +14,12 @@ public class Application extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+        LeakCanary.install(this);
+
         Timber.plant(new Timber.DebugTree());
 
         Realm.init(this);
