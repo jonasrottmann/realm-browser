@@ -6,7 +6,9 @@ import android.support.annotation.RestrictTo;
 import java.util.ArrayList;
 
 import de.jonasrottmann.realmbrowser.basemvp.BasePresenterImpl;
+import de.jonasrottmann.realmbrowser.browser.BrowserContract;
 import de.jonasrottmann.realmbrowser.browser.view.RealmBrowserActivity;
+import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.models.model.InformationPojo;
 import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
 
@@ -42,8 +44,9 @@ public class ModelsPresenter extends BasePresenterImpl<ModelsContract.View> impl
     @Override
     public void onModelSelected(ModelPojo item) {
         if (isViewAttached()) {
+            DataHolder.getInstance().save(DataHolder.DATA_HOLDER_KEY_CLASS, item.getKlass());
             //noinspection ConstantConditions
-            RealmBrowserActivity.start(getView().getViewContext(), item.getKlass());
+            RealmBrowserActivity.start(getView().getViewContext(), BrowserContract.DisplayMode.REALM_CLASS);
         }
     }
 

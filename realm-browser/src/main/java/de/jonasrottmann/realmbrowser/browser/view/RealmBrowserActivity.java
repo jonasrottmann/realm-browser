@@ -42,11 +42,10 @@ import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
-import io.realm.RealmModel;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RealmBrowserActivity extends AppCompatActivity implements RealmBrowserAdapter.Listener, CompoundButton.OnCheckedChangeListener, BrowserContract.View {
-    private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
+    private static final String EXTRAS_DISPLAY_MODE = "DISPLAY_MODE";
     private static final int FIELDS_GROUP_ID = 13;
 
     private BrowserContract.Presenter presenter;
@@ -63,22 +62,10 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
     private FloatingActionButton fab;
     private SwitchCompat wrapTextSwitch;
 
-    /**
-     * Used when displaying all Objects of the passed in realmModelClass.
-     */
-    public static void start(@NonNull Context context, Class<? extends RealmModel> realmModelClass) {
+    public static void start(@NonNull Context context, @BrowserContract.DisplayMode int displayMode) {
         Intent intent = new Intent(context, RealmBrowserActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(EXTRAS_REALM_MODEL_CLASS, realmModelClass);
-        context.startActivity(intent);
-    }
-
-    /**
-     * Used when displaying a field of type RealmList of an RealmObject.
-     */
-    public static void start(@NonNull Context context) {
-        Intent intent = new Intent(context, RealmBrowserActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EXTRAS_DISPLAY_MODE, displayMode);
         context.startActivity(intent);
     }
 
@@ -134,10 +121,8 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
 
         // Presenter
         attachPresenter((BrowserContract.Presenter) getLastCustomNonConfigurationInstance());
-        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(EXTRAS_REALM_MODEL_CLASS)) {
-            presenter.requestForContentUpdate(this, this.dynamicRealm, (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS));
-        } else {
-            presenter.requestForContentUpdate(this, this.dynamicRealm, null);
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(EXTRAS_DISPLAY_MODE)) {
+            presenter.requestForContentUpdate(this, this.dynamicRealm, getIntent().getExtras().getInt(EXTRAS_DISPLAY_MODE));
         }
 
         // TODO: Reenable button when item creation works
@@ -150,6 +135,10 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         super.onResume();
     }
 
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return presenter;
+    }
 
     @Override
     protected void onDestroy() {

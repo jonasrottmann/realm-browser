@@ -21,14 +21,19 @@ import io.realm.RealmObject;
 import io.realm.RealmObjectSchema;
 import timber.log.Timber;
 
+import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_CLASS;
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_FIELD;
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_OBJECT;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> implements BrowserContract.Interactor {
+    @Nullable
     private Class<? extends RealmModel> realmModelClass = null;
+    @Nullable
     private DynamicRealm dynamicRealm;
+    @Nullable
     private List<Field> fields;
+    @Nullable
     private ArrayList<Integer> selectedFieldIndices;
 
     BrowserInteractor(BrowserContract.Presenter presenter) {
@@ -37,28 +42,31 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
 
     //region InteractorInput
     @Override
-    public void requestForContentUpdate(@NonNull Context context, @NonNull DynamicRealm dynamicRealm, @Nullable Class<? extends RealmModel> modelClass) {
-        if (dynamicRealm.isClosed()) return;
-
-        this.realmModelClass = modelClass;
+    public void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, int displayMode) {
+        if (dynamicRealm == null || dynamicRealm.isClosed()) return;
         this.dynamicRealm = dynamicRealm;
 
-        getPresenter().updateWithFABVisibility(this.realmModelClass != null);
-
-        if (this.realmModelClass != null) {
+        if (displayMode == BrowserContract.DisplayMode.REALM_CLASS) {
+            this.realmModelClass = (Class<? extends RealmModel>) DataHolder.getInstance().retrieve(DATA_HOLDER_KEY_CLASS);
             getPresenter().updateWithRealmObjects(dynamicRealm.where(this.realmModelClass.getSimpleName()).findAll());
-        } else {
+        } else if (displayMode == BrowserContract.DisplayMode.REALM_LIST) {
             DynamicRealmObject dynamicRealmObject = (DynamicRealmObject) DataHolder.getInstance().retrieve(DATA_HOLDER_KEY_OBJECT);
             Field field = (Field) DataHolder.getInstance().retrieve(DATA_HOLDER_KEY_FIELD);
             if (dynamicRealmObject != null && field != null) {
                 getPresenter().updateWithRealmObjects(dynamicRealmObject.getList(field.getName()));
                 if (Utils.isParametrizedField(field)) {
                     this.realmModelClass = (Class<? extends RealmObject>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+                } else {
+                    throw new IllegalStateException("This field must be parametrized.");
                 }
             } else {
-                Timber.e("Error while trying to get realm object and field from DataHolder.");
+                throw new IllegalStateException("No object or field have been saved to DataHolder.");
             }
+        } else {
+            throw new IllegalStateException("Unsupported display mode.");
         }
+
+        getPresenter().updateWithFABVisibility(this.realmModelClass != null);
 
         // Update Title
         getPresenter().updateWithTitle(String.format("%s", this.realmModelClass.getSimpleName()));
@@ -93,30 +101,36 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
 
     @Override
     public void onInformationSelected() {
-        getPresenter().showInformation(dynamicRealm.where(realmModelClass.getSimpleName()).count());
+        if (dynamicRealm != null && !dynamicRealm.isClosed() && realmModelClass != null) {
+            getPresenter().showInformation(dynamicRealm.where(realmModelClass.getSimpleName()).count());
+        }
     }
 
     @Override
     public void onRowSelected(@NonNull DynamicRealmObject dynamicRealmObject) {
-        DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, dynamicRealmObject);
-        getPresenter().showObjectActivity(this.realmModelClass);
+        if (this.realmModelClass != null) {
+            DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, dynamicRealmObject);
+            getPresenter().showObjectActivity(this.realmModelClass);
+        }
     }
 
     @Override
     public void onFieldSelectionChanged(int fieldIndex, boolean checked) {
-        if (checked && !selectedFieldIndices.contains(fieldIndex)) {
-            selectedFieldIndices.add(fieldIndex);
-        } else if (selectedFieldIndices.contains(fieldIndex)) {
-            selectedFieldIndices.remove((Integer) fieldIndex);
+        if (selectedFieldIndices != null) {
+            if (checked && !selectedFieldIndices.contains(fieldIndex)) {
+                selectedFieldIndices.add(fieldIndex);
+            } else if (selectedFieldIndices.contains(fieldIndex)) {
+                selectedFieldIndices.remove((Integer) fieldIndex);
+            }
+            updateSelectedFields();
         }
-        updateSelectedFields();
     }
     //endregion
 
 
     //region Helper
     @NonNull
-    private static List<Field> getFieldsList(@NonNull DynamicRealm dynamicRealm, Class<? extends RealmModel> realmModelClass) {
+    private static List<Field> getFieldsList(@NonNull DynamicRealm dynamicRealm, @NonNull Class<? extends RealmModel> realmModelClass) {
         RealmObjectSchema schema = dynamicRealm.getSchema().get(realmModelClass.getSimpleName());
         ArrayList<Field> fieldsList = new ArrayList<>();
         for (String s : schema.getFieldNames()) {
@@ -130,9 +144,11 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
     }
 
     private void updateSelectedFields() {
-        Integer[] selectedFieldIndicesArray = new Integer[selectedFieldIndices.size()];
-        selectedFieldIndices.toArray(selectedFieldIndicesArray);
-        getPresenter().updateWithFieldList(fields, selectedFieldIndicesArray);
+        if (selectedFieldIndices != null && fields != null) {
+            Integer[] selectedFieldIndicesArray = new Integer[selectedFieldIndices.size()];
+            selectedFieldIndices.toArray(selectedFieldIndicesArray);
+            getPresenter().updateWithFieldList(fields, selectedFieldIndicesArray);
+        }
     }
     //endregion
 }

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.jonasrottmann.realmbrowser.R;
+import de.jonasrottmann.realmbrowser.browser.BrowserContract;
 import de.jonasrottmann.realmbrowser.browser.view.RealmBrowserActivity;
 import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.helper.Utils;
@@ -110,7 +111,7 @@ public class RealmObjectActivity extends AppCompatActivity {
                         if (currentDynamicRealmObject != null) {
                             DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, currentDynamicRealmObject);
                             DataHolder.getInstance().save(DATA_HOLDER_KEY_FIELD, field);
-                            RealmBrowserActivity.start(RealmObjectActivity.this);
+                            RealmBrowserActivity.start(RealmObjectActivity.this, BrowserContract.DisplayMode.REALM_LIST);
                         } else {
                             // TODO choose objects to add
                             Toast.makeText(RealmObjectActivity.this, "TODO", Toast.LENGTH_SHORT).show();
