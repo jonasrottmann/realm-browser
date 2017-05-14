@@ -110,7 +110,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         wrapTextSwitch = (SwitchCompat) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.realm_browser_action_wrapping));
         navigationView.setNavigationItemSelectedListener(this);
         MenuItem about = navigationView.getMenu().findItem(R.id.realm_browser_action_about);
-        about.setTitle(String.format("%s", BuildConfig.VERSION_NAME));
+        about.setTitle(String.format("%s: %s", this.getString(R.string.realm_browser_version), BuildConfig.VERSION_NAME));
 
         // Presenter
         attachPresenter((BrowserContract.Presenter) getLastCustomNonConfigurationInstance());

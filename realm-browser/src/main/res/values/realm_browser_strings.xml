@@ -19,8 +19,10 @@
     <string name="realm_browser_action_share_file" translatable="true">Share File</string>
     <string name="realm_browser_action_filter" translatable="true">Filter</string>
     <string name="realm_browser_action_delete" translatable="true">Delete</string>
+    <string name="realm_browser_action_about" translatable="true">About</string>
 
     <string name="realm_browser_git" translatable="false">https://github.com/jonasrottmann/realm-browser</string>
+    <string name="realm_browser_version" translatable="true">Version</string>
 
     <string-array name="realm_browser_boolean" translatable="false">
         <item>true</item>

@@ -20,7 +20,6 @@
 
     <item
         android:id="@+id/realm_browser_action_about"
-        android:icon="@drawable/realm_browser_ic_information_outline_black_24dp"
-        android:title="About"/>
+        android:title="@string/realm_browser_action_about"/>
 
 </menu>
