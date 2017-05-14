@@ -1,26 +1,28 @@
 <resources>
-    <string name="realm_browser_title">Realm Browser</string>
-    <string name="realm_browser_test_text_small">Lorem ipsum</string>
+    <string name="realm_browser_title" translatable="false">Realm Browser</string>
+    <string name="realm_browser_test_text_small" translatable="false">Lorem ipsum</string>
 
-    <string translatable="true" name="realm_browser_drawer_settings_title">Settings</string>
-    <string translatable="true" name="realm_browser_enable_text_wrapping">Enable Text Wrapping</string>
-    <string translatable="true" name="realm_browser_wrap_text">Wrap text inside column</string>
-    <string translatable="true" name="realm_browser_drawer_fields_title">Fields</string>
-    <string translatable="true" name="realm_browser_open_navigation_drawer">Open</string>
-    <string translatable="true" name="realm_browser_close_navigation_drawer">Close</string>
-    <string translatable="true" name="realm_browser_open_error">Can\'t open realm instance.</string>
-    <string translatable="true" name="realm_browser_error_openinstances">Make sure to close all open realm instances before opening this file.</string>
-    <string translatable="true" name="realm_browser_error_migration">Migration needed.</string>
+    <string name="realm_browser_drawer_settings_title" translatable="true">Settings</string>
+    <string name="realm_browser_enable_text_wrapping" translatable="true">Enable Text Wrapping</string>
+    <string name="realm_browser_wrap_text" translatable="true">Wrap text inside column</string>
+    <string name="realm_browser_drawer_fields_title" translatable="true">Fields</string>
+    <string name="realm_browser_open_navigation_drawer" translatable="true">Open</string>
+    <string name="realm_browser_close_navigation_drawer" translatable="true">Close</string>
+    <string name="realm_browser_open_error" translatable="true">Can\'t open realm instance.</string>
+    <string name="realm_browser_error_openinstances" translatable="true">Make sure to close all open realm instances before opening this file.</string>
+    <string name="realm_browser_error_migration" translatable="true">Migration needed.</string>
 
-    <string translatable="true" name="realm_browser_action_save">Save</string>
-    <string translatable="true" name="realm_browser_action_model_information">Model Information</string>
-    <string translatable="true" name="realm_browser_action_file_information">File Information</string>
-    <string translatable="true" name="realm_browser_action_sort">Sort</string>
-    <string translatable="true" name="realm_browser_action_share_file">Share File</string>
-    <string translatable="true" name="realm_browser_action_filter">Filter</string>
-    <string translatable="true" name="realm_browser_action_delete">Delete</string>
+    <string name="realm_browser_action_save" translatable="true">Save</string>
+    <string name="realm_browser_action_model_information" translatable="true">Model Information</string>
+    <string name="realm_browser_action_file_information" translatable="true">File Information</string>
+    <string name="realm_browser_action_sort" translatable="true">Sort</string>
+    <string name="realm_browser_action_share_file" translatable="true">Share File</string>
+    <string name="realm_browser_action_filter" translatable="true">Filter</string>
+    <string name="realm_browser_action_delete" translatable="true">Delete</string>
 
-    <string-array name="realm_browser_boolean">
+    <string name="realm_browser_git" translatable="false">https://github.com/jonasrottmann/realm-browser</string>
+
+    <string-array name="realm_browser_boolean" translatable="false">
         <item>true</item>
         <item>false</item>
     </string-array>

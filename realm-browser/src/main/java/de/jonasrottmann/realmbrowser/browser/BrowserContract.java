@@ -15,7 +15,6 @@ import java.util.List;
 import de.jonasrottmann.realmbrowser.basemvp.BaseInteractor;
 import de.jonasrottmann.realmbrowser.basemvp.BasePresenter;
 import de.jonasrottmann.realmbrowser.basemvp.BaseView;
-import de.jonasrottmann.realmbrowser.browser.view.RealmBrowserActivity;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmModel;
@@ -55,11 +54,13 @@ public interface BrowserContract {
 
         void onFieldSelectionChanged(int fieldIndex, boolean checked);
 
-        void onWrapTextOptionChanged(boolean wrapText);
+        void onWrapTextOptionToggled();
 
         void onNewObjectSelected();
 
         void onInformationSelected();
+
+        void onAboutSelected();
 
         void onRowSelected(@NonNull DynamicRealmObject realmObject);
 
@@ -83,11 +84,13 @@ public interface BrowserContract {
     interface Interactor extends BaseInteractor {
         void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, @DisplayMode int displayMode);
 
-        void onWrapTextOptionChanged(boolean wrapText, @NonNull Context context);
+        void onWrapTextOptionToggled(@NonNull Context context);
 
         void onNewObjectSelected();
 
         void onInformationSelected();
+
+        void onAboutSelected(@NonNull Context context);
 
         void onRowSelected(@NonNull DynamicRealmObject realmObject);
 

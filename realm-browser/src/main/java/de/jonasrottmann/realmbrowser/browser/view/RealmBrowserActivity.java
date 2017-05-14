@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import de.jonasrottmann.realmbrowser.BuildConfig;
 import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.browser.BrowserContract;
 import de.jonasrottmann.realmbrowser.browser.BrowserPresenter;
@@ -46,7 +47,6 @@ import io.realm.RealmList;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RealmBrowserActivity extends AppCompatActivity implements RealmBrowserAdapter.Listener, CompoundButton.OnCheckedChangeListener, BrowserContract.View {
     private static final String EXTRAS_DISPLAY_MODE = "DISPLAY_MODE";
-    private static final int FIELDS_GROUP_ID = 13;
 
     private BrowserContract.Presenter presenter;
 
@@ -107,17 +107,22 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         // Init Navigation View
         drawerLayout = (DrawerLayout) findViewById(R.id.realm_browser_drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.realm_browser_navigationView);
-        Menu menu = navigationView.getMenu();
-
-        // Init Text Wrapping Switch
-        MenuItem menuItem = menu.findItem(R.id.realm_browser_action_wrapping);
-        wrapTextSwitch = (SwitchCompat) MenuItemCompat.getActionView(menuItem);
-        wrapTextSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        wrapTextSwitch = (SwitchCompat) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.realm_browser_action_wrapping));
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                presenter.onWrapTextOptionChanged(isChecked);
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.realm_browser_action_about) {
+                    presenter.onAboutSelected();
+                    return true;
+                } else if (item.getItemId() == R.id.realm_browser_action_wrapping) {
+                    presenter.onWrapTextOptionToggled();
+                    return true;
+                }
+                return false;
             }
         });
+        MenuItem about = navigationView.getMenu().findItem(R.id.realm_browser_action_about);
+        about.setTitle(String.format("Version: %s", BuildConfig.VERSION_NAME));
 
         // Presenter
         attachPresenter((BrowserContract.Presenter) getLastCustomNonConfigurationInstance());
@@ -277,9 +282,9 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
     public void updateWithFieldList(@NonNull List<Field> fields, Integer[] selectedFieldIndices) {
         Menu menu = ((NavigationView) findViewById(R.id.realm_browser_navigationView)).getMenu();
 
-        menu.removeGroup(FIELDS_GROUP_ID); // Remove old menu
+        menu.findItem(R.id.realm_browser_menu_fields).getSubMenu().clear();
         checkBoxes = new AppCompatCheckBox[fields.size()];
-        SubMenu subMenu = menu.addSubMenu(FIELDS_GROUP_ID, Menu.NONE, Menu.NONE, R.string.realm_browser_drawer_fields_title);
+        SubMenu subMenu = menu.findItem(R.id.realm_browser_menu_fields).getSubMenu();
         for (int i = 0; i < fields.size(); i++) {
             MenuItem m = subMenu.add(fields.get(i).getName());
             AppCompatCheckBox cb = new AppCompatCheckBox(this);

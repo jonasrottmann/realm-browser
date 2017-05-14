@@ -11,4 +11,16 @@
                 app:actionLayout="@layout/realm_browser_action_view_switch"/>
         </menu>
     </item>
+
+    <item
+        android:id="@+id/realm_browser_menu_fields"
+        android:title="@string/realm_browser_drawer_fields_title">
+        <menu/>
+    </item>
+
+    <item
+        android:id="@+id/realm_browser_action_about"
+        android:icon="@drawable/realm_browser_ic_information_outline_black_24dp"
+        android:title="About"/>
+
 </menu>

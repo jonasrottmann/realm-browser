@@ -1,6 +1,8 @@
 package de.jonasrottmann.realmbrowser.browser;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -10,6 +12,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.basemvp.BaseInteractorImpl;
 import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.helper.RealmPreferences;
@@ -84,9 +87,9 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
     }
 
     @Override
-    public void onWrapTextOptionChanged(boolean wrapText, @NonNull Context context) {
+    public void onWrapTextOptionToggled(@NonNull Context context) {
         RealmPreferences realmPreferences = new RealmPreferences(context);
-        realmPreferences.setShouldWrapText(wrapText);
+        realmPreferences.setShouldWrapText(!realmPreferences.shouldWrapText());
         getPresenter().updateWithTextWrap(realmPreferences.shouldWrapText());
     }
 
@@ -104,6 +107,11 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
         if (dynamicRealm != null && !dynamicRealm.isClosed() && realmModelClass != null) {
             getPresenter().showInformation(dynamicRealm.where(realmModelClass.getSimpleName()).count());
         }
+    }
+
+    @Override
+    public void onAboutSelected(@NonNull Context context) {
+        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.realm_browser_git))));
     }
 
     @Override

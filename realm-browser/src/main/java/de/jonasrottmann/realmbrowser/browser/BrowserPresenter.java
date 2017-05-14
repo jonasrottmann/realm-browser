@@ -43,10 +43,10 @@ public class BrowserPresenter extends BasePresenterImpl<BrowserContract.View> im
     }
 
     @Override
-    public void onWrapTextOptionChanged(boolean wrapText) {
+    public void onWrapTextOptionToggled() {
         if (isViewAttached()) {
             //noinspection ConstantConditions
-            interactor.onWrapTextOptionChanged(wrapText, getView().getViewContext());
+            interactor.onWrapTextOptionToggled(getView().getViewContext());
         }
     }
 
@@ -58,6 +58,14 @@ public class BrowserPresenter extends BasePresenterImpl<BrowserContract.View> im
     @Override
     public void onInformationSelected() {
         interactor.onInformationSelected();
+    }
+
+    @Override
+    public void onAboutSelected() {
+        if (isViewAttached()) {
+            //noinspection ConstantConditions
+            interactor.onAboutSelected(getView().getViewContext());
+        }
     }
 
     @Override
