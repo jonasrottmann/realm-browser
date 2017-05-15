@@ -13,6 +13,7 @@ import java.util.List;
 
 import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.basemvp.BasePresenterImpl;
+import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.object.view.RealmObjectActivity;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
@@ -81,8 +82,9 @@ public class BrowserPresenter extends BasePresenterImpl<BrowserContract.View> im
     @Override
     public void showNewObjectActivity(@NonNull Class<? extends RealmModel> modelClass) {
         if (isViewAttached()) {
+            DataHolder.getInstance().save(DataHolder.DATA_HOLDER_KEY_CLASS, modelClass);
             //noinspection ConstantConditions
-            getView().getViewContext().startActivity(RealmObjectActivity.getIntent(getView().getViewContext(), modelClass, true));
+            getView().getViewContext().startActivity(RealmObjectActivity.getIntent(getView().getViewContext(), true));
         }
     }
 
@@ -90,7 +92,7 @@ public class BrowserPresenter extends BasePresenterImpl<BrowserContract.View> im
     public void showObjectActivity(@NonNull Class<? extends RealmModel> modelClass) {
         if (isViewAttached()) {
             //noinspection ConstantConditions
-            getView().getViewContext().startActivity(RealmObjectActivity.getIntent(getView().getViewContext(), modelClass, false));
+            getView().getViewContext().startActivity(RealmObjectActivity.getIntent(getView().getViewContext(), false));
         }
     }
 
@@ -139,6 +141,14 @@ public class BrowserPresenter extends BasePresenterImpl<BrowserContract.View> im
         if (isViewAttached()) {
             //noinspection ConstantConditions
             getView().updateWithFieldList(fields, selectedFieldIndices);
+        }
+    }
+
+    @Override
+    public void closeActivityForSelectionResult() {
+        if (isViewAttached()) {
+            //noinspection ConstantConditions
+            getView().closeActivityForSelectionResult();
         }
     }
     //endregion

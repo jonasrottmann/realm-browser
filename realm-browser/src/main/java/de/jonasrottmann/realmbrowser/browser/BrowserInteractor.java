@@ -113,7 +113,7 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
         if (this.realmModelClass != null) {
             DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, dynamicRealmObject);
             if (selectionMode) {
-                // TODO
+                getPresenter().closeActivityForSelectionResult();
             } else {
                 getPresenter().showObjectActivity(this.realmModelClass);
             }

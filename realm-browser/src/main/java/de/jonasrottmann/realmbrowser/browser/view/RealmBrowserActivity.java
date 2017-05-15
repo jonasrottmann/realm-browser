@@ -329,5 +329,11 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
     public void showInformation(long numberOfRows) {
         Toast.makeText(this, String.format(Locale.getDefault(), "Number of rows: %d", numberOfRows), Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void closeActivityForSelectionResult() {
+        setResult(RESULT_OK);
+        finish();
+    }
     //endregion
 }

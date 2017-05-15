@@ -1,14 +1,12 @@
 package de.jonasrottmann.realmbrowser.object.view;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -27,10 +25,11 @@ import de.jonasrottmann.realmbrowser.browser.BrowserContract;
 import de.jonasrottmann.realmbrowser.browser.view.RealmBrowserActivity;
 import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.helper.Utils;
+import de.jonasrottmann.realmbrowser.object.ObjectContract;
+import de.jonasrottmann.realmbrowser.object.ObjectPresenter;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmConfiguration;
-import io.realm.RealmModel;
 import io.realm.RealmObjectSchema;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import timber.log.Timber;
@@ -39,22 +38,23 @@ import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_FI
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_OBJECT;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class RealmObjectActivity extends AppCompatActivity {
-    private static final String EXTRAS_REALM_MODEL_CLASS = "REALM_MODEL_CLASS";
+public class RealmObjectActivity extends AppCompatActivity implements ObjectContract.View {
     private static final String EXTRAS_FLAG_NEW_OBJECT = "NEW_OBJECT";
 
-    private Class<? extends RealmModel> mRealmObjectClass;
+    private ObjectContract.Presenter presenter;
+    @Nullable
+    private DynamicRealm dynamicRealm;
+
     private DynamicRealmObject currentDynamicRealmObject;
     private List<Field> classFields;
     private RealmBrowserViewField primaryKeyFieldView;
     private HashMap<String, RealmBrowserViewField> fieldViewsList;
-    @Nullable
-    private DynamicRealm dynamicRealm;
-    private LinearLayout linearLayout;
 
-    public static Intent getIntent(Context context, Class<? extends RealmModel> realmModelClass, boolean newObject) {
+    private LinearLayout linearLayout;
+    private Menu optionsMenu;
+
+    public static Intent getIntent(Context context, boolean newObject) {
         Intent intent = new Intent(context, RealmObjectActivity.class);
-        intent.putExtra(EXTRAS_REALM_MODEL_CLASS, realmModelClass);
         intent.putExtra(EXTRAS_FLAG_NEW_OBJECT, newObject);
         return intent;
     }
@@ -63,12 +63,9 @@ public class RealmObjectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.realm_browser_ac_realm_object);
-        RealmConfiguration configuration = (RealmConfiguration) DataHolder.getInstance().retrieve(DataHolder.DATA_HOLDER_KEY_CONFIG);
-        if (configuration != null) {
-            dynamicRealm = DynamicRealm.getInstance(configuration);
-        }
 
-        mRealmObjectClass = (Class<? extends RealmModel>) getIntent().getSerializableExtra(EXTRAS_REALM_MODEL_CLASS);
+        RealmConfiguration configuration = (RealmConfiguration) DataHolder.getInstance().retrieve(DataHolder.DATA_HOLDER_KEY_CONFIG);
+        if (configuration != null) dynamicRealm = DynamicRealm.getInstance(configuration);
 
         // Get Extra
         if (!getIntent().getBooleanExtra(EXTRAS_FLAG_NEW_OBJECT, true)) {
@@ -152,32 +149,25 @@ public class RealmObjectActivity extends AppCompatActivity {
             fieldViewsList.put(field.getName(), realmFieldView);
         }
 
-        // Init Toolbar
+        // Set Toolbar
         setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            if (currentDynamicRealmObject == null) {
-                actionBar.setTitle(String.format("New %s", mRealmObjectClass.getSimpleName()));
-            } else {
-                actionBar.setTitle(String.format("%s", mRealmObjectClass.getSimpleName()));
-            }
-        }
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Presenter
+        attachPresenter((ObjectContract.Presenter) getLastCustomNonConfigurationInstance());
+        this.presenter.requestForContentUpdate(dynamicRealm);
     }
 
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return presenter;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.realm_browser_menu_objectactivity, menu);
+        this.optionsMenu = menu;
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (currentDynamicRealmObject == null) {
-            menu.findItem(R.id.realm_browser_action_delete).setVisible(false);
-        }
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -191,30 +181,10 @@ public class RealmObjectActivity extends AppCompatActivity {
             }
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_delete) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Delete");
-            builder.setMessage(String.format("Are you sure you want to delete this %s object?", mRealmObjectClass.getSimpleName()));
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dynamicRealm.beginTransaction();
-                    currentDynamicRealmObject.deleteFromRealm();
-                    dynamicRealm.commitTransaction();
-                    dialogInterface.dismiss();
-                    finish();
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
-            builder.show();
+            presenter.onDeleteObjectActionSelected();
             return true;
-        } else {
-            return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -322,4 +292,32 @@ public class RealmObjectActivity extends AppCompatActivity {
 
         return true;
     }
+
+    //region ViewInput
+    @Override
+    public void attachPresenter(@Nullable ObjectContract.Presenter presenter) {
+        this.presenter = presenter;
+        if (this.presenter == null) {
+            this.presenter = new ObjectPresenter();
+        }
+        this.presenter.attachView(this);
+    }
+
+    @Override
+    public Context getViewContext() {
+        return this;
+    }
+
+    @Override
+    public void updateWithTitle(@NonNull String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    @Override
+    public void updateWithDeleteActionShown(boolean shown) {
+        optionsMenu.findItem(R.id.realm_browser_action_delete).setVisible(shown);
+    }
+    //endregion
 }

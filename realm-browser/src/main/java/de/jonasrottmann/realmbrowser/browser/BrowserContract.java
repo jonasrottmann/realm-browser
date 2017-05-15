@@ -45,6 +45,8 @@ public interface BrowserContract {
         void updateWithFieldList(@NonNull List<Field> fields, Integer[] selectedFieldIndices);
 
         void showInformation(long numberOfRows);
+
+        void closeActivityForSelectionResult();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -79,6 +81,8 @@ public interface BrowserContract {
         void updateWithTextWrap(boolean wrapText);
 
         void updateWithFieldList(@NonNull List<Field> fields, Integer[] selectedFieldIndices);
+
+        void closeActivityForSelectionResult();
     }
 
     interface Interactor extends BaseInteractor {
