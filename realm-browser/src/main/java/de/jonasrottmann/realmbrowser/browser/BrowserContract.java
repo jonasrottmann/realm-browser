@@ -24,7 +24,7 @@ public interface BrowserContract {
 
     @IntDef({DisplayMode.REALM_CLASS, DisplayMode.REALM_LIST})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface DisplayMode {
+    @interface DisplayMode {
         int REALM_CLASS = 0;
         int REALM_LIST = 1;
     }
@@ -48,7 +48,7 @@ public interface BrowserContract {
     }
 
     interface Presenter extends BasePresenter<View> {
-        void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, @DisplayMode int displayMode);
+        void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, @DisplayMode int displayMode, boolean selectionMode);
 
         void onShowMenuSelected();
 
@@ -82,7 +82,7 @@ public interface BrowserContract {
     }
 
     interface Interactor extends BaseInteractor {
-        void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, @DisplayMode int displayMode);
+        void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, @DisplayMode int displayMode, boolean selectionMode);
 
         void onWrapTextOptionToggled(@NonNull Context context);
 

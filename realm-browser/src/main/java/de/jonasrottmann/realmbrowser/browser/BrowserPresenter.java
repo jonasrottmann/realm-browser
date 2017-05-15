@@ -28,8 +28,8 @@ public class BrowserPresenter extends BasePresenterImpl<BrowserContract.View> im
 
     //region ViewOutput
     @Override
-    public void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, @BrowserContract.DisplayMode int displayMode) {
-        interactor.requestForContentUpdate(context, dynamicRealm, displayMode);
+    public void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, @BrowserContract.DisplayMode int displayMode, boolean selectionMode) {
+        interactor.requestForContentUpdate(context, dynamicRealm, displayMode, selectionMode);
     }
 
     @Override

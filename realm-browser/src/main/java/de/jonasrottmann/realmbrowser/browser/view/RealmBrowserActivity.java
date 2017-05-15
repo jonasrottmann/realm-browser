@@ -1,5 +1,6 @@
 package de.jonasrottmann.realmbrowser.browser.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,6 +48,7 @@ import io.realm.RealmList;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RealmBrowserActivity extends AppCompatActivity implements RealmBrowserAdapter.Listener, NavigationView.OnNavigationItemSelectedListener, CompoundButton.OnCheckedChangeListener, BrowserContract.View {
     private static final String EXTRAS_DISPLAY_MODE = "DISPLAY_MODE";
+    private static final int SELECTION_RESULT_REQUEST_CODE = 9294;
 
     private BrowserContract.Presenter presenter;
 
@@ -67,6 +69,12 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRAS_DISPLAY_MODE, displayMode);
         context.startActivity(intent);
+    }
+
+    public static void startForSelection(@NonNull Activity context) {
+        Intent intent = new Intent(context, RealmBrowserActivity.class);
+        intent.putExtra(EXTRAS_DISPLAY_MODE, BrowserContract.DisplayMode.REALM_CLASS);
+        context.startActivityForResult(intent, SELECTION_RESULT_REQUEST_CODE);
     }
 
     @Override
@@ -115,7 +123,7 @@ public class RealmBrowserActivity extends AppCompatActivity implements RealmBrow
         // Presenter
         attachPresenter((BrowserContract.Presenter) getLastCustomNonConfigurationInstance());
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(EXTRAS_DISPLAY_MODE)) {
-            presenter.requestForContentUpdate(this, this.dynamicRealm, getIntent().getExtras().getInt(EXTRAS_DISPLAY_MODE));
+            presenter.requestForContentUpdate(this, this.dynamicRealm, getIntent().getExtras().getInt(EXTRAS_DISPLAY_MODE), getCallingActivity() != null);
         }
 
         // TODO: Reenable button when item creation works

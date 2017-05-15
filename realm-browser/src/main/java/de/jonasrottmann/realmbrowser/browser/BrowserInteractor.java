@@ -1,8 +1,6 @@
 package de.jonasrottmann.realmbrowser.browser;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -12,7 +10,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.basemvp.BaseInteractorImpl;
 import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.helper.RealmPreferences;
@@ -38,6 +35,7 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
     private List<Field> fields;
     @Nullable
     private ArrayList<Integer> selectedFieldIndices;
+    private boolean selectionMode = false;
 
     BrowserInteractor(BrowserContract.Presenter presenter) {
         super(presenter);
@@ -45,9 +43,10 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
 
     //region InteractorInput
     @Override
-    public void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, int displayMode) {
+    public void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, int displayMode, boolean selectionMode) {
         if (dynamicRealm == null || dynamicRealm.isClosed()) return;
         this.dynamicRealm = dynamicRealm;
+        this.selectionMode = selectionMode;
 
         if (displayMode == BrowserContract.DisplayMode.REALM_CLASS) {
             this.realmModelClass = (Class<? extends RealmModel>) DataHolder.getInstance().retrieve(DATA_HOLDER_KEY_CLASS);
@@ -113,7 +112,11 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
     public void onRowSelected(@NonNull DynamicRealmObject dynamicRealmObject) {
         if (this.realmModelClass != null) {
             DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, dynamicRealmObject);
-            getPresenter().showObjectActivity(this.realmModelClass);
+            if (selectionMode) {
+                // TODO
+            } else {
+                getPresenter().showObjectActivity(this.realmModelClass);
+            }
         }
     }
 
