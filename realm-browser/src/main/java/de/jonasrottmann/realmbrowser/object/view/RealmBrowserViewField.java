@@ -24,7 +24,7 @@ import static android.support.v4.content.ContextCompat.getColor;
 import static android.support.v4.content.ContextCompat.getDrawable;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-abstract class RealmBrowserViewField extends LinearLayout {
+public abstract class RealmBrowserViewField extends LinearLayout {
     private TextView tvFieldName;
     private TextView tvFieldType;
     private ImageView ivFieldPrimaryKey;

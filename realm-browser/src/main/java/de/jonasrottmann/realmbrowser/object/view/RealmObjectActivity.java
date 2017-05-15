@@ -27,11 +27,10 @@ import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.helper.Utils;
 import de.jonasrottmann.realmbrowser.object.ObjectContract;
 import de.jonasrottmann.realmbrowser.object.ObjectPresenter;
+import de.jonasrottmann.realmbrowser.object.model.FieldViewPojo;
 import io.realm.DynamicRealm;
-import io.realm.DynamicRealmObject;
 import io.realm.RealmConfiguration;
 import io.realm.RealmObjectSchema;
-import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import timber.log.Timber;
 
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_FIELD;
@@ -41,17 +40,20 @@ import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_OB
 public class RealmObjectActivity extends AppCompatActivity implements ObjectContract.View {
     private static final String EXTRAS_FLAG_NEW_OBJECT = "NEW_OBJECT";
 
+    @Nullable
     private ObjectContract.Presenter presenter;
     @Nullable
     private DynamicRealm dynamicRealm;
+    @Nullable
+    private Menu optionsMenu;
+    @Nullable
+    private LinearLayout linearLayout;
 
-    private DynamicRealmObject currentDynamicRealmObject;
     private List<Field> classFields;
     private RealmBrowserViewField primaryKeyFieldView;
-    private HashMap<String, RealmBrowserViewField> fieldViewsList;
 
-    private LinearLayout linearLayout;
-    private Menu optionsMenu;
+    @NonNull
+    private HashMap<FieldViewPojo, RealmBrowserViewField> fieldViewsMap = new HashMap<>();
 
     public static Intent getIntent(Context context, boolean newObject) {
         Intent intent = new Intent(context, RealmObjectActivity.class);
@@ -67,87 +69,8 @@ public class RealmObjectActivity extends AppCompatActivity implements ObjectCont
         RealmConfiguration configuration = (RealmConfiguration) DataHolder.getInstance().retrieve(DataHolder.DATA_HOLDER_KEY_CONFIG);
         if (configuration != null) dynamicRealm = DynamicRealm.getInstance(configuration);
 
-        // Get Extra
-        if (!getIntent().getBooleanExtra(EXTRAS_FLAG_NEW_OBJECT, true)) {
-            currentDynamicRealmObject = (DynamicRealmObject) DataHolder.getInstance().retrieve(DATA_HOLDER_KEY_OBJECT);
-        }
-
-        // Fill fields list
-        RealmObjectSchema schema = dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName());
-        classFields = new ArrayList<>();
-        for (String s : schema.getFieldNames()) {
-            try {
-                classFields.add(mRealmObjectClass.getDeclaredField(s));
-            } catch (NoSuchFieldException e) {
-                Timber.d(e, "Initializing field map.");
-            }
-        }
-
         // Init Views
         linearLayout = (LinearLayout) findViewById(R.id.realm_browser_linearLayout);
-        fieldViewsList = new HashMap<>();
-        int margin = this.getResources().getDimensionPixelSize(R.dimen.realm_browser_activity_margin);
-
-        for (final Field field : classFields) {
-            RealmBrowserViewField realmFieldView;
-            if (Utils.isString(field)) {
-                realmFieldView = new RealmBrowserViewString(this, schema, field);
-            } else if (Utils.isNumber(field)) {
-                realmFieldView = new RealmBrowserViewNumber(this, schema, field);
-            } else if (Utils.isBoolean(field)) {
-                realmFieldView = new RealmBrowserViewBool(this, schema, field);
-            } else if (Utils.isBlob(field)) {
-                realmFieldView = new RealmBrowserViewBlob(this, schema, field);
-            } else if (Utils.isDate(field)) {
-                realmFieldView = new RealmBrowserViewDate(this, schema, field);
-            } else if (Utils.isParametrizedField(field)) {
-                realmFieldView = new RealmBrowserViewRealmList(this, schema, field);
-                realmFieldView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (currentDynamicRealmObject != null) {
-                            DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, currentDynamicRealmObject);
-                            DataHolder.getInstance().save(DATA_HOLDER_KEY_FIELD, field);
-                            RealmBrowserActivity.start(RealmObjectActivity.this, BrowserContract.DisplayMode.REALM_LIST);
-                        } else {
-                            // TODO choose objects to add
-                            Toast.makeText(RealmObjectActivity.this, "TODO", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            } else if (Utils.isRealmObjectField(field)) {
-                realmFieldView = new RealmBrowserViewRealmObject(this, schema, field);
-                realmFieldView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (currentDynamicRealmObject != null) {
-                            // TODO start this activity
-                            Toast.makeText(RealmObjectActivity.this, "TODO", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // TODO choose object
-                            Toast.makeText(RealmObjectActivity.this, "TODO", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            } else {
-                // Skip this field.
-                continue;
-            }
-            realmFieldView.setPadding(margin, margin / 2, margin, margin / 2);
-
-            if (dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).isPrimaryKey(field.getName())) {
-                primaryKeyFieldView = realmFieldView;
-            }
-
-            // Add the object to the view for setting the current value etc.
-            if (currentDynamicRealmObject != null) {
-                realmFieldView.setRealmObject(currentDynamicRealmObject);
-            }
-
-            // Add View
-            linearLayout.addView(realmFieldView);
-            fieldViewsList.put(field.getName(), realmFieldView);
-        }
 
         // Set Toolbar
         setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
@@ -155,7 +78,10 @@ public class RealmObjectActivity extends AppCompatActivity implements ObjectCont
 
         // Presenter
         attachPresenter((ObjectContract.Presenter) getLastCustomNonConfigurationInstance());
-        this.presenter.requestForContentUpdate(dynamicRealm);
+        if (this.presenter == null) {
+            throw new IllegalStateException("No presenter present.");
+        }
+        this.presenter.requestForContentUpdate(dynamicRealm, getIntent().getBooleanExtra(EXTRAS_FLAG_NEW_OBJECT, true));
     }
 
     @Override
@@ -176,9 +102,7 @@ public class RealmObjectActivity extends AppCompatActivity implements ObjectCont
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_save) {
-            if (saveObject()) {
-                Snackbar.make(linearLayout, "Saved Changes.", Snackbar.LENGTH_SHORT).show();
-            }
+            presenter.onSaveObjectActionSelected();
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_delete) {
             presenter.onDeleteObjectActionSelected();
@@ -193,104 +117,6 @@ public class RealmObjectActivity extends AppCompatActivity implements ObjectCont
         if (dynamicRealm != null && !dynamicRealm.isClosed()) {
             dynamicRealm.close();
         }
-    }
-
-    @Nullable
-    private DynamicRealmObject createObject() {
-        if (dynamicRealm == null) return null;
-
-        DynamicRealmObject newRealmObject = null;
-
-        // Start Realm Transaction
-        dynamicRealm.beginTransaction();
-
-        // Create object
-        if (dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).hasPrimaryKey()) {
-            try {
-                String primaryKeyFieldName = Utils.getPrimaryKeyFieldName(dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()));
-                newRealmObject = dynamicRealm.createObject(mRealmObjectClass.getSimpleName(), fieldViewsList.get(primaryKeyFieldName).getValue());
-            } catch (IllegalArgumentException e) {
-                Timber.e(e, "Error trying to create new Realm object of type %s", mRealmObjectClass.getSimpleName());
-                dynamicRealm.cancelTransaction();
-                Snackbar.make(linearLayout, "Error creating Object: IllegalArgumentException", Snackbar.LENGTH_SHORT).show();
-            } catch (RealmPrimaryKeyConstraintException e) {
-                Timber.e(e, "Error trying to create new Realm object of type %s", mRealmObjectClass.getSimpleName());
-                fieldViewsList.get(Utils.getPrimaryKeyFieldName(dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(true);
-                dynamicRealm.cancelTransaction();
-                Snackbar.make(linearLayout, "Error creating Object: PrimaryKeyConstraintException", Snackbar.LENGTH_SHORT).show();
-            }
-        } else {
-            newRealmObject = dynamicRealm.createObject(mRealmObjectClass.getSimpleName());
-        }
-
-        // Commit Realm Transaction
-        if (dynamicRealm.isInTransaction()) {
-            dynamicRealm.commitTransaction();
-        }
-
-        return newRealmObject;
-    }
-
-    private boolean saveObject() {
-        if (dynamicRealm == null) {
-            Timber.e("No realm instance.");
-            return false;
-        }
-
-        // Return if any field holds a invalid value
-        for (String fieldName : fieldViewsList.keySet()) {
-            if (!fieldViewsList.get(fieldName).isInputValid()) {
-                return false;
-            }
-        }
-
-        RealmObjectSchema realmObjectSchema = dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName());
-
-        DynamicRealmObject newRealmObject = null;
-        if (currentDynamicRealmObject == null || (realmObjectSchema.hasPrimaryKey() && (!Utils.equals(currentDynamicRealmObject.get(realmObjectSchema.getPrimaryKey()), primaryKeyFieldView.getValue())))) {
-            // PK has been changed or don't have and old object to change -> create new object
-            newRealmObject = createObject();
-            if (newRealmObject == null) {
-                return false;
-            }
-        }
-
-        dynamicRealm.beginTransaction();
-        // Set values
-        for (String fieldName : fieldViewsList.keySet()) {
-            if (realmObjectSchema.isPrimaryKey(fieldName)) {
-                continue; // Prevent changing of PK, should be handled with creation of new object with new PK
-            }
-            if (!realmObjectSchema.isNullable(fieldName) && fieldViewsList.get(fieldName).getValue() == null) {
-                throw new IllegalStateException("A view which holds a nonnullable field must not return null.");
-            }
-            if (newRealmObject == null) {
-                currentDynamicRealmObject.set(fieldName, fieldViewsList.get(fieldName).getValue());
-            } else {
-                newRealmObject.set(fieldName, fieldViewsList.get(fieldName).getValue());
-            }
-        }
-
-        // Delete old object if new object was created
-        if (newRealmObject != null && currentDynamicRealmObject != null && currentDynamicRealmObject.isManaged()) {
-            currentDynamicRealmObject.deleteFromRealm();
-            currentDynamicRealmObject = newRealmObject;
-        }
-
-        // Update views
-        for (RealmBrowserViewField viewField : this.fieldViewsList.values()) {
-            viewField.setRealmObject(currentDynamicRealmObject);
-        }
-
-        dynamicRealm.commitTransaction();
-
-        // Reset primary key error
-        RealmBrowserViewField primaryKeyView = fieldViewsList.get(Utils.getPrimaryKeyFieldName(dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName())));
-        if (primaryKeyView != null) {
-            primaryKeyView.togglePrimaryKeyError(false);
-        }
-
-        return true;
     }
 
     //region ViewInput
@@ -309,6 +135,78 @@ public class RealmObjectActivity extends AppCompatActivity implements ObjectCont
     }
 
     @Override
+    public void updateWithFieldViewPojos(@NonNull ArrayList<FieldViewPojo> fieldViewPojos) {
+        int margin = this.getResources().getDimensionPixelSize(R.dimen.realm_browser_activity_margin);
+
+        for (FieldViewPojo pojo : fieldViewPojos) {
+            RealmBrowserViewField realmFieldView;
+            if (Utils.isString(pojo.getField())) {
+                realmFieldView = new RealmBrowserViewString(this, schema, field);
+            } else if (Utils.isNumber(pojo.getField())) {
+                realmFieldView = new RealmBrowserViewNumber(this, schema, field);
+            } else if (Utils.isBoolean(pojo.getField())) {
+                realmFieldView = new RealmBrowserViewBool(this, schema, field);
+            } else if (Utils.isBlob(pojo.getField())) {
+                realmFieldView = new RealmBrowserViewBlob(this, schema, field);
+            } else if (Utils.isDate(pojo.getField())) {
+                realmFieldView = new RealmBrowserViewDate(this, schema, field);
+            } else if (Utils.isParametrizedField(pojo.getField())) {
+                realmFieldView = new RealmBrowserViewRealmList(this, schema, field);
+                realmFieldView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (currentDynamicRealmObject != null) {
+                            DataHolder.getInstance().save(DATA_HOLDER_KEY_OBJECT, currentDynamicRealmObject);
+                            DataHolder.getInstance().save(DATA_HOLDER_KEY_FIELD, field);
+                            RealmBrowserActivity.start(RealmObjectActivity.this, BrowserContract.DisplayMode.REALM_LIST);
+                        } else {
+                            // TODO choose objects to add
+                            Toast.makeText(RealmObjectActivity.this, "TODO", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            } else if (Utils.isRealmObjectField(pojo.getField())) {
+                realmFieldView = new RealmBrowserViewRealmObject(this, schema, field);
+                realmFieldView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (currentDynamicRealmObject != null) {
+                            // TODO start this activity
+                            Toast.makeText(RealmObjectActivity.this, "TODO", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // TODO choose object
+                            Toast.makeText(RealmObjectActivity.this, "TODO", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            } else {
+                // Skip this field.
+                continue;
+            }
+            realmFieldView.setPadding(margin, margin / 2, margin, margin / 2);
+
+            // Add the object to the view for setting the current value etc.
+            if (currentDynamicRealmObject != null) {
+                realmFieldView.setRealmObject(currentDynamicRealmObject);
+            }
+
+            // Add View
+            if (linearLayout != null) {
+                linearLayout.addView(realmFieldView);
+            }
+            this.fieldViewsMap.put(pojo, realmFieldView);
+        }
+    }
+
+    @Override
+    public void updateWithFieldViewPojo(@NonNull FieldViewPojo fieldViewPojo) {
+        RealmBrowserViewField view = fieldViewsMap.get(fieldViewPojo);
+        view.togglePrimaryKeyError(fieldViewPojo.isPrimaryKeyError());
+        // TODO update view...
+        this.fieldViewsMap.put(fieldViewPojo, view);
+    }
+
+    @Override
     public void updateWithTitle(@NonNull String title) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
@@ -317,7 +215,18 @@ public class RealmObjectActivity extends AppCompatActivity implements ObjectCont
 
     @Override
     public void updateWithDeleteActionShown(boolean shown) {
-        optionsMenu.findItem(R.id.realm_browser_action_delete).setVisible(shown);
+        if (optionsMenu != null) {
+            optionsMenu.findItem(R.id.realm_browser_action_delete).setVisible(shown);
+        }
+    }
+
+    @Override
+    public void showSavedSuccessfully() {
+        if (linearLayout != null) {
+            Snackbar.make(linearLayout, "Saved Changes.", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Saved Changes.", Toast.LENGTH_SHORT).show();
+        }
     }
     //endregion
 }

@@ -6,7 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v7.app.AlertDialog;
 
+import java.util.ArrayList;
+
 import de.jonasrottmann.realmbrowser.basemvp.BasePresenterImpl;
+import de.jonasrottmann.realmbrowser.object.model.FieldViewPojo;
 import io.realm.DynamicRealm;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -19,17 +22,43 @@ public class ObjectPresenter extends BasePresenterImpl<ObjectContract.View> impl
 
     //region ViewOutput
     @Override
-    public void requestForContentUpdate(@Nullable DynamicRealm realm) {
-        interactor.requestForContentUpdate(realm);
+    public void requestForContentUpdate(@Nullable DynamicRealm realm, boolean newObject) {
+        interactor.requestForContentUpdate(realm, newObject);
     }
 
     @Override
     public void onDeleteObjectActionSelected() {
         interactor.onDeleteObjectActionSelected();
     }
+
+    @Override
+    public void onSaveObjectActionSelected() {
+        interactor.onSaveObjectActionSelected();
+    }
+
+    @Override
+    public void onFieldViewValueUpdated(@NonNull FieldViewPojo pojo) {
+        interactor.onFieldViewValueUpdated(pojo);
+    }
     //endregion
 
     //region InteractorOutput
+    @Override
+    public void updateWithFieldViewPojos(@NonNull ArrayList<FieldViewPojo> fieldViewPojos) {
+        if (isViewAttached()) {
+            //noinspection ConstantConditions
+            getView().updateWithFieldViewPojos(fieldViewPojos);
+        }
+    }
+
+    @Override
+    public void updateWithFieldViewPojo(@NonNull FieldViewPojo fieldViewPojo) {
+        if (isViewAttached()) {
+            //noinspection ConstantConditions
+            getView().updateWithFieldViewPojo(fieldViewPojo);
+        }
+    }
+
     @Override
     public void updateWithTitle(@NonNull String title) {
         if (isViewAttached()) {
@@ -66,6 +95,14 @@ public class ObjectPresenter extends BasePresenterImpl<ObjectContract.View> impl
                 }
             });
             builder.show();
+        }
+    }
+
+    @Override
+    public void showSavedSuccessfully() {
+        if (isViewAttached()) {
+            //noinspection ConstantConditions
+            getView().showSavedSuccessfully();
         }
     }
     //endregion
