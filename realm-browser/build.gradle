@@ -2,6 +2,15 @@ apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
 apply plugin: 'com.getkeepsafe.dexcount'
 
+static def generateContentProviderAuthority() {
+    Random random = new Random()
+    return new StringBuilder()
+            .append("de.jonasrottmann.realmbrowser")
+            .append(".fileprovider")
+            .append(String.valueOf(random.nextInt(100000)))
+            .toString()
+}
+
 android {
     compileSdkVersion project.compileSdkVersion
     buildToolsVersion project.buildToolsVersion
@@ -13,6 +22,7 @@ android {
         versionCode project.gitCommitCount
         versionName project.gitTag
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders= [contentProviderAuthority: generateContentProviderAuthority()]
     }
 
     lintOptions {
