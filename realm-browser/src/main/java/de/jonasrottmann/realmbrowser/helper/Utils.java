@@ -58,7 +58,7 @@ public class Utils {
                 builder.append(", ");
             }
         }
-        if (limit != 0) builder.append("...");
+        if (limit != 0 && blobValue.length > limit) builder.append("...");
         builder.append("}");
         return builder.toString();
     }
