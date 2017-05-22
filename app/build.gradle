@@ -25,11 +25,15 @@ android {
         }
     }
 
+    flavorDimensions "realm_browser_implementation"
+
     productFlavors {
-        normal {
-            applicationIdSuffix ".normal"
+        impl {
+            dimension "realm_browser_implementation"
+            applicationIdSuffix ".impl"
         }
         noop {
+            dimension "realm_browser_implementation"
             applicationIdSuffix ".noop"
         }
     }
@@ -53,10 +57,10 @@ dependencies {
     }
 
     // test local version of realm-browser
-    normalCompile project(':realm-browser')
+    implCompile project(':realm-browser')
     noopCompile project(':realm-browser-no-op')
 
     // Use develop-snapshot version
-//    normalCompile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"
+//    implCompile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"
 //    noopCompile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"
 }
