@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="8dp"
-            android:src="@drawable/realm_browser_ic_information_black_24dp" />
+            android:src="@drawable/realm_browser_ic_information_outline_black_24dp" />
 
     </LinearLayout>
 

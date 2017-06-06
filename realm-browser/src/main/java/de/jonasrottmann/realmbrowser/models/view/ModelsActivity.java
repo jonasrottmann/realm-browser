@@ -25,7 +25,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.helper.RealmHolder;
 import de.jonasrottmann.realmbrowser.models.ModelsContract;
 import de.jonasrottmann.realmbrowser.models.ModelsPresenter;
 import de.jonasrottmann.realmbrowser.models.model.InformationPojo;
@@ -162,7 +161,7 @@ public class ModelsActivity extends AppCompatActivity implements ModelsContract.
 
     @Override
     public void presentShareDialog(@NonNull String path) {
-        Uri contentUri = FileProvider.getUriForFile(this, "de.jonasrottmann.realmbrowser", new File(RealmHolder.getInstance().getRealmConfiguration().getPath()));
+        Uri contentUri = FileProvider.getUriForFile(this, String.format("%s.share", this.getPackageName()), new File(path));
         Intent intentShareFile = new Intent(Intent.ACTION_SEND);
         intentShareFile.setType("application/*");
         intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

@@ -12,19 +12,19 @@
     <item
         android:id="@+id/realm_browser_action_sort"
         android:icon="@drawable/realm_browser_ic_sort_ascending_white_24dp"
-        android:title="Sort"
+        android:title="@string/realm_browser_action_sort"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/realm_browser_action_info"
         android:icon="@drawable/realm_browser_ic_information_outline_white_24dp"
-        android:title="File Information"
+        android:title="@string/realm_browser_action_file_information"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/realm_browser_action_share"
         android:icon="@drawable/realm_browser_ic_share_white_24dp"
-        android:title="Share File"
+        android:title="@string/realm_browser_action_share_file"
         app:showAsAction="ifRoom"/>
 
 </menu>

@@ -10,44 +10,44 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.helper.RealmPreferences;
-import de.jonasrottmann.realmbrowser.helper.Utils;
-import io.realm.DynamicRealm;
-import io.realm.DynamicRealmObject;
+
 import java.lang.reflect.Field;
 import java.util.AbstractList;
 import java.util.List;
+
+import de.jonasrottmann.realmbrowser.R;
+import de.jonasrottmann.realmbrowser.helper.Utils;
+import io.realm.DynamicRealmObject;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserAdapter extends RecyclerView.Adapter<RealmBrowserAdapter.ViewHolder> {
 
     private final Context context;
     private final Listener listener;
-    private final RealmPreferences realmPreferences;
     private AbstractList<? extends DynamicRealmObject> dynamicRealmObjects;
     private List<Field> fieldList;
+    private boolean shouldWrapText;
 
-
-    public RealmBrowserAdapter(@NonNull Context context, @NonNull AbstractList<? extends DynamicRealmObject> realmObjects, @NonNull List<Field> fieldList, @NonNull Listener listener,
-        @NonNull DynamicRealm realm) {
-        realmPreferences = new RealmPreferences(context);
+    RealmBrowserAdapter(@NonNull Context context, @NonNull AbstractList<? extends DynamicRealmObject> realmObjects, @NonNull List<Field> fieldList, @NonNull Listener listener, boolean shouldWrapText) {
         this.context = context;
-        dynamicRealmObjects = realmObjects;
+        this.dynamicRealmObjects = realmObjects;
         this.fieldList = fieldList;
         this.listener = listener;
+        this.shouldWrapText = shouldWrapText;
     }
 
-
-    public void setFieldList(List<Field> fieldList) {
+    void setFieldList(List<Field> fieldList) {
         this.fieldList = fieldList;
     }
 
 
-    public void setRealmList(AbstractList<? extends DynamicRealmObject> realmObjects) {
-        dynamicRealmObjects = realmObjects;
+    void setRealmList(AbstractList<? extends DynamicRealmObject> realmObjects) {
+        this.dynamicRealmObjects = realmObjects;
     }
 
+    void setShouldWrapText(boolean shouldWrapText) {
+        this.shouldWrapText = shouldWrapText;
+    }
 
     @Override
     public RealmBrowserAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -106,7 +106,6 @@ class RealmBrowserAdapter extends RecyclerView.Adapter<RealmBrowserAdapter.ViewH
 
 
     private void initRowTextWrapping(ViewHolder holder) {
-        boolean shouldWrapText = realmPreferences.shouldWrapText();
         holder.txtColumn1.setSingleLine(!shouldWrapText);
         holder.txtColumn2.setSingleLine(!shouldWrapText);
         holder.txtColumn3.setSingleLine(!shouldWrapText);

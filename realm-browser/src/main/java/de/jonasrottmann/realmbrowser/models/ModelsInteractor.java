@@ -10,10 +10,11 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import de.jonasrottmann.realmbrowser.basemvp.BaseInteractorImpl;
-import de.jonasrottmann.realmbrowser.helper.RealmHolder;
+import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.models.model.InformationPojo;
 import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -21,6 +22,8 @@ class ModelsInteractor extends BaseInteractorImpl<ModelsContract.Presenter> impl
     @ModelsContract.SortMode
     private int sortMode = ModelsContract.SortMode.ASC;
     private String filter;
+    @Nullable
+    private RealmConfiguration configuration = (RealmConfiguration) DataHolder.getInstance().retrieve(DataHolder.DATA_HOLDER_KEY_CONFIG);
 
     ModelsInteractor(ModelsContract.Presenter presenter) {
         super(presenter);
@@ -29,7 +32,8 @@ class ModelsInteractor extends BaseInteractorImpl<ModelsContract.Presenter> impl
     //region InteractorInput
     @Override
     public void requestForContentUpdate() {
-        getPresenter().updateWithModels(sortPojos(filterPojos(getAllModelPojos(), filter), sortMode), sortMode);
+        if (configuration == null) return;
+        getPresenter().updateWithModels(sortPojos(filterPojos(getAllModelPojos(configuration), filter), sortMode), sortMode);
     }
 
     @Override
@@ -47,12 +51,13 @@ class ModelsInteractor extends BaseInteractorImpl<ModelsContract.Presenter> impl
 
     @Override
     public void onShareSelected() {
-        getPresenter().presentShareDialog(RealmHolder.getInstance().getRealmConfiguration().getPath());
+        if (configuration != null) getPresenter().presentShareDialog(configuration.getPath());
     }
 
     @Override
     public void onInformationSelected() {
-        File realmFile = new File(RealmHolder.getInstance().getRealmConfiguration().getPath());
+        if (configuration == null) return;
+        File realmFile = new File(configuration.getPath());
         long sizeInByte = 0;
         if (realmFile.exists() && !realmFile.isDirectory()) {
             sizeInByte = realmFile.length();
@@ -63,8 +68,8 @@ class ModelsInteractor extends BaseInteractorImpl<ModelsContract.Presenter> impl
 
     //region Helper
     @NonNull
-    private static ArrayList<ModelPojo> getAllModelPojos() {
-        Realm realm = Realm.getInstance(RealmHolder.getInstance().getRealmConfiguration());
+    private static ArrayList<ModelPojo> getAllModelPojos(@NonNull RealmConfiguration configuration) {
+        Realm realm = Realm.getInstance(configuration);
         ArrayList<Class<? extends RealmModel>> realmModelClasses = new ArrayList<>(realm.getConfiguration().getRealmObjectClasses());
         ArrayList<ModelPojo> pojos = new ArrayList<>();
         for (Class<? extends RealmModel> klass : realmModelClasses) {

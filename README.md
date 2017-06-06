@@ -27,9 +27,9 @@ The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/real
 2. **Add the dependency**
   ```
   dependencies {
-      debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:0.0.13'
-      testCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:0.0.13'
-      releaseCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:0.0.13'
+      debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:0.0.14'
+      testCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:0.0.14'
+      releaseCompile 'com.github.jonasrottmann.realm-browser:realm-browser-no-op:0.0.14'
   }
   ```
   The no-op version of Realm Browser has empty functions which do nothing. It is not necessary to include this, but you may if you do not want to access Realm Browser in release mode. If you want to use a build of the newest development use `compile "com.github.jonasrottmann.realm-browser:realm-browser:develop-SNAPSHOT"` instead.
@@ -37,7 +37,7 @@ The project is available via [JitPack.io](https://jitpack.io/#jonasrottmann/real
 3. Exclude support libraries (maybe optional): Realm Browser depends on Android support libraries, so you might want to exclude them from your project if they conflict with the ones you include:
   ```
   depedencies {
-      debugCompile ('com.github.jonasrottmann.realm-browser:realm-browser:0.0.13') {
+      debugCompile ('com.github.jonasrottmann.realm-browser:realm-browser:0.0.14') {
           exclude group: 'com.android.support';
       }
   }
