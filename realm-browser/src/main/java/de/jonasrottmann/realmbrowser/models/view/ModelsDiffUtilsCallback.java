@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v7.util.DiffUtil;
-import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
+
 import java.util.List;
+
+import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class ModelsDiffUtilsCallback extends DiffUtil.Callback {
@@ -44,14 +46,14 @@ class ModelsDiffUtilsCallback extends DiffUtil.Callback {
     @Nullable
     @Override
     public Object getChangePayload(int oldItemPosition, int newItemPosition) {
-        ModelPojo newProduct = mNewList.get(newItemPosition);
-        ModelPojo oldProduct = mOldList.get(oldItemPosition);
+        ModelPojo newModel = mNewList.get(newItemPosition);
+        ModelPojo oldModel = mOldList.get(oldItemPosition);
         Bundle diffBundle = new Bundle();
-        if (!newProduct.getKlass().equals(oldProduct.getKlass())) {
-            diffBundle.putSerializable(KEY_CLASS, newProduct.getKlass());
+        if (!newModel.getKlass().equals(oldModel.getKlass())) {
+            diffBundle.putSerializable(KEY_CLASS, newModel.getKlass());
         }
-        if (newProduct.getCount() != oldProduct.getCount()) {
-            diffBundle.putLong(KEY_COUNT, newProduct.getCount());
+        if (newModel.getCount() != oldModel.getCount()) {
+            diffBundle.putLong(KEY_COUNT, newModel.getCount());
         }
         if (diffBundle.size() == 0) {
             return null;

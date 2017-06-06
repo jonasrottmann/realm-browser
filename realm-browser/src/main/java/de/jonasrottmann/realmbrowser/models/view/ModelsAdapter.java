@@ -48,7 +48,7 @@ class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder> {
                 if (key.equals(ModelsDiffUtilsCallback.KEY_CLASS)) {
                     holder.title.setText(((Class) o.getSerializable(key)).getSimpleName());
                 } else if (key.equals(ModelsDiffUtilsCallback.KEY_COUNT)) {
-                    holder.subTitle.setText(o.getString(key));
+                    holder.subTitle.setText(String.valueOf(o.getLong(key)));
                 }
             }
         }
