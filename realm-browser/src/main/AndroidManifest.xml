@@ -5,7 +5,7 @@
     <application>
         <provider
             android:name=".helper.FileProvider"
-            android:authorities="${applicationId}"
+            android:authorities="${applicationId}.share"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

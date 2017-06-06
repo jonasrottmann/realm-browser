@@ -161,7 +161,7 @@ public class ModelsActivity extends AppCompatActivity implements ModelsContract.
 
     @Override
     public void presentShareDialog(@NonNull String path) {
-        Uri contentUri = FileProvider.getUriForFile(this, "de.jonasrottmann.realmbrowser", new File(path));
+        Uri contentUri = FileProvider.getUriForFile(this, String.format("%s.share", this.getPackageName()), new File(path));
         Intent intentShareFile = new Intent(Intent.ACTION_SEND);
         intentShareFile.setType("application/*");
         intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
