@@ -26,10 +26,13 @@ android {
     }
 
     productFlavors {
+        flavorDimensions "version"
         normal {
+            dimension "version"
             applicationIdSuffix ".normal"
         }
         noop {
+            dimension "version"
             applicationIdSuffix ".noop"
         }
     }
@@ -40,7 +43,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$project.supportLibVersion"
     compile "com.jakewharton.timber:timber:$project.timberVersion"
 

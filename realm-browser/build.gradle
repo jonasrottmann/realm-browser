@@ -57,13 +57,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    compile "com.android.support:appcompat-v7:$project.supportLibVersion"
-    compile "com.android.support:recyclerview-v7:$project.supportLibVersion"
-    compile "com.android.support:design:$project.supportLibVersion"
-    compile "com.android.support:support-annotations:$project.supportLibVersion"
-    compile "com.jakewharton.timber:timber:$project.timberVersion"
+    implementation "com.android.support:appcompat-v7:$project.supportLibVersion"
+    implementation "com.android.support:recyclerview-v7:$project.supportLibVersion"
+    implementation "com.android.support:design:$project.supportLibVersion"
+    implementation "com.android.support:support-annotations:$project.supportLibVersion"
+    implementation "com.jakewharton.timber:timber:$project.timberVersion"
 
     testCompile "junit:junit:4.12"
     androidTestCompile "junit:junit:4.12"
