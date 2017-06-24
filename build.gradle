@@ -3,25 +3,26 @@ buildscript {
         gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
         gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
-        buildToolsVersion = '25.0.2'
+        buildToolsVersion = '26.0.0'
 
-        compileSdkVersion = 25
-        targetSdkVersion = 25
+        compileSdkVersion = 26
+        targetSdkVersion = 26
         minSdkVersion = 15
 
         // plugins
         androidGradlePluginVersion = '2.3.1'
-        realmVersion = '3.3.1'
+        realmVersion = '3.4.0'
         dexcountVersion = '0.6.4'
 
         // dependencies
         timberVersion = '4.5.1'
-        supportLibVersion = '25.3.1'
+        supportLibVersion = '26.0.0-beta2'
         leakCanaryVersion = '1.5.1'
     }
 
     repositories {
         jcenter()
+        google()
     }
 
     dependencies {
@@ -33,4 +34,11 @@ buildscript {
 
 plugins {
     id "com.github.dcendents.android-maven" version "1.5" apply false
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+    }
 }
