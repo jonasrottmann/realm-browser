@@ -11,29 +11,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.jonasrottmann.realmbrowser.files.RealmFileValidator.isValidFileName;
+
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class FilesLiveData extends LiveData<List<FilesPojo>> {
-
-    private static List<String> ignoreExtensionList = new ArrayList<>();
-
-    static {
-        ignoreExtensionList.add(".log");
-        ignoreExtensionList.add(".log_a");
-        ignoreExtensionList.add(".log_b");
-        ignoreExtensionList.add(".lock");
-        ignoreExtensionList.add(".management");
-        ignoreExtensionList.add(".temp");
-    }
 
     private final Context context;
 
     FilesLiveData(Context context) {
         this.context = context;
         loadFiles();
-    }
-
-    private static boolean isValidFileName(String fileName) {
-        return fileName.lastIndexOf(".") > 0 && !ignoreExtensionList.contains(fileName.substring(fileName.lastIndexOf(".")));
     }
 
     void refreshFiles() {

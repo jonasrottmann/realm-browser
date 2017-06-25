@@ -60,6 +60,7 @@ public class FilesActivity extends AppCompatActivity implements LifecycleRegistr
         // Disable SwipeRefreshLayout - not used in this Activity
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.realm_browser_dark_purple);
+        swipeRefreshLayout.setRefreshing(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -74,8 +75,7 @@ public class FilesActivity extends AppCompatActivity implements LifecycleRegistr
                 FilesActivity.this.onFileSelected(file);
             }
         });
-        RecyclerView recyclerView = findViewById(R.id.realm_browser_recycler);
-        recyclerView.setAdapter(adapter);
+        ((RecyclerView) findViewById(R.id.realm_browser_recycler)).setAdapter(adapter);
     }
 
     private void onFileSelected(FilesPojo item) {
