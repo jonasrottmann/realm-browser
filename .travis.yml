@@ -40,6 +40,3 @@ script:
   - ./gradlew clean
   - ./gradlew check # Local unit tests
   - ./gradlew connectedCheck # Instrumented unit tests
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
