@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.FileObserver;
 import android.support.annotation.RestrictTo;
 import android.text.format.Formatter;
 
@@ -17,14 +18,33 @@ import static de.jonasrottmann.realmbrowser.files.RealmFileValidator.isValidFile
 class FilesLiveData extends LiveData<List<FilesPojo>> {
 
     private final Context context;
+    private final FileObserver fileObserver;
+    private final String dataDir;
 
     FilesLiveData(Context context) {
         this.context = context;
+        this.dataDir = context.getApplicationInfo().dataDir;
+        this.fileObserver = new FileObserver(dataDir) {
+            @Override
+            public void onEvent(int event, String path) {
+                loadFiles();
+            }
+        };
         loadFiles();
     }
 
     void refreshFiles() {
         loadFiles();
+    }
+
+    @Override
+    protected void onActive() {
+        fileObserver.startWatching();
+    }
+
+    @Override
+    protected void onInactive() {
+        fileObserver.stopWatching();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -36,7 +56,7 @@ class FilesLiveData extends LiveData<List<FilesPojo>> {
         new AsyncTask<Void, Void, List<FilesPojo>>() {
             @Override
             protected List<FilesPojo> doInBackground(Void... voids) {
-                File dataDir = new File(context.getApplicationInfo().dataDir, "files");
+                File dataDir = new File(FilesLiveData.this.dataDir, "files");
                 File[] filesArray = dataDir.listFiles();
                 ArrayList<FilesPojo> fileList = new ArrayList<>();
                 if (filesArray != null) {
