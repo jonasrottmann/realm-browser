@@ -21,7 +21,7 @@ import java.util.List;
 
 import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.helper.DataHolder;
-import de.jonasrottmann.realmbrowser.models.view.ModelsActivity;
+import de.jonasrottmann.realmbrowser.models.ModelsActivity;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.exceptions.RealmFileException;

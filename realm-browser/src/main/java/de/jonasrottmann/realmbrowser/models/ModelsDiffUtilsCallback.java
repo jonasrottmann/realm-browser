@@ -1,4 +1,4 @@
-package de.jonasrottmann.realmbrowser.models.view;
+package de.jonasrottmann.realmbrowser.models;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,8 +6,6 @@ import android.support.annotation.RestrictTo;
 import android.support.v7.util.DiffUtil;
 
 import java.util.List;
-
-import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class ModelsDiffUtilsCallback extends DiffUtil.Callback {

@@ -14,7 +14,7 @@
         </provider>
 
         <activity
-            android:name=".models.view.ModelsActivity"
+            android:name=".models.ModelsActivity"
             android:label="@string/realm_browser_title"
             android:theme="@style/realm_browser_BaseTheme.Theme"/>
         <activity

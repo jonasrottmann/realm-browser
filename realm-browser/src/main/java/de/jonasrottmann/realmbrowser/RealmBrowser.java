@@ -17,7 +17,7 @@ import java.util.Collections;
 
 import de.jonasrottmann.realmbrowser.files.FilesActivity;
 import de.jonasrottmann.realmbrowser.helper.DataHolder;
-import de.jonasrottmann.realmbrowser.models.view.ModelsActivity;
+import de.jonasrottmann.realmbrowser.models.ModelsActivity;
 import io.realm.RealmConfiguration;
 
 @SuppressWarnings({"unused", "WeakerAccess"})

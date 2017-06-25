@@ -1,4 +1,4 @@
-package de.jonasrottmann.realmbrowser.models.model;
+package de.jonasrottmann.realmbrowser.models;
 
 import android.support.annotation.RestrictTo;
 

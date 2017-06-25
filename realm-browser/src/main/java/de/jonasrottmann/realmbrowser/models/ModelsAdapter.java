@@ -1,4 +1,4 @@
-package de.jonasrottmann.realmbrowser.models.view;
+package de.jonasrottmann.realmbrowser.models;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import de.jonasrottmann.realmbrowser.models.model.ModelPojo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +59,7 @@ class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder> {
         return this.files.size();
     }
 
-    void swapList(ArrayList<ModelPojo> newList) {
+    void swapList(List<ModelPojo> newList) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ModelsDiffUtilsCallback(this.files, newList));
         diffResult.dispatchUpdatesTo(this);
 
@@ -76,6 +76,10 @@ class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder> {
         };
     }
 
+    interface OnModelSelectedListener {
+        void onModelSelected(ModelPojo file);
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, subTitle;
 
@@ -84,9 +88,5 @@ class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder> {
             title = (TextView) itemView.findViewById(android.R.id.text1);
             subTitle = (TextView) itemView.findViewById(android.R.id.text2);
         }
-    }
-
-    interface OnModelSelectedListener {
-        void onModelSelected(ModelPojo file);
     }
 }

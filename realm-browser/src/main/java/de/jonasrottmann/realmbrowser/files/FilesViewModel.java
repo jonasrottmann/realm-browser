@@ -18,7 +18,7 @@ public class FilesViewModel extends AndroidViewModel {
         data = new FilesLiveData(application);
     }
 
-    public LiveData<List<FilesPojo>> getFiles() {
+    public FilesLiveData getFiles() {
         return data;
     }
 
