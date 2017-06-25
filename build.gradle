@@ -18,6 +18,10 @@ buildscript {
         timberVersion = '4.5.1'
         supportLibVersion = '26.0.0-beta2'
         leakCanaryVersion = '1.5.1'
+        androidArchitectureVersion = '1.0.0-alpha3'
+
+        // CI
+        travisBuild = System.getenv("TRAVIS") == "true"
     }
 
     repositories {

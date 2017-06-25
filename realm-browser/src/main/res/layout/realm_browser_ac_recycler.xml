@@ -1,8 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
 
     <include layout="@layout/realm_browser_toolbar" />
 
@@ -12,6 +13,7 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             android:id="@+id/realm_browser_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

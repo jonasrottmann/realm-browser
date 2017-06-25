@@ -1,10 +1,10 @@
-package de.jonasrottmann.realmbrowser.files.view;
+package de.jonasrottmann.realmbrowser.files;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v7.util.DiffUtil;
-import de.jonasrottmann.realmbrowser.files.model.FilesPojo;
+
 import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)

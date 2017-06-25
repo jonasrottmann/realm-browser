@@ -15,7 +15,7 @@ import android.support.v4.app.NotificationCompat;
 
 import java.util.Collections;
 
-import de.jonasrottmann.realmbrowser.files.view.FilesActivity;
+import de.jonasrottmann.realmbrowser.files.FilesActivity;
 import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.models.view.ModelsActivity;
 import io.realm.RealmConfiguration;

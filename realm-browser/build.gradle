@@ -19,21 +19,6 @@ android {
         abortOnError false
     }
 
-    buildTypes {
-        debug {
-            testCoverageEnabled true
-        }
-    }
-
-    testOptions {
-        unitTests.returnDefaultValues = true
-        unitTests.all {
-            jacoco {
-                includeNoLocationClasses = true
-            }
-        }
-    }
-
     sourceSets {
         String sharedTestDir = 'src/sharedTest/java'
         test {
@@ -57,6 +42,10 @@ android {
 }
 
 dependencies {
+    implementation "android.arch.lifecycle:runtime:$androidArchitectureVersion"
+    implementation "android.arch.lifecycle:extensions:$androidArchitectureVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$androidArchitectureVersion"
+
     implementation "com.android.support:appcompat-v7:$project.supportLibVersion"
     implementation "com.android.support:recyclerview-v7:$project.supportLibVersion"
     implementation "com.android.support:design:$project.supportLibVersion"
@@ -72,5 +61,4 @@ dependencies {
     androidTestAnnotationProcessor "io.realm:realm-annotations-processor:$project.realmVersion"
 }
 
-apply from: rootProject.file('coverage.gradle')
 apply from: rootProject.file('publish.gradle')

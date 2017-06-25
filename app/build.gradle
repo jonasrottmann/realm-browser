@@ -43,8 +43,8 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:$project.supportLibVersion"
-    compile "com.jakewharton.timber:timber:$project.timberVersion"
+    implementation "com.android.support:appcompat-v7:$project.supportLibVersion"
+    implementation "com.jakewharton.timber:timber:$project.timberVersion"
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:$project.leakCanaryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$project.leakCanaryVersion"

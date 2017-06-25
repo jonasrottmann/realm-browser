@@ -1,4 +1,4 @@
-package de.jonasrottmann.realmbrowser.files.view;
+package de.jonasrottmann.realmbrowser.files;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import de.jonasrottmann.realmbrowser.files.model.FilesPojo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,26 +59,12 @@ class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.ViewHolder> {
         return this.files.size();
     }
 
-    void swapList(ArrayList<FilesPojo> newList) {
+    void swapList(List<FilesPojo> newList) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new FilesDiffUtilsCallback(this.files, newList));
         diffResult.dispatchUpdatesTo(this);
 
         this.files.clear();
         this.files.addAll(newList);
-    }
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title, subTitle;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            title = (TextView) itemView.findViewById(android.R.id.text1);
-            subTitle = (TextView) itemView.findViewById(android.R.id.text2);
-        }
-    }
-
-    interface OnFileSelectedListener {
-        void onFileSelected(FilesPojo file);
     }
 
     private View.OnClickListener createClickListener(@NonNull final FilesPojo file) {
@@ -88,5 +74,19 @@ class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.ViewHolder> {
                 listener.onFileSelected(file);
             }
         };
+    }
+
+    interface OnFileSelectedListener {
+        void onFileSelected(FilesPojo file);
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView title, subTitle;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            title = itemView.findViewById(android.R.id.text1);
+            subTitle = itemView.findViewById(android.R.id.text2);
+        }
     }
 }
