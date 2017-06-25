@@ -115,6 +115,7 @@ public class ModelsActivity extends AppCompatActivity implements SearchView.OnQu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.realm_browser_action_sort) {
+            swipeRefreshLayout.setRefreshing(true);
             viewModel.changeSortMode();
             return true;
         } else if (item.getItemId() == R.id.realm_browser_action_share) {
@@ -162,6 +163,7 @@ public class ModelsActivity extends AppCompatActivity implements SearchView.OnQu
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        swipeRefreshLayout.setRefreshing(true);
         viewModel.changeFilter(newText);
         return true;
     }

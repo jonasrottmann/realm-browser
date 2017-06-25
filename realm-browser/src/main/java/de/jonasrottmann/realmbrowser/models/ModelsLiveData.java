@@ -1,9 +1,12 @@
 package de.jonasrottmann.realmbrowser.models;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.UiThread;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,12 +61,12 @@ class ModelsLiveData extends LiveData<List<ModelPojo>> {
 
     void onSortModeChanged(@ModelsViewModel.SortMode int sortMode) {
         this.sortMode = sortMode;
-        setValue(filterPojos(sortPojos(unfiltered, this.sortMode), this.filter));
+        updateValueAsync();
     }
 
     void onFilterChanged(@Nullable String filter) {
         this.filter = filter;
-        setValue(filterPojos(sortPojos(unfiltered, this.sortMode), this.filter));
+        updateValueAsync();
     }
 
     int getSortMode() {
@@ -78,6 +81,7 @@ class ModelsLiveData extends LiveData<List<ModelPojo>> {
         loadModels();
     }
 
+    @UiThread
     private void loadModels() {
         ArrayList<Class<? extends RealmModel>> realmModelClasses = new ArrayList<>(realm.getConfiguration().getRealmObjectClasses());
         ArrayList<ModelPojo> pojos = new ArrayList<>();
@@ -85,6 +89,21 @@ class ModelsLiveData extends LiveData<List<ModelPojo>> {
             pojos.add(new ModelPojo(klass, realm.where(klass).findAll().size()));
         }
         this.unfiltered = pojos;
-        setValue(filterPojos(sortPojos(unfiltered, this.sortMode), this.filter));
+        updateValueAsync();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private void updateValueAsync() {
+        new AsyncTask<Void, Void, List<ModelPojo>>() {
+            @Override
+            protected List<ModelPojo> doInBackground(Void... voids) {
+                return filterPojos(sortPojos(unfiltered, ModelsLiveData.this.sortMode), ModelsLiveData.this.filter);
+            }
+
+            @Override
+            protected void onPostExecute(List<ModelPojo> modelsPojos) {
+                setValue(modelsPojos);
+            }
+        }.execute();
     }
 }
