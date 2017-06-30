@@ -8,7 +8,7 @@ jdk:
 
 env:
   global:
-    - ANDROID_BUILD_TOOLS_VERSION=25.0.2
+    - ANDROID_BUILD_TOOLS_VERSION=26.0.0
     - ADB_INSTALL_TIMEOUT=20 # install timeout in minutes (2 minutes by default)
   matrix:
     - ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
@@ -20,7 +20,7 @@ android:
     - platform-tools
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - $ANDROID_TARGET
-    - android-25
+    - android-26
 
     # Support library
     - extra-android-support
@@ -40,6 +40,3 @@ script:
   - ./gradlew clean
   - ./gradlew check # Local unit tests
   - ./gradlew connectedCheck # Instrumented unit tests
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
