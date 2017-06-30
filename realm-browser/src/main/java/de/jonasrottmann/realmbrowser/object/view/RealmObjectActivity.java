@@ -165,6 +165,13 @@ public class RealmObjectActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dynamicRealm != null && !dynamicRealm.isClosed()) {
+            dynamicRealm.close();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -214,14 +221,6 @@ public class RealmObjectActivity extends AppCompatActivity {
             return true;
         } else {
             return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (dynamicRealm != null && !dynamicRealm.isClosed()) {
-            dynamicRealm.close();
         }
     }
 

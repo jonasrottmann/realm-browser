@@ -28,16 +28,16 @@ public class DataHolder {
 
     private Map<String, SoftReference<Object>> data = new HashMap<>();
 
-    public void save(@NonNull String id, @Nullable Object object) {
-        data.put(id, new SoftReference<>(object));
-        Timber.d("DataHolder.save(%s, %s)", id, object);
+    public void save(@NonNull String key, @Nullable Object object) {
+        data.put(key, new SoftReference<>(object));
+        Timber.d("DataHolder.save(%s, %s)", key, object);
     }
 
     @Nullable
-    public Object retrieve(@NonNull String id) {
-        SoftReference<Object> objectWeakReference = data.get(id);
+    public Object retrieve(@NonNull String key) {
+        SoftReference<Object> objectWeakReference = data.get(key);
         Object o = objectWeakReference.get();
-        Timber.d("DataHolder.retrieve(%s) = %s", id, o.toString());
+        Timber.d("DataHolder.retrieve(%s) = %s", key, o.toString());
         return o;
     }
 }

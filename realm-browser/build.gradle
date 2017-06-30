@@ -59,6 +59,7 @@ dependencies {
     androidTestCompile "com.android.support.test:rules:0.5"
     androidTestAnnotationProcessor "io.realm:realm-annotations:$project.realmVersion"
     androidTestAnnotationProcessor "io.realm:realm-annotations-processor:$project.realmVersion"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 
 apply from: rootProject.file('publish.gradle')

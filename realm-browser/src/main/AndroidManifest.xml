@@ -26,12 +26,12 @@
             android:name=".browser.view.RealmBrowserActivity"
             android:label="@string/realm_browser_title"
             android:theme="@style/realm_browser_BaseTheme.DrawerTheme"/>
-
         <activity
             android:name=".files.FilesActivity"
             android:label="@string/realm_browser_title"
             android:theme="@style/realm_browser_BaseTheme.Theme"/>
-
+        <activity android:name=".browsernew.NewRealmBrowserActivity">
+        </activity>
     </application>
 
 </manifest>
