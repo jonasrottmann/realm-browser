@@ -78,7 +78,6 @@ public class ModelsActivity extends AppCompatActivity implements ModelsContract.
 
         // Presenter
         attachPresenter((ModelsContract.Presenter) getLastCustomNonConfigurationInstance());
-        presenter.requestForContentUpdate();
     }
 
     @Override
@@ -90,6 +89,12 @@ public class ModelsActivity extends AppCompatActivity implements ModelsContract.
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
         return presenter;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.requestForContentUpdate();
     }
 
     @Override
@@ -133,8 +138,8 @@ public class ModelsActivity extends AppCompatActivity implements ModelsContract.
     }
 
     @Override
-    public void updateWithModels(@NonNull ArrayList<ModelPojo> filesList, @ModelsContract.SortMode int sortedMode) {
-        adapter.swapList(filesList);
+    public void updateWithModels(@NonNull ArrayList<ModelPojo> modelsList, @ModelsContract.SortMode int sortedMode) {
+        adapter.swapList(modelsList);
         if (sortedMode == ModelsContract.SortMode.ASC && sortMenuItem != null) {
             this.sortMenuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.realm_browser_ic_sort_ascending_white_24dp));
         } else if (sortedMode == ModelsContract.SortMode.DESC && sortMenuItem != null) {

@@ -20,8 +20,4 @@ android {
     }
 }
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-}
-
 apply from: rootProject.file('publish.gradle')
