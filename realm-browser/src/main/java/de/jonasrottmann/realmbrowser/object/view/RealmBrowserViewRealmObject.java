@@ -9,9 +9,10 @@ import android.widget.TextView;
 import java.lang.reflect.Field;
 
 import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
+
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isRealmObjectField;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewRealmObject extends RealmBrowserViewField {
@@ -21,7 +22,7 @@ class RealmBrowserViewRealmObject extends RealmBrowserViewField {
 
     public RealmBrowserViewRealmObject(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isRealmObjectField(getField())) {
+        if (!isRealmObjectField(getField())) {
             throw new IllegalArgumentException();
         }
     }
@@ -55,7 +56,7 @@ class RealmBrowserViewRealmObject extends RealmBrowserViewField {
 
     @Override
     public void setRealmObject(@NonNull DynamicRealmObject realmObject) {
-        if (Utils.isRealmObjectField(getField())) {
+        if (isRealmObjectField(getField())) {
             this.realmObject = realmObject;
             if (realmObject.getObject(getField().getName()) == null) {
                 updateFieldIsNullCheckBoxValue(true);

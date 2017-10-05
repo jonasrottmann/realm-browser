@@ -5,11 +5,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.view.ViewStub;
 import android.widget.TextView;
+
+import java.lang.reflect.Field;
+
 import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
-import java.lang.reflect.Field;
+
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isParametrizedField;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewRealmList extends RealmBrowserViewField {
@@ -19,7 +23,7 @@ class RealmBrowserViewRealmList extends RealmBrowserViewField {
 
     public RealmBrowserViewRealmList(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isParametrizedField(getField())) {
+        if (!isParametrizedField(getField())) {
             throw new IllegalArgumentException();
         }
     }
@@ -59,7 +63,7 @@ class RealmBrowserViewRealmList extends RealmBrowserViewField {
 
     @Override
     public void setRealmObject(@NonNull DynamicRealmObject realmObject) {
-        if (Utils.isParametrizedField(getField())) {
+        if (isParametrizedField(getField())) {
             this.realmObject = realmObject;
             textView.setText(String.format("Length: %s", realmObject.getList(getField().getName()).size()));
         } else {

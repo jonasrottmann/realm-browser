@@ -1,7 +1,5 @@
 package de.jonasrottmann.realmbrowser.models;
 
-import android.arch.lifecycle.LifecycleRegistry;
-import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -33,10 +31,13 @@ import de.jonasrottmann.realmbrowser.browser.BrowserContract;
 import de.jonasrottmann.realmbrowser.browser.view.RealmBrowserActivity;
 import de.jonasrottmann.realmbrowser.helper.DataHolder;
 
+import static de.jonasrottmann.realmbrowser.extensions.Activity_extKt.toast;
+
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class ModelsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, LifecycleRegistryOwner {
+public class ModelsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+
     private static final String SEARCH_KEY = "search";
-    private LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
+
     private ModelsAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MenuItem sortMenuItem;
@@ -56,11 +57,11 @@ public class ModelsActivity extends AppCompatActivity implements SearchView.OnQu
         setSupportActionBar((Toolbar) findViewById(R.id.realm_browser_toolbar));
 
         viewModel = ViewModelProviders.of(this).get(ModelsViewModel.class);
-        viewModel.getData().observe(this, new Observer<List<ModelPojo>>() {
+        viewModel.getData().observe(this, new Observer<List<? extends ModelPojo>>() {
             @Override
-            public void onChanged(@Nullable List<ModelPojo> modelPojos) {
-                setSortIcon();
-                adapter.swapList(modelPojos);
+            public void onChanged(@Nullable List<? extends ModelPojo> modelPojos) {
+                ModelsActivity.this.setSortIcon();
+                adapter.swapList((List<ModelPojo>) modelPojos);
                 if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -69,7 +70,7 @@ public class ModelsActivity extends AppCompatActivity implements SearchView.OnQu
 
         setSortIcon();
 
-        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        swipeRefreshLayout = findViewById(R.id.realm_browser_swiperefresh);
         swipeRefreshLayout.setRefreshing(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -130,9 +131,9 @@ public class ModelsActivity extends AppCompatActivity implements SearchView.OnQu
     }
 
     private void setSortIcon() {
-        if (viewModel.getSortMode() == ModelsViewModel.SortMode.ASC && sortMenuItem != null) {
+        if (viewModel.getSortMode() == SortMode.ASC && sortMenuItem != null) {
             ModelsActivity.this.sortMenuItem.setIcon(ContextCompat.getDrawable(ModelsActivity.this, R.drawable.realm_browser_ic_sort_ascending_white_24dp));
-        } else if (viewModel.getSortMode() == ModelsViewModel.SortMode.DESC && sortMenuItem != null) {
+        } else if (viewModel.getSortMode() == SortMode.DESC && sortMenuItem != null) {
             ModelsActivity.this.sortMenuItem.setIcon(ContextCompat.getDrawable(ModelsActivity.this, R.drawable.realm_browser_ic_sort_descending_white_24dp));
         }
     }
@@ -152,7 +153,7 @@ public class ModelsActivity extends AppCompatActivity implements SearchView.OnQu
     public void showInformation() {
         InformationPojo informationPojo = viewModel.getInformation();
         if (informationPojo != null) {
-            Toast.makeText(this, String.format("%s\nSize: %s", informationPojo.getPath(), Formatter.formatShortFileSize(this, informationPojo.getSizeInByte())), Toast.LENGTH_LONG).show();
+            toast(this, String.format("%s\nSize: %s", informationPojo.getPath(), Formatter.formatShortFileSize(this, informationPojo.getSizeInByte())), Toast.LENGTH_SHORT);
         }
     }
 
@@ -166,10 +167,5 @@ public class ModelsActivity extends AppCompatActivity implements SearchView.OnQu
         swipeRefreshLayout.setRefreshing(true);
         viewModel.changeFilter(newText);
         return true;
-    }
-
-    @Override
-    public LifecycleRegistry getLifecycle() {
-        return lifecycleRegistry;
     }
 }

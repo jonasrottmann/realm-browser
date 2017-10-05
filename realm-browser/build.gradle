@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 apply plugin: 'realm-android'
 apply plugin: 'com.getkeepsafe.dexcount'
 
@@ -42,24 +43,30 @@ android {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
     implementation "android.arch.lifecycle:runtime:$androidArchitectureVersion"
     implementation "android.arch.lifecycle:extensions:$androidArchitectureVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$androidArchitectureVersion"
+
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    implementation "com.jakewharton.timber:timber:$project.timberVersion"
+
+    implementation 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
 
     implementation "com.android.support:appcompat-v7:$project.supportLibVersion"
     implementation "com.android.support:recyclerview-v7:$project.supportLibVersion"
     implementation "com.android.support:design:$project.supportLibVersion"
     implementation "com.android.support:support-annotations:$project.supportLibVersion"
-    implementation "com.jakewharton.timber:timber:$project.timberVersion"
 
     testCompile "junit:junit:4.12"
     androidTestCompile "junit:junit:4.12"
     androidTestCompile "com.android.support:support-annotations:$project.supportLibVersion"
-    androidTestCompile "com.android.support.test:runner:0.5"
-    androidTestCompile "com.android.support.test:rules:0.5"
+    androidTestCompile "com.android.support.test:runner:1.0.1"
+    androidTestCompile "com.android.support.test:rules:1.0.1"
     androidTestAnnotationProcessor "io.realm:realm-annotations:$project.realmVersion"
     androidTestAnnotationProcessor "io.realm:realm-annotations-processor:$project.realmVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 
 apply from: rootProject.file('publish.gradle')

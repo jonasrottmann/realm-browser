@@ -10,15 +10,23 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.EditText;
+
+import java.lang.reflect.Field;
+
 import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
-import java.lang.reflect.Field;
 
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.support.v4.content.ContextCompat.getColor;
 import static android.support.v4.content.ContextCompat.getDrawable;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isByte;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isDouble;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isFloat;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isInteger;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isLong;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isNumber;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isShort;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewNumber extends RealmBrowserViewField {
@@ -27,7 +35,7 @@ class RealmBrowserViewNumber extends RealmBrowserViewField {
 
     public RealmBrowserViewNumber(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isNumber(getField())) {
+        if (!isNumber(getField())) {
             throw new IllegalArgumentException();
         }
     }
@@ -44,7 +52,7 @@ class RealmBrowserViewNumber extends RealmBrowserViewField {
         fieldEditText = (EditText) findViewById(R.id.realm_browser_field_edittext);
         fieldEditText.setMaxLines(1);
         fieldEditText.addTextChangedListener(createTextWatcher());
-        if (Utils.isDouble(getField()) || Utils.isFloat(getField())) {
+        if (isDouble(getField()) || isFloat(getField())) {
             fieldEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
         } else {
             fieldEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
@@ -62,17 +70,17 @@ class RealmBrowserViewNumber extends RealmBrowserViewField {
             value = "0";
         }
 
-        if (Utils.isByte(getField())) {
+        if (isByte(getField())) {
             return Byte.parseByte(value);
-        } else if (Utils.isShort(getField())) {
+        } else if (isShort(getField())) {
             return Short.parseShort(value);
-        } else if (Utils.isInteger(getField())) {
+        } else if (isInteger(getField())) {
             return Integer.parseInt(value);
-        } else if (Utils.isLong(getField())) {
+        } else if (isLong(getField())) {
             return Long.parseLong(value);
-        } else if (Utils.isDouble(getField())) {
+        } else if (isDouble(getField())) {
             return Double.parseDouble(value);
-        } else if (Utils.isFloat(getField())) {
+        } else if (isFloat(getField())) {
             return Float.parseFloat(value);
         }
         return null;
@@ -90,7 +98,7 @@ class RealmBrowserViewNumber extends RealmBrowserViewField {
 
     @Override
     public void setRealmObject(@NonNull DynamicRealmObject realmObject) {
-        if (Utils.isNumber(getField())) {
+        if (isNumber(getField())) {
             fieldEditText.setText(String.valueOf(realmObject.get(getField().getName())));
         } else {
             throw new IllegalArgumentException();
@@ -117,17 +125,17 @@ class RealmBrowserViewNumber extends RealmBrowserViewField {
             public void afterTextChanged(final Editable s) {
                 try {
                     if (!s.toString().isEmpty()) {
-                        if (Utils.isByte(getField())) {
+                        if (isByte(getField())) {
                             Byte.parseByte(s.toString());
-                        } else if (Utils.isShort(getField())) {
+                        } else if (isShort(getField())) {
                             Short.parseShort(s.toString());
-                        } else if (Utils.isInteger(getField())) {
+                        } else if (isInteger(getField())) {
                             Integer.parseInt(s.toString());
-                        } else if (Utils.isLong(getField())) {
+                        } else if (isLong(getField())) {
                             Long.parseLong(s.toString());
-                        } else if (Utils.isDouble(getField())) {
+                        } else if (isDouble(getField())) {
                             Double.parseDouble(s.toString());
-                        } else if (Utils.isFloat(getField())) {
+                        } else if (isFloat(getField())) {
                             Float.parseFloat(s.toString());
                         }
                     }

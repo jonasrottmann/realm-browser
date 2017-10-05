@@ -29,7 +29,7 @@ public final class RealmBrowser {
      * @param context A valid {@link Context}
      */
     public static void startRealmFilesActivity(@NonNull Context context) {
-        context.startActivity(FilesActivity.getIntent(context));
+        context.startActivity(FilesActivity.Companion.getIntent(context));
     }
 
     /**
@@ -95,7 +95,7 @@ public final class RealmBrowser {
             final ShortcutInfo shortcut = new ShortcutInfo.Builder(context, id).setShortLabel("Files")
                     .setLongLabel("Open realm-browser files activity")
                     .setIcon(Icon.createWithResource(context, R.drawable.realm_browser_shortcut_rb))
-                    .setIntent(FilesActivity.getIntent(context).setAction(Intent.ACTION_VIEW))
+                    .setIntent(FilesActivity.Companion.getIntent(context).setAction(Intent.ACTION_VIEW))
                     .build();
             shortcutManager.addDynamicShortcuts(Collections.singletonList(shortcut));
             return id;
@@ -120,7 +120,7 @@ public final class RealmBrowser {
                     .setLongLabel("Open realm-browser models activity")
                     .setIcon(Icon.createWithResource(context, R.drawable.realm_browser_shortcut_rb))
                     .setIntents(new Intent[]{
-                            FilesActivity.getIntent(context).setAction(Intent.ACTION_VIEW), ModelsActivity.getIntent(context).setAction(Intent.ACTION_VIEW)
+                            FilesActivity.Companion.getIntent(context).setAction(Intent.ACTION_VIEW), ModelsActivity.getIntent(context).setAction(Intent.ACTION_VIEW)
                     })
                     .build();
             shortcutManager.addDynamicShortcuts(Collections.singletonList(shortcut));

@@ -35,6 +35,14 @@ import io.realm.RealmObjectSchema;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import timber.log.Timber;
 
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isBlob;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isBoolean;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isDate;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isNumber;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isParametrizedField;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isRealmObjectField;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isString;
+import static de.jonasrottmann.realmbrowser.extensions.Realm_extKt.getPrimaryKeyFieldName;
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_FIELD;
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_OBJECT;
 
@@ -93,17 +101,17 @@ public class RealmObjectActivity extends AppCompatActivity {
 
         for (final Field field : classFields) {
             RealmBrowserViewField realmFieldView;
-            if (Utils.isString(field)) {
+            if (isString(field)) {
                 realmFieldView = new RealmBrowserViewString(this, schema, field);
-            } else if (Utils.isNumber(field)) {
+            } else if (isNumber(field)) {
                 realmFieldView = new RealmBrowserViewNumber(this, schema, field);
-            } else if (Utils.isBoolean(field)) {
+            } else if (isBoolean(field)) {
                 realmFieldView = new RealmBrowserViewBool(this, schema, field);
-            } else if (Utils.isBlob(field)) {
+            } else if (isBlob(field)) {
                 realmFieldView = new RealmBrowserViewBlob(this, schema, field);
-            } else if (Utils.isDate(field)) {
+            } else if (isDate(field)) {
                 realmFieldView = new RealmBrowserViewDate(this, schema, field);
-            } else if (Utils.isParametrizedField(field)) {
+            } else if (isParametrizedField(field)) {
                 realmFieldView = new RealmBrowserViewRealmList(this, schema, field);
                 realmFieldView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -118,7 +126,7 @@ public class RealmObjectActivity extends AppCompatActivity {
                         }
                     }
                 });
-            } else if (Utils.isRealmObjectField(field)) {
+            } else if (isRealmObjectField(field)) {
                 realmFieldView = new RealmBrowserViewRealmObject(this, schema, field);
                 realmFieldView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -236,7 +244,7 @@ public class RealmObjectActivity extends AppCompatActivity {
         // Create object
         if (dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()).hasPrimaryKey()) {
             try {
-                String primaryKeyFieldName = Utils.getPrimaryKeyFieldName(dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()));
+                String primaryKeyFieldName = getPrimaryKeyFieldName(dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()));
                 newRealmObject = dynamicRealm.createObject(mRealmObjectClass.getSimpleName(), fieldViewsList.get(primaryKeyFieldName).getValue());
             } catch (IllegalArgumentException e) {
                 Timber.e(e, "Error trying to create new Realm object of type %s", mRealmObjectClass.getSimpleName());
@@ -244,7 +252,7 @@ public class RealmObjectActivity extends AppCompatActivity {
                 Snackbar.make(linearLayout, "Error creating Object: IllegalArgumentException", Snackbar.LENGTH_SHORT).show();
             } catch (RealmPrimaryKeyConstraintException e) {
                 Timber.e(e, "Error trying to create new Realm object of type %s", mRealmObjectClass.getSimpleName());
-                fieldViewsList.get(Utils.getPrimaryKeyFieldName(dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(true);
+                fieldViewsList.get(getPrimaryKeyFieldName(dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName()))).togglePrimaryKeyError(true);
                 dynamicRealm.cancelTransaction();
                 Snackbar.make(linearLayout, "Error creating Object: PrimaryKeyConstraintException", Snackbar.LENGTH_SHORT).show();
             }
@@ -314,7 +322,7 @@ public class RealmObjectActivity extends AppCompatActivity {
         dynamicRealm.commitTransaction();
 
         // Reset primary key error
-        RealmBrowserViewField primaryKeyView = fieldViewsList.get(Utils.getPrimaryKeyFieldName(dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName())));
+        RealmBrowserViewField primaryKeyView = fieldViewsList.get(getPrimaryKeyFieldName(dynamicRealm.getSchema().get(mRealmObjectClass.getSimpleName())));
         if (primaryKeyView != null) {
             primaryKeyView.togglePrimaryKeyError(false);
         }

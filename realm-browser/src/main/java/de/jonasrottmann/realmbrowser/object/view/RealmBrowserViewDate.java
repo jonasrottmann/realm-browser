@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
 import java.lang.reflect.Field;
@@ -23,6 +22,7 @@ import java.util.Date;
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.support.v4.content.ContextCompat.getColor;
 import static android.support.v4.content.ContextCompat.getDrawable;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isDate;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewDate extends RealmBrowserViewField {
@@ -36,7 +36,7 @@ class RealmBrowserViewDate extends RealmBrowserViewField {
 
     public RealmBrowserViewDate(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isDate(getField())) {
+        if (!isDate(getField())) {
             throw new IllegalArgumentException();
         }
     }
@@ -106,7 +106,7 @@ class RealmBrowserViewDate extends RealmBrowserViewField {
 
     @Override
     public void setRealmObject(@NonNull DynamicRealmObject realmObject) {
-        if (Utils.isDate(getField())) {
+        if (isDate(getField())) {
             if (realmObject.getDate(getField().getName()) == null) {
                 updateFieldIsNullCheckBoxValue(true);
             } else {

@@ -6,11 +6,14 @@ import android.support.annotation.RestrictTo;
 import android.view.ViewStub;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import java.lang.reflect.Field;
+
 import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
-import java.lang.reflect.Field;
+
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isBoolean;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewBool extends RealmBrowserViewField {
@@ -18,21 +21,21 @@ class RealmBrowserViewBool extends RealmBrowserViewField {
 
     public RealmBrowserViewBool(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isBoolean(getField())) {
+        if (!isBoolean(getField())) {
             throw new IllegalArgumentException();
         }
     }
 
     @Override
     public void inflateViewStub() {
-        ViewStub stub = (ViewStub) findViewById(R.id.realm_browser_stub);
+        ViewStub stub = findViewById(R.id.realm_browser_stub);
         stub.setLayoutResource(R.layout.realm_browser_fieldview_spinner);
         stub.inflate();
     }
 
     @Override
     public void initViewStubView() {
-        spinner = (Spinner) findViewById(R.id.realm_browser_field_boolspinner);
+        spinner = findViewById(R.id.realm_browser_field_boolspinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.realm_browser_boolean, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -58,7 +61,7 @@ class RealmBrowserViewBool extends RealmBrowserViewField {
 
     @Override
     public void setRealmObject(@NonNull DynamicRealmObject realmObject) {
-        if (Utils.isBoolean(getField())) {
+        if (isBoolean(getField())) {
             spinner.setSelection(realmObject.getBoolean(getField().getName()) ? 0 : 1);
         } else {
             throw new IllegalArgumentException();

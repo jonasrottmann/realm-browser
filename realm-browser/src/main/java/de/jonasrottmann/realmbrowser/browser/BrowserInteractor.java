@@ -1,8 +1,6 @@
 package de.jonasrottmann.realmbrowser.browser;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -12,11 +10,9 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.jonasrottmann.realmbrowser.R;
 import de.jonasrottmann.realmbrowser.basemvp.BaseInteractorImpl;
 import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.helper.RealmPreferences;
-import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmModel;
@@ -24,6 +20,7 @@ import io.realm.RealmObject;
 import io.realm.RealmObjectSchema;
 import timber.log.Timber;
 
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isParametrizedField;
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_CLASS;
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_FIELD;
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_OBJECT;
@@ -43,6 +40,21 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
         super(presenter);
     }
 
+    //region Helper
+    @NonNull
+    private static List<Field> getFieldsList(@NonNull DynamicRealm dynamicRealm, @NonNull Class<? extends RealmModel> realmModelClass) {
+        RealmObjectSchema schema = dynamicRealm.getSchema().get(realmModelClass.getSimpleName());
+        ArrayList<Field> fieldsList = new ArrayList<>();
+        for (String s : schema.getFieldNames()) {
+            try {
+                fieldsList.add(realmModelClass.getDeclaredField(s));
+            } catch (NoSuchFieldException e) {
+                Timber.d(e, "Initializing field map.");
+            }
+        }
+        return fieldsList;
+    }
+
     //region InteractorInput
     @Override
     public void requestForContentUpdate(@NonNull Context context, @Nullable DynamicRealm dynamicRealm, int displayMode) {
@@ -57,7 +69,7 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
             Field field = (Field) DataHolder.getInstance().retrieve(DATA_HOLDER_KEY_FIELD);
             if (dynamicRealmObject != null && field != null) {
                 getPresenter().updateWithRealmObjects(dynamicRealmObject.getList(field.getName()));
-                if (Utils.isParametrizedField(field)) {
+                if (isParametrizedField(field)) {
                     this.realmModelClass = (Class<? extends RealmObject>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
                 } else {
                     throw new IllegalStateException("This field must be parametrized.");
@@ -116,6 +128,7 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
             getPresenter().showObjectActivity(this.realmModelClass);
         }
     }
+    //endregion
 
     @Override
     public void onFieldSelectionChanged(int fieldIndex, boolean checked) {
@@ -127,23 +140,6 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
             }
             updateSelectedFields();
         }
-    }
-    //endregion
-
-
-    //region Helper
-    @NonNull
-    private static List<Field> getFieldsList(@NonNull DynamicRealm dynamicRealm, @NonNull Class<? extends RealmModel> realmModelClass) {
-        RealmObjectSchema schema = dynamicRealm.getSchema().get(realmModelClass.getSimpleName());
-        ArrayList<Field> fieldsList = new ArrayList<>();
-        for (String s : schema.getFieldNames()) {
-            try {
-                fieldsList.add(realmModelClass.getDeclaredField(s));
-            } catch (NoSuchFieldException e) {
-                Timber.d(e, "Initializing field map.");
-            }
-        }
-        return fieldsList;
     }
 
     private void updateSelectedFields() {

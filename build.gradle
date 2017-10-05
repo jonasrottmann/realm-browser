@@ -1,24 +1,25 @@
 buildscript {
+    ext.kotlin_version = '1.1.51'
     ext {
         gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
         gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
-        buildToolsVersion = '26.0.0'
+        buildToolsVersion = '26.0.2'
 
         compileSdkVersion = 26
         targetSdkVersion = 26
         minSdkVersion = 15
 
         // plugins
-        androidGradlePluginVersion = '3.0.0-alpha4'
-        realmVersion = '3.4.0'
-        dexcountVersion = '0.6.4'
+        androidGradlePluginVersion = '3.0.0-beta7'
+        realmVersion = '3.7.2'
+        dexcountVersion = '0.8.1'
 
         // dependencies
         timberVersion = '4.5.1'
-        supportLibVersion = '26.0.0-beta2'
-        leakCanaryVersion = '1.5.1'
-        androidArchitectureVersion = '1.0.0-alpha3'
+        supportLibVersion = '26.1.0'
+        leakCanaryVersion = '1.6-SNAPSHOT'
+        androidArchitectureVersion = '1.0.0-beta2'
 
         // CI
         travisBuild = System.getenv("TRAVIS") == "true"
@@ -27,12 +28,14 @@ buildscript {
     repositories {
         jcenter()
         google()
+        mavenCentral()
     }
 
     dependencies {
         classpath "com.android.tools.build:gradle:$androidGradlePluginVersion"
         classpath "io.realm:realm-gradle-plugin:$realmVersion"
         classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$dexcountVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -44,5 +47,7 @@ allprojects {
     repositories {
         jcenter()
         google()
+        mavenCentral()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
 }

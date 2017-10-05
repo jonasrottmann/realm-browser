@@ -9,9 +9,11 @@ import android.widget.TextView;
 import java.lang.reflect.Field;
 
 import de.jonasrottmann.realmbrowser.R;
-import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
+
+import static de.jonasrottmann.realmbrowser.extensions.ByteArray_extKt.createBlobValueString;
+import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isBlob;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewBlob extends RealmBrowserViewField {
@@ -21,21 +23,21 @@ class RealmBrowserViewBlob extends RealmBrowserViewField {
 
     public RealmBrowserViewBlob(Context context, @NonNull RealmObjectSchema realmObjectSchema, @NonNull Field field) {
         super(context, realmObjectSchema, field);
-        if (!Utils.isBlob(getField())) {
+        if (!isBlob(getField())) {
             throw new IllegalArgumentException();
         }
     }
 
     @Override
     public void inflateViewStub() {
-        ViewStub stub = (ViewStub) findViewById(R.id.realm_browser_stub);
+        ViewStub stub = findViewById(R.id.realm_browser_stub);
         stub.setLayoutResource(R.layout.realm_browser_fieldview_textview);
         stub.inflate();
     }
 
     @Override
     public void initViewStubView() {
-        textView = (TextView) findViewById(R.id.realm_browser_field_textview);
+        textView = findViewById(R.id.realm_browser_field_textview);
     }
 
     @Override
@@ -58,12 +60,12 @@ class RealmBrowserViewBlob extends RealmBrowserViewField {
 
     @Override
     public void setRealmObject(@NonNull DynamicRealmObject realmObject) {
-        if (Utils.isBlob(getField())) {
+        if (isBlob(getField())) {
             this.realmObject = realmObject;
             if (realmObject.getBlob(getField().getName()) == null) {
                 updateFieldIsNullCheckBoxValue(true);
             } else {
-                textView.setText(Utils.createBlobValueString(realmObject.getBlob(getField().getName()), 1000));
+                textView.setText(createBlobValueString(realmObject.getBlob(getField().getName()), 1000));
             }
         } else {
             throw new IllegalArgumentException();

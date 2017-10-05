@@ -40,6 +40,11 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    adbOptions {
+        timeOutInMs 20 * 60 * 1000 // This enables long timeouts required on slow environments, e.g. Travis
+        installOptions "-d", "-t"
+    }
 }
 
 dependencies {

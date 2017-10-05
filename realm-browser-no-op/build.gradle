@@ -18,6 +18,7 @@ android {
     lintOptions {
         abortOnError false
     }
+    buildToolsVersion '26.0.2'
 }
 
 apply from: rootProject.file('publish.gradle')

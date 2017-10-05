@@ -1,22 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:fitsSystemWindows="true"
               android:orientation="vertical">
 
-    <include layout="@layout/realm_browser_toolbar" />
+    <include layout="@layout/realm_browser_toolbar"/>
 
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swiperefresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+                                                  android:id="@+id/realm_browser_swiperefresh"
+                                                  android:layout_width="match_parent"
+                                                  android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             android:id="@+id/realm_browser_recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
