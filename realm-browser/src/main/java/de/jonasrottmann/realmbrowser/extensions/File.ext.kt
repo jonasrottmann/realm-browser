@@ -1,3 +1,5 @@
+@file:JvmName("FieldUtils")
+
 package de.jonasrottmann.realmbrowser.extensions
 
 import io.realm.RealmObject
