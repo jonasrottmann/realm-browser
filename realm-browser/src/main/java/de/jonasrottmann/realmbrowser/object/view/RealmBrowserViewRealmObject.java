@@ -12,7 +12,7 @@ import de.jonasrottmann.realmbrowser.R;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
 
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isRealmObjectField;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isRealmObjectField;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewRealmObject extends RealmBrowserViewField {

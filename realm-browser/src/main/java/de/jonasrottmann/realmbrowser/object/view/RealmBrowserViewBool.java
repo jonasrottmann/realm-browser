@@ -13,7 +13,7 @@ import de.jonasrottmann.realmbrowser.R;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
 
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isBoolean;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isBoolean;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewBool extends RealmBrowserViewField {

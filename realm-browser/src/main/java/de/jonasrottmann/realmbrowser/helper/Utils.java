@@ -11,9 +11,9 @@ import java.lang.reflect.ParameterizedType;
 
 import io.realm.DynamicRealmObject;
 
-import static de.jonasrottmann.realmbrowser.extensions.ByteArray_extKt.createBlobValueString;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isBlob;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isParametrizedField;
+import static de.jonasrottmann.realmbrowser.extensions.ByteArrayUtils.createBlobValueString;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isBlob;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isParametrizedField;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class Utils {

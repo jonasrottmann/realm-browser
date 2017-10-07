@@ -12,7 +12,7 @@ import de.jonasrottmann.realmbrowser.R;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
 
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isString;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isString;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewString extends RealmBrowserViewField {

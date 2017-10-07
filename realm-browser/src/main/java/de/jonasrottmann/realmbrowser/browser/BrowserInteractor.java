@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.jonasrottmann.realmbrowser.basemvp.BaseInteractorImpl;
+import de.jonasrottmann.realmbrowser.extensions.FieldUtils;
 import de.jonasrottmann.realmbrowser.helper.DataHolder;
 import de.jonasrottmann.realmbrowser.helper.RealmPreferences;
 import io.realm.DynamicRealm;
@@ -20,7 +21,6 @@ import io.realm.RealmObject;
 import io.realm.RealmObjectSchema;
 import timber.log.Timber;
 
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isParametrizedField;
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_CLASS;
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_FIELD;
 import static de.jonasrottmann.realmbrowser.helper.DataHolder.DATA_HOLDER_KEY_OBJECT;
@@ -69,7 +69,7 @@ class BrowserInteractor extends BaseInteractorImpl<BrowserContract.Presenter> im
             Field field = (Field) DataHolder.getInstance().retrieve(DATA_HOLDER_KEY_FIELD);
             if (dynamicRealmObject != null && field != null) {
                 getPresenter().updateWithRealmObjects(dynamicRealmObject.getList(field.getName()));
-                if (isParametrizedField(field)) {
+                if (FieldUtils.isParametrizedField(field)) {
                     this.realmModelClass = (Class<? extends RealmObject>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
                 } else {
                     throw new IllegalStateException("This field must be parametrized.");

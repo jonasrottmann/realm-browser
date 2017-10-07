@@ -20,13 +20,13 @@ import io.realm.RealmObjectSchema;
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.support.v4.content.ContextCompat.getColor;
 import static android.support.v4.content.ContextCompat.getDrawable;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isByte;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isDouble;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isFloat;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isInteger;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isLong;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isNumber;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isShort;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isByte;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isDouble;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isFloat;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isInteger;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isLong;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isNumber;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isShort;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewNumber extends RealmBrowserViewField {

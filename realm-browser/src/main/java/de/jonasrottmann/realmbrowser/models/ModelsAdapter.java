@@ -16,7 +16,9 @@ import java.util.List;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder> {
 
+    @NonNull
     private final List<ModelPojo> files;
+    @NonNull
     private final OnModelSelectedListener listener;
 
     ModelsAdapter(@NonNull ArrayList<ModelPojo> list, @NonNull OnModelSelectedListener listener) {
@@ -45,9 +47,9 @@ class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder> {
         } else {
             Bundle o = (Bundle) payloads.get(0);
             for (String key : o.keySet()) {
-                if (key.equals(ModelsDiffUtilsCallback.KEY_CLASS)) {
+                if (key.equals(ModelsDiffUtilsCallback.Companion.getKEY_CLASS())) {
                     holder.title.setText(((Class) o.getSerializable(key)).getSimpleName());
-                } else if (key.equals(ModelsDiffUtilsCallback.KEY_COUNT)) {
+                } else if (key.equals(ModelsDiffUtilsCallback.Companion.getKEY_COUNT())) {
                     holder.subTitle.setText(String.valueOf(o.getLong(key)));
                 }
             }

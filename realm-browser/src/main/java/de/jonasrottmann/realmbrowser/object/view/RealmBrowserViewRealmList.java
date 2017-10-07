@@ -13,7 +13,8 @@ import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
 
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isParametrizedField;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isParametrizedField;
+
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewRealmList extends RealmBrowserViewField {

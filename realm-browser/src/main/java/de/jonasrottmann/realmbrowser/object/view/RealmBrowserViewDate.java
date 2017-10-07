@@ -13,16 +13,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.lang.reflect.Field;
+import java.util.Date;
+
 import de.jonasrottmann.realmbrowser.R;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
-import java.lang.reflect.Field;
-import java.util.Date;
 
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.support.v4.content.ContextCompat.getColor;
 import static android.support.v4.content.ContextCompat.getDrawable;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isDate;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isDate;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewDate extends RealmBrowserViewField {

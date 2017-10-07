@@ -12,8 +12,9 @@ import de.jonasrottmann.realmbrowser.R;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmObjectSchema;
 
-import static de.jonasrottmann.realmbrowser.extensions.ByteArray_extKt.createBlobValueString;
-import static de.jonasrottmann.realmbrowser.extensions.File_extKt.isBlob;
+import static de.jonasrottmann.realmbrowser.extensions.ByteArrayUtils.createBlobValueString;
+import static de.jonasrottmann.realmbrowser.extensions.FieldUtils.isBlob;
+
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RealmBrowserViewBlob extends RealmBrowserViewField {

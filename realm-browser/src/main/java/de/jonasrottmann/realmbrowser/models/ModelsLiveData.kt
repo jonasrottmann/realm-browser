@@ -32,7 +32,7 @@ class ModelsLiveData(private val realm: Realm, sortMode: Int, filter: String) : 
     }
 
     private fun sortPojos(pojos: List<ModelPojo>, @SortMode.SortMode sortMode: Int): List<ModelPojo> {
-        Collections.sort(pojos) { o1, o2 -> o1.getKlass().simpleName.compareTo(o2.getKlass().simpleName) }
+        Collections.sort(pojos) { o1, o2 -> o1.klass.simpleName.compareTo(o2.klass.simpleName) }
         if (sortMode == SortMode.DESC) {
             Collections.reverse(pojos)
         }
@@ -42,7 +42,7 @@ class ModelsLiveData(private val realm: Realm, sortMode: Int, filter: String) : 
     private fun filterPojos(pojos: List<ModelPojo>, filter: String): List<ModelPojo> {
         var filteredPojos: ArrayList<ModelPojo>? = null
         if (TextUtils.isGraphic(filter)) {
-            filteredPojos = pojos.filterTo(ArrayList()) { it.getKlass().simpleName.toLowerCase().contains(filter.toLowerCase()) }
+            filteredPojos = pojos.filterTo(ArrayList()) { it.klass.simpleName.toLowerCase().contains(filter.toLowerCase()) }
         }
         return if (filteredPojos == null) pojos else filteredPojos
     }

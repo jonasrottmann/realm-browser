@@ -10,7 +10,6 @@ import de.jonasrottmann.realmbrowser.helper.Utils;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
 public class UtilsTest {
@@ -30,11 +29,6 @@ public class UtilsTest {
     //endregion
 
     //region createBlobValueString
-    @Test
-    public void createBlobValueStringForNull() {
-        assertNull(ByteArrayUtils.createBlobValueString(null, 0));
-    }
-
     @Test
     public void createBlobValueStringForEmptyBlob() {
         assertEquals("byte[] = {}", ByteArrayUtils.createBlobValueString(new byte[]{}, 0));
