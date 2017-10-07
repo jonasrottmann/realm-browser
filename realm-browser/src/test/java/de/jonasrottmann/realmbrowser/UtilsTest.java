@@ -52,7 +52,7 @@ public class UtilsTest {
 
     @Test
     public void isNumber() throws NoSuchFieldException {
-        assertTrue(FieldUtils.isNumber(de.jonasrottmann.realmbrowser.RealmTestModel.class.getDeclaredField("anInteger")));
+        assertTrue(FieldUtils.isNumber(RealmTestModel.class.getDeclaredField("anInteger")));
         assertTrue(FieldUtils.isNumber(RealmTestModel.class.getDeclaredField("aBoxedInteger")));
         assertTrue(FieldUtils.isNumber(RealmTestModel.class.getDeclaredField("aLong")));
         assertTrue(FieldUtils.isNumber(RealmTestModel.class.getDeclaredField("aBoxedLong")));
@@ -78,7 +78,7 @@ public class UtilsTest {
 
     @Test
     public void isInteger() throws NoSuchFieldException {
-        assertTrue(FieldUtils.isInteger(de.jonasrottmann.realmbrowser.RealmTestModel.class.getDeclaredField("anInteger")));
+        assertTrue(FieldUtils.isInteger(RealmTestModel.class.getDeclaredField("anInteger")));
         assertTrue(FieldUtils.isInteger(RealmTestModel.class.getDeclaredField("aBoxedInteger")));
         assertFalse(FieldUtils.isInteger(RealmTestModel.class.getDeclaredField("aLong")));
         assertFalse(FieldUtils.isInteger(RealmTestModel.class.getDeclaredField("aBoxedLong")));

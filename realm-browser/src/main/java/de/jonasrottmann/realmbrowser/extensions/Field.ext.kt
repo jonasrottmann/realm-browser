@@ -12,35 +12,35 @@ fun Field.isNumber(): Boolean {
 }
 
 fun Field.isLong(): Boolean {
-    return type.name == Long::class.java.name || type.name == "long"
+    return type.simpleName == Long::class.java.simpleName || type.simpleName == "long" || type.simpleName == "Long"
 }
 
 fun Field.isInteger(): Boolean {
-    return type.name == Int::class.java.name || type.name == "int"
+    return type.simpleName == Int::class.java.simpleName || type.simpleName == "int" || type.simpleName == "Int" || type.simpleName == "Integer" || type.simpleName == "integer"
 }
 
 fun Field.isShort(): Boolean {
-    return type.name == Short::class.java.name || type.name == "short"
+    return type.simpleName == Short::class.java.simpleName || type.simpleName == "short" || type.simpleName == "Short"
 }
 
 fun Field.isByte(): Boolean {
-    return type.name == Byte::class.java.name || type.name == "byte"
+    return type.simpleName == Byte::class.java.simpleName || type.simpleName == "byte" || type.simpleName == "Byte"
 }
 
 fun Field.isDouble(): Boolean {
-    return type.name == Double::class.java.name || type.name == "double"
+    return type.simpleName == Double::class.java.simpleName || type.simpleName == "double" || type.simpleName == "Double"
 }
 
 fun Field.isFloat(): Boolean {
-    return type.name == Float::class.java.name || type.name == "float"
+    return type.simpleName == Float::class.java.simpleName || type.simpleName == "float" || type.simpleName == "Float"
 }
 
 fun Field.isBoolean(): Boolean {
-    return type.name == Boolean::class.java.name || type.name == "boolean"
+    return type.simpleName == Boolean::class.java.simpleName || type.simpleName == "boolean" || type.simpleName == "Boolean"
 }
 
 fun Field.isString(): Boolean {
-    return type.name == String::class.java.name
+    return type.simpleName == String::class.java.simpleName
 }
 
 fun Field.isParametrizedField(): Boolean {
@@ -48,11 +48,11 @@ fun Field.isParametrizedField(): Boolean {
 }
 
 fun Field.isBlob(): Boolean {
-    return type.name == ByteArray::class.java.name
+    return type.simpleName == ByteArray::class.java.simpleName
 }
 
 fun Field.isDate(): Boolean {
-    return type.name == Date::class.java.name
+    return type.simpleName == Date::class.java.simpleName
 }
 
 fun Field.isRealmObjectField(): Boolean {
